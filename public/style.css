@@ -2975,6 +2975,40 @@ tr:last-child td {
     color: var(--primary) !important;
     border-color: var(--primary) !important;
   }
+
+  /* 7. Store Features row styling on mobile */
+  .store-features {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    margin-bottom: 25px !important;
+  }
+  
+  .feature-card {
+    padding: 10px 6px !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 8px !important;
+    border-radius: 8px !important;
+  }
+  
+  .feature-icon {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 14px !important;
+    margin-top: 0 !important;
+  }
+  
+  .feature-text h3 {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .feature-text p {
+    display: none !important;
+  }
 }
 
 @media (max-width: 576px) {
