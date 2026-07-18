@@ -580,7 +580,7 @@ function setupEventListeners() {
   });
 
   // Review Form Submit
-  document.getElementById('add-review-form').addEventListener('submit', async (e) => {
+  document.getElementById('add-review-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const user = document.getElementById('review-user').value.trim();
     const comment = document.getElementById('review-comment').value.trim();
@@ -1122,52 +1122,58 @@ async function openProductDetails(productId) {
     }
 
     // Review Summary rendering
-    document.getElementById('reviews-avg-rating').innerText = product.rating;
-    document.getElementById('reviews-count-text').innerText = product.reviews.length;
+    const avgRatingEl = document.getElementById('reviews-avg-rating');
+    if (avgRatingEl) avgRatingEl.innerText = product.rating;
+    
+    const countTextEl = document.getElementById('reviews-count-text');
+    if (countTextEl) countTextEl.innerText = product.reviews ? product.reviews.length : 0;
     
     const starAvgContainer = document.getElementById('reviews-avg-stars');
-    starAvgContainer.innerHTML = '';
-    const fullStars = Math.floor(product.rating);
-    const halfStar = product.rating % 1 >= 0.5;
-    
-    for (let i = 1; i <= 5; i++) {
-      const star = document.createElement('i');
-      if (i <= fullStars) {
-        star.className = 'fa-solid fa-star text-gold';
-      } else if (i === fullStars + 1 && halfStar) {
-        star.className = 'fa-solid fa-star-half-stroke text-gold';
-      } else {
-        star.className = 'fa-regular fa-star text-light';
+    if (starAvgContainer) {
+      starAvgContainer.innerHTML = '';
+      const fullStars = Math.floor(product.rating);
+      const halfStar = product.rating % 1 >= 0.5;
+      
+      for (let i = 1; i <= 5; i++) {
+        const star = document.createElement('i');
+        if (i <= fullStars) {
+          star.className = 'fa-solid fa-star text-gold';
+        } else if (i === fullStars + 1 && halfStar) {
+          star.className = 'fa-solid fa-star-half-stroke text-gold';
+        } else {
+          star.className = 'fa-regular fa-star text-light';
+        }
+        starAvgContainer.appendChild(star);
       }
-      starAvgContainer.appendChild(star);
     }
     
     // Review Items List
     const reviewList = document.getElementById('detail-reviews-list');
-    reviewList.innerHTML = '';
-    
-    if (product.reviews.length === 0) {
-      reviewList.innerHTML = `<div class="text-center text-light" style="padding: 20px 0;">Belum ada ulasan untuk produk ini.</div>`;
-    } else {
-      product.reviews.forEach(r => {
-        const item = document.createElement('div');
-        item.className = 'review-item';
-        
-        let rStars = '';
-        for (let i = 1; i <= 5; i++) {
-          rStars += `<i class="${i <= r.rating ? 'fa-solid fa-star text-gold' : 'fa-regular fa-star text-light'}"></i> `;
-        }
-        
-        item.innerHTML = `
-          <div class="review-item-header">
-            <span class="review-user">${r.user}</span>
-            <span class="review-date">${r.date}</span>
-          </div>
-          <div class="review-stars">${rStars}</div>
-          <p class="review-comment">${r.comment}</p>
-        `;
-        reviewList.appendChild(item);
-      });
+    if (reviewList) {
+      reviewList.innerHTML = '';
+      if (!product.reviews || product.reviews.length === 0) {
+        reviewList.innerHTML = `<div class="text-center text-light" style="padding: 20px 0;">Belum ada ulasan untuk produk ini.</div>`;
+      } else {
+        product.reviews.forEach(r => {
+          const item = document.createElement('div');
+          item.className = 'review-item';
+          
+          let rStars = '';
+          for (let i = 1; i <= 5; i++) {
+            rStars += `<i class="${i <= r.rating ? 'fa-solid fa-star text-gold' : 'fa-regular fa-star text-light'}"></i> `;
+          }
+          
+          item.innerHTML = `
+            <div class="review-item-header">
+              <span class="review-user">${r.user}</span>
+              <span class="review-date">${r.date}</span>
+            </div>
+            <div class="review-stars">${rStars}</div>
+            <p class="review-comment">${r.comment}</p>
+          `;
+          reviewList.appendChild(item);
+        });
+      }
     }
 
     modal.classList.add('active');
