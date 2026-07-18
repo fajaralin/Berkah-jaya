@@ -10,7 +10,7 @@
       "brand": "Semen Padang",
       "rating": 4.8,
       "sales": 1250,
-      "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Berat": "50 Kg",
         "Tipe": "Portland Type I",
@@ -41,7 +41,7 @@
       "brand": "Camel",
       "rating": 4.9,
       "sales": 320,
-      "image": "https://images.unsplash.com/photo-1530124560072-aab71cc34f0c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Bahan": "Mata Baja, Gagang Kayu & Karet",
         "Panjang": "95 cm",
@@ -66,7 +66,7 @@
       "brand": "Tekiro",
       "rating": 4.7,
       "sales": 510,
-      "image": "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Ukuran": "16 oz / 450 gram",
         "Bahan": "Baja Carbon Steel & Fiber",
@@ -84,7 +84,7 @@
       "brand": "Kenmaster",
       "rating": 4.6,
       "sales": 980,
-      "image": "https://images.unsplash.com/photo-1508873696983-2df519f0397e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1602052719522-3924c153f228?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Panjang": "5 Meter",
         "Lebar Pita": "19 mm",
@@ -102,7 +102,7 @@
       "brand": "Dulux",
       "rating": 4.8,
       "sales": 240,
-      "image": "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Berat": "5 Kg",
         "Warna": "Super White (Putih Salju)",
@@ -120,7 +120,7 @@
       "brand": "Kaiser",
       "rating": 4.9,
       "sales": 870,
-      "image": "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1563770660941-20978e870e26?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Lubang": "5 Lubang + Saklar Mandiri",
         "Kabel": "3 Meter, Tembaga Murni",
@@ -145,7 +145,7 @@
       "brand": "Supreme",
       "rating": 5,
       "sales": 151,
-      "image": "https://images.unsplash.com/photo-1558346489-19413db48e5b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Tipe": "NYM (Kawat Tembaga Ganda)",
         "Ukuran Core": "2 x 1.5 mm",
@@ -163,7 +163,7 @@
       "brand": "Philips",
       "rating": 4.8,
       "sales": 3200,
-      "image": "https://images.unsplash.com/photo-1550985616-10810253b84d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Daya": "12 Watt (Setara 98W Pijar)",
         "Warna": "Cool Daylight (Putih 6500K)",
@@ -181,7 +181,7 @@
       "brand": "Panasonic",
       "rating": 4.7,
       "sales": 1420,
-      "image": "https://images.unsplash.com/photo-1618090584176-7132b9911657?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1621905252507-b354bc25edac?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Tipe": "Saklar Seri Double",
         "Warna": "Putih Salju",
@@ -199,7 +199,7 @@
       "brand": "Mitzuda",
       "rating": 4.6,
       "sales": 640,
-      "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Rentang Pengukuran": "12V - 250V AC/DC",
         "Display": "LCD Digital & Indikator Neon",
@@ -217,7 +217,7 @@
       "brand": "Monsanto / Bayer",
       "rating": 4.9,
       "sales": 1150,
-      "image": "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Volume": "1 Liter",
         "Bahan Aktif": "Isopropilamina Glifosat 486 g/l",
@@ -242,7 +242,7 @@
       "brand": "Bayer",
       "rating": 4.8,
       "sales": 760,
-      "image": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1605000797499-95a51c7e69ae?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Volume": "250 ml",
         "Bahan Aktif": "Deltametrin 25 g/l",
@@ -260,7 +260,7 @@
       "brand": "YaraMila",
       "rating": 4.9,
       "sales": 4300,
-      "image": "https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Berat": "1 Kg (Repack)",
         "Komposisi": "N 16%, P2O5 16%, K2O 16%",
@@ -285,7 +285,7 @@
       "brand": "Bayer",
       "rating": 4.7,
       "sales": 540,
-      "image": "https://images.unsplash.com/photo-1463171359979-300c4e11a310?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Berat": "250 gram",
         "Bahan Aktif": "Propineb 70%",
@@ -303,7 +303,7 @@
       "brand": "GreenGrow",
       "rating": 4.5,
       "sales": 490,
-      "image": "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Volume": "100 ml",
         "Kandungan": "Giberelin GA3 200ppm",
