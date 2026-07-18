@@ -3,6 +3,28 @@ let adminState = {
   currentAdminTab: 'products', // products, orders
   products: []
 };
+let currentCategoryFilter = 'all';
+
+// Function to filter products in table based on category tab & search input
+function filterAdminProducts() {
+  const searchQuery = document.getElementById('admin-product-search').value.toLowerCase().trim();
+  const rows = document.querySelectorAll('#admin-product-table-body tr');
+  
+  rows.forEach(row => {
+    const name = row.querySelector('.product-row-info').innerText.toLowerCase();
+    const brand = row.getAttribute('data-brand').toLowerCase();
+    const cat = row.getAttribute('data-category');
+    
+    const matchesSearch = name.includes(searchQuery) || brand.includes(searchQuery);
+    const matchesCategory = (currentCategoryFilter === 'all' || cat === currentCategoryFilter);
+    
+    if (matchesSearch && matchesCategory) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
 
 // Initialize Admin Application
 document.addEventListener('DOMContentLoaded', () => {
@@ -78,6 +100,7 @@ async function renderAdminProductsTable() {
       const row = document.createElement('tr');
       row.setAttribute('data-id', p.id);
       row.setAttribute('data-brand', p.brand);
+      row.setAttribute('data-category', p.category);
       
       row.innerHTML = `
         <td>
@@ -99,6 +122,9 @@ async function renderAdminProductsTable() {
       `;
       tbody.appendChild(row);
     });
+
+    // Re-apply filter and search based on current state
+    filterAdminProducts();
   } catch (err) {
     console.error('Failed to load products table in admin:', err);
   }
@@ -374,18 +400,8 @@ function setupAdminEventListeners() {
   });
 
   // Admin Search filter
-  document.getElementById('admin-product-search').addEventListener('input', (e) => {
-    const val = e.target.value.toLowerCase().trim();
-    const rows = document.querySelectorAll('#admin-product-table-body tr');
-    rows.forEach(row => {
-      const name = row.querySelector('.product-row-info').innerText.toLowerCase();
-      const brand = row.getAttribute('data-brand').toLowerCase();
-      if (name.includes(val) || brand.includes(val)) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
-    });
+  document.getElementById('admin-product-search').addEventListener('input', () => {
+    filterAdminProducts();
   });
 
   // Admin Product Delete / Edit delegation
@@ -412,15 +428,17 @@ function setupAdminEventListeners() {
     openProductCrudModal(null);
   });
 
-  // Admin Quick Add Product by Category click
-  const quickAddBtns = document.querySelectorAll('.admin-quick-add-btn');
-  quickAddBtns.forEach(btn => {
+  // Admin Category filter buttons click
+  const filterBtns = document.querySelectorAll('.admin-filter-btn');
+  filterBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const cat = e.currentTarget.getAttribute('data-category');
-      openProductCrudModal(null);
-      // Explicitly set category and apply specs template
-      document.getElementById('form-product-category').value = cat;
-      applyCategorySpecsTemplate(cat);
+      // Toggle active status
+      filterBtns.forEach(b => b.classList.remove('active'));
+      const activeBtn = e.currentTarget;
+      activeBtn.classList.add('active');
+      
+      currentCategoryFilter = activeBtn.getAttribute('data-category');
+      filterAdminProducts();
     });
   });
 

@@ -2305,58 +2305,60 @@ img {
   width: 250px;
 }
 
-.admin-quick-add-group {
+.admin-filter-group {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   background: transparent;
   padding: 0;
   border: none;
-  border-radius: 0;
 }
 
-.admin-quick-add-btn {
+.admin-filter-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
   font-size: 12px;
   font-weight: 700;
-  color: white !important;
-  border: none;
+  color: #64748b;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
   border-radius: 20px;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
 }
 
-.admin-quick-add-btn i {
+.admin-filter-btn i {
   font-size: 12px;
 }
 
-.admin-quick-add-btn.bangunan {
-  background-color: var(--color-bangunan);
+/* Hover & Active States */
+.admin-filter-btn.semua.active, .admin-filter-btn.semua:hover {
+  background-color: #475569;
+  border-color: #475569;
+  color: white !important;
+  box-shadow: 0 4px 8px rgba(71, 85, 105, 0.2);
 }
-.admin-quick-add-btn.bangunan:hover {
-  background-color: hsl(215, 75%, 42%);
-  transform: translateY(-1px);
+
+.admin-filter-btn.bangunan.active, .admin-filter-btn.bangunan:hover {
+  background-color: var(--color-bangunan);
+  border-color: var(--color-bangunan);
+  color: white !important;
   box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
 }
 
-.admin-quick-add-btn.listrik {
+.admin-filter-btn.listrik.active, .admin-filter-btn.listrik:hover {
   background-color: var(--color-listrik);
-}
-.admin-quick-add-btn.listrik:hover {
-  background-color: hsl(35, 90%, 42%);
-  transform: translateY(-1px);
+  border-color: var(--color-listrik);
+  color: white !important;
   box-shadow: 0 4px 8px rgba(217, 119, 6, 0.2);
 }
 
-.admin-quick-add-btn.pertanian {
+.admin-filter-btn.pertanian.active, .admin-filter-btn.pertanian:hover {
   background-color: var(--color-pertanian);
-}
-.admin-quick-add-btn.pertanian:hover {
-  background-color: hsl(145, 65%, 32%);
-  transform: translateY(-1px);
+  border-color: var(--color-pertanian);
+  color: white !important;
   box-shadow: 0 4px 8px rgba(5, 150, 105, 0.2);
 }
 
