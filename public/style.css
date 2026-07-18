@@ -2804,57 +2804,69 @@ tr:last-child td {
     padding: 0 12px;
   }
   
-  /* 2. Sticky Header Grid (2-row Shopee mobile header pattern) */
+  /* 2. Sticky Header Grid (1-row compact Shopee header pattern) */
   .main-header {
-    padding: 8px 0;
+    padding: 6px 0;
   }
   .header-grid {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    row-gap: 8px;
-    column-gap: 12px;
-    align-items: center;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
   }
   .logo-area {
-    grid-column: 1;
-    gap: 8px;
+    gap: 6px !important;
+    flex-shrink: 0 !important;
   }
   .logo-icon {
-    width: 34px;
-    height: 34px;
-    font-size: 16px;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 14px !important;
+    border-radius: var(--radius-sm) !important;
   }
-  .logo-text h1 {
-    font-size: 15px;
-  }
-  .logo-text .tagline {
-    display: none; /* Hide tagline on mobile */
-  }
-  .user-auth-wrapper {
-    grid-column: 2;
-    justify-content: flex-end;
-  }
-  .header-actions {
-    grid-column: 3;
-    gap: 8px;
-  }
-  .header-actions .action-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 14px;
+  .logo-text {
+    display: none !important; /* Hide logo text on mobile to save space */
   }
   .search-box {
-    grid-column: 1 / span 3;
-    width: 100%;
-    max-width: 100%;
+    flex-grow: 1 !important;
+    max-width: none !important;
+    width: auto !important;
+    margin: 0 !important;
+  }
+  #search-form {
+    border-radius: 18px !important; /* Shopee-style rounded search bar */
+    overflow: hidden;
   }
   #search-input {
-    padding: 8px 12px;
-    font-size: 13px;
+    padding: 6px 12px !important;
+    font-size: 11px !important;
+    height: 32px !important;
   }
   .search-submit-btn {
-    width: 40px;
-    font-size: 14px;
+    width: 34px !important;
+    height: 32px !important;
+    font-size: 12px !important;
+  }
+  .header-actions {
+    display: flex !important;
+    gap: 6px !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+  }
+  .header-actions .action-btn {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 13px !important;
+    position: relative !important;
+  }
+  .header-actions .action-btn .badge {
+    top: -4px !important;
+    right: -4px !important;
+    width: 14px !important;
+    height: 14px !important;
+    font-size: 8px !important;
+    line-height: 14px !important;
   }
 
   /* 3. Navigation Bar (Kategori scroll horizontal & Urutan) */
@@ -2961,8 +2973,8 @@ tr:last-child td {
     margin-top: 15px;
   }
   .btn-login-nav {
-    width: 36px !important;
-    height: 36px !important;
+    width: 32px !important;
+    height: 32px !important;
     padding: 0 !important;
     border-radius: 50% !important;
     justify-content: center !important;
