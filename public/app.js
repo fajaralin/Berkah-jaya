@@ -369,7 +369,17 @@ function setupEventListeners() {
     switchView('home');
   });
   
-
+  // Mobile Filter Toggle click
+  const mobileFilterToggle = document.getElementById('mobile-filter-toggle-btn');
+  if (mobileFilterToggle) {
+    mobileFilterToggle.addEventListener('click', () => {
+      const sidebar = document.querySelector('.sidebar-filters');
+      if (sidebar) {
+        sidebar.classList.toggle('active-mobile');
+      }
+    });
+  }
+  
   document.getElementById('wishlist-btn').addEventListener('click', () => {
     switchView('wishlist');
   });
