@@ -2295,6 +2295,46 @@ img {
   font-size: 13px;
 }
 
+.admin-quick-add-group {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-quick-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.admin-quick-add-btn.bangunan {
+  background-color: var(--color-bangunan);
+}
+.admin-quick-add-btn.bangunan:hover {
+  background-color: hsl(215, 75%, 40%);
+}
+
+.admin-quick-add-btn.listrik {
+  background-color: var(--color-listrik);
+}
+.admin-quick-add-btn.listrik:hover {
+  background-color: hsl(35, 90%, 40%);
+}
+
+.admin-quick-add-btn.pertanian {
+  background-color: var(--color-pertanian);
+}
+.admin-quick-add-btn.pertanian:hover {
+  background-color: hsl(145, 65%, 32%);
+}
+
 /* Tables */
 .table-responsive {
   width: 100%;

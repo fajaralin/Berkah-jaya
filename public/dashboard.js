@@ -412,6 +412,18 @@ function setupAdminEventListeners() {
     openProductCrudModal(null);
   });
 
+  // Admin Quick Add Product by Category click
+  const quickAddBtns = document.querySelectorAll('.admin-quick-add-btn');
+  quickAddBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const cat = e.currentTarget.getAttribute('data-category');
+      openProductCrudModal(null);
+      // Explicitly set category and apply specs template
+      document.getElementById('form-product-category').value = cat;
+      applyCategorySpecsTemplate(cat);
+    });
+  });
+
   document.getElementById('close-form-modal-btn').addEventListener('click', closeProductCrudModal);
   document.getElementById('btn-cancel-crud').addEventListener('click', closeProductCrudModal);
 
