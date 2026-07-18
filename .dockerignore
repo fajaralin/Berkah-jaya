@@ -3,4 +3,4 @@ npm-debug.log
 .git
 .agents
 .gemini
-data/*.json
+
