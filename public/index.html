@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berkah Jaya - Toko Alat Bangunan, Listrik & Pertanian Lengkap</title>
+  <meta name="description" content="Toko online Berkah Jaya menyediakan kebutuhan alat bangunan berkualitas, instalasi listrik original, dan obat pertanian ampuh dengan pelayanan cepat dan harga terbaik.">
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Style Sheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+
+  <!-- Header Section -->
+  <header class="main-header">
+    <div class="container header-grid">
+      <!-- Logo -->
+      <a href="#" class="logo-area" id="logo-home">
+        <span class="logo-icon"><i class="fa-solid fa-trowel-bricks"></i></span>
+        <div class="logo-text">
+          <h1>Berkah Jaya</h1>
+          <span class="tagline">Bangunan, Listrik & Tani</span>
+        </div>
+      </a>
+
+      <!-- Search Bar -->
+      <div class="search-box">
+        <form id="search-form">
+          <input type="text" id="search-input" placeholder="Cari semen, lampu Philips, pupuk NPK, obeng..." autocomplete="off">
+          <button type="submit" class="search-submit-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+        <div class="search-suggestions" id="search-suggestions">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Action Icons (Wishlist, Cart) -->
+      <div class="header-actions">
+        <!-- Wishlist -->
+        <button class="action-btn" id="wishlist-btn" title="Favorit Saya">
+          <i class="fa-regular fa-heart"></i>
+          <span class="badge" id="wishlist-count">0</span>
+        </button>
+
+        <!-- Shopping Cart -->
+        <button class="action-btn" id="cart-icon-btn" title="Keranjang Belanja">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="badge" id="cart-count">0</span>
+        </button>
+
+        <!-- User Profile/Auth dynamic section -->
+        <div class="user-auth-wrapper" id="user-auth-wrapper">
+          <button class="btn-login-nav" id="nav-login-btn" title="Masuk / Daftar Akun">
+            <i class="fa-regular fa-user"></i>
+            <span class="btn-text">Masuk</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation & Categories Tab Bar -->
+  <nav class="nav-bar">
+    <div class="container nav-content">
+      <div class="category-tabs">
+        <button class="tab-btn active" data-category="semua">
+          <i class="fa-solid fa-tags"></i> Semua Kategori
+        </button>
+        <button class="tab-btn" data-category="bangunan">
+          <i class="fa-solid fa-hammer"></i> Alat Bangunan
+        </button>
+        <button class="tab-btn" data-category="listrik">
+          <i class="fa-solid fa-bolt"></i> Alat Listrik
+        </button>
+        <button class="tab-btn" data-category="pertanian">
+          <i class="fa-solid fa-wheat-awn"></i> Obat Pertanian
+        </button>
+      </div>
+
+      <div class="sorting-selector">
+        <label for="sort-select">Urutkan:</label>
+        <select id="sort-select">
+          <option value="default">Relevansi</option>
+          <option value="terlaris">Paling Laris</option>
+          <option value="rating">Rating Tertinggi</option>
+          <option value="harga-rendah">Harga Terendah</option>
+          <option value="harga-tinggi">Harga Tertinggi</option>
+        </select>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Wrapper -->
+  <main class="container main-layout" id="main-content">
+    
+    <!-- Home View -->
+    <div id="home-view" class="view-panel active">
+      <!-- Banner Carousel Promo -->
+      <section class="promo-banner-wrapper">
+        <div class="promo-slides">
+          <div class="promo-slide active" style="background-image: url('assets/banner_promo.png');">
+            <div class="slide-info">
+              <span class="badge-promo">PROMO BULAN INI</span>
+              <h2>Kebutuhan Bangunan Lengkap & Kokoh</h2>
+              <p>Dapatkan diskon khusus Semen Padang & perkakas tebal Camel. Gratis pengantaran dengan armada toko untuk area sekitar bypass.</p>
+              <a href="#catalog-section" class="btn-primary-promo">Belanja Sekarang <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+          </div>
+          <div class="promo-slide" style="background-image: url('assets/banner_listrik.png');">
+            <div class="slide-info">
+              <span class="badge-promo bg-blue">GARANSI ORI</span>
+              <h2>Instalasi Listrik Aman & Berkualitas</h2>
+              <p>Sedia Lampu Philips LED hemat daya & Kabel SNI Supreme tembaga murni. Lindungi instalasi rumah Anda dengan yang aman dan bergaransi resmi.</p>
+              <a href="#catalog-section" class="btn-primary-promo btn-blue">Cari Alat Listrik <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+          </div>
+          <div class="promo-slide" style="background-image: url('assets/banner_pertanian.png');">
+            <div class="slide-info">
+              <span class="badge-promo bg-green">TANI MAKMUR</span>
+              <h2>Obat & Pupuk Pertanian Berkualitas</h2>
+              <p>Membasmi hama dan gulma dengan herbisida RoundUp & insektisida Decis. Tingkatkan hasil panen tanaman hias dan sawah dengan pupuk berkualitas.</p>
+              <a href="#catalog-section" class="btn-primary-promo btn-green">Lihat Produk Tani <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="slider-dots">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </section>
+
+      <!-- Store Features info cards -->
+      <section class="store-features">
+        <div class="feature-card">
+          <div class="feature-icon orange"><i class="fa-solid fa-truck-fast"></i></div>
+          <div class="feature-text">
+            <h3>Kurir Toko Instan</h3>
+            <p>Barang langsung diantar dengan kurir toko di hari yang sama.</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon green"><i class="fa-solid fa-certificate"></i></div>
+          <div class="feature-text">
+            <h3>Jaminan Original</h3>
+            <p>100% produk asli bermerek, standar SNI & bersertifikat resmi.</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon blue"><i class="fa-solid fa-wallet"></i></div>
+          <div class="feature-text">
+            <h3>Pembayaran Aman</h3>
+            <p>Bayar mudah lewat transfer bank, e-wallet, atau Bayar di Tempat (COD).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Core catalog display section -->
+      <section id="catalog-section" class="catalog-section-layout">
+        <!-- Sidebar filters -->
+        <aside class="sidebar-filters">
+          <div class="filter-header">
+            <h3><i class="fa-solid fa-sliders"></i> Filter Produk</h3>
+            <button id="clear-filters-btn">Hapus Semua</button>
+          </div>
+          
+          <!-- Brand filter -->
+          <div class="filter-group">
+            <h4>Merek Populer</h4>
+            <div class="filter-options" id="brand-filters">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Price filter -->
+          <div class="filter-group">
+            <h4>Rentang Harga (Rp)</h4>
+            <div class="price-range-inputs">
+              <input type="number" id="price-min" placeholder="Min" min="0">
+              <span>-</span>
+              <input type="number" id="price-max" placeholder="Maks" min="0">
+            </div>
+            <button class="btn-apply-filter" id="apply-price-filter">Terapkan Harga</button>
+          </div>
+
+          <!-- Rating filter -->
+          <div class="filter-group">
+            <h4>Rating Minimum</h4>
+            <div class="rating-filter-options">
+              <label class="rating-radio">
+                <input type="radio" name="rating-filter" value="4">
+                <span><i class="fa-solid fa-star text-gold"></i> 4 ke atas</span>
+              </label>
+              <label class="rating-radio">
+                <input type="radio" name="rating-filter" value="4.5">
+                <span><i class="fa-solid fa-star text-gold"></i> 4.5 ke atas</span>
+              </label>
+              <label class="rating-radio">
+                <input type="radio" name="rating-filter" value="all" checked>
+                <span>Tampilkan Semua</span>
+              </label>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Product grid area -->
+        <div class="catalog-grid-area">
+          <div class="active-filters-tags" id="active-filters-tags">
+            <!-- Filter tags will be shown here -->
+          </div>
+          <div class="catalog-grid" id="product-grid">
+            <!-- Product cards dynamically loaded here -->
+            <div class="loading-state">
+              <i class="fa-solid fa-spinner fa-spin"></i> Memuat daftar produk...
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Product Details Modal Dialog -->
+    <div id="product-detail-modal" class="modal">
+      <div class="modal-content product-detail-card">
+        <button class="close-modal-btn" id="close-detail-modal-btn">&times;</button>
+        <div class="product-detail-grid">
+          <!-- Left side: image -->
+          <div class="detail-image-box">
+            <img src="" id="detail-image" alt="Gambar Produk">
+            <span class="detail-category-badge" id="detail-category-badge"></span>
+          </div>
+          
+          <!-- Right side: details -->
+          <div class="detail-info-box">
+            <h2 id="detail-name">Nama Produk</h2>
+            <div class="detail-meta">
+              <span class="detail-brand">Merek: <strong id="detail-brand-text"></strong></span>
+              <span class="divider">|</span>
+              <span class="detail-rating">
+                <i class="fa-solid fa-star text-gold"></i> <span id="detail-rating-text">4.8</span>
+              </span>
+              <span class="divider">|</span>
+              <span class="detail-sales"><span id="detail-sales-text">100</span> Terjual</span>
+            </div>
+
+            <div class="detail-price-box">
+              <span class="price-label">Harga</span>
+              <h3 id="detail-price">Rp 0</h3>
+            </div>
+
+            <div class="detail-description">
+              <h4>Deskripsi Produk:</h4>
+              <p id="detail-desc-text">Deskripsi lengkap mengenai produk...</p>
+            </div>
+
+            <!-- Specifications Table -->
+            <div class="detail-specs">
+              <h4>Spesifikasi Detail:</h4>
+              <table id="detail-specs-table">
+                <!-- Dynamic rows -->
+              </table>
+            </div>
+
+            <div class="detail-actions">
+              <div class="quantity-controller">
+                <span class="qty-label">Jumlah:</span>
+                <div class="qty-buttons">
+                  <button id="qty-minus"><i class="fa-solid fa-minus"></i></button>
+                  <input type="number" id="qty-input" value="1" min="1">
+                  <button id="qty-plus"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <span class="stock-info">Tersedia <span id="detail-stock-text">0</span> unit</span>
+              </div>
+
+              <div class="buy-buttons">
+                <button class="btn-secondary" id="add-to-cart-detail-btn">
+                  <i class="fa-solid fa-cart-plus"></i> Masukkan Keranjang
+                </button>
+                <button class="btn-primary" id="buy-now-detail-btn">Beli Sekarang</button>
+                <button class="btn-wa" id="wa-ask-detail-btn" title="Tanya Produk via WhatsApp">
+                  <i class="fa-brands fa-whatsapp"></i> Tanya via WA
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Reviews Section -->
+        <div class="product-reviews-section">
+          <h3>Penilaian Produk</h3>
+          <div class="reviews-summary">
+            <div class="rating-big">
+              <h4 id="reviews-avg-rating">4.8</h4>
+              <div class="stars-row" id="reviews-avg-stars">
+                <!-- Stars -->
+              </div>
+              <p>Berdasarkan <span id="reviews-count-text">0</span> ulasan</p>
+            </div>
+            <div class="add-review-box">
+              <h4>Tulis Ulasan Baru:</h4>
+              <form id="add-review-form">
+                <div class="form-row">
+                  <input type="text" id="review-user" placeholder="Nama Anda" required>
+                  <div class="rating-input-stars">
+                    <span>Rating: </span>
+                    <div class="star-rating-select">
+                      <input type="radio" id="star5" name="review-rating" value="5" required checked><label for="star5" title="5 bintang"><i class="fa-solid fa-star"></i></label>
+                      <input type="radio" id="star4" name="review-rating" value="4"><label for="star4" title="4 bintang"><i class="fa-solid fa-star"></i></label>
+                      <input type="radio" id="star3" name="review-rating" value="3"><label for="star3" title="3 bintang"><i class="fa-solid fa-star"></i></label>
+                      <input type="radio" id="star2" name="review-rating" value="2"><label for="star2" title="2 bintang"><i class="fa-solid fa-star"></i></label>
+                      <input type="radio" id="star1" name="review-rating" value="1"><label for="star1" title="1 bintang"><i class="fa-solid fa-star"></i></label>
+                    </div>
+                  </div>
+                </div>
+                <textarea id="review-comment" placeholder="Berikan ulasan mengenai kualitas produk, packing, atau pengantaran..." rows="3" required></textarea>
+                <button type="submit" class="btn-secondary">Kirim Ulasan</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="reviews-list" id="detail-reviews-list">
+            <!-- Reviews populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wishlist View -->
+    <div id="wishlist-view" class="view-panel">
+      <div class="section-title-bar">
+        <h2><i class="fa-solid fa-heart text-orange"></i> Wishlist Saya</h2>
+        <button class="btn-link" id="back-to-shop-wishlist"><i class="fa-solid fa-chevron-left"></i> Kembali Belanja</button>
+      </div>
+      <div class="catalog-grid" id="wishlist-grid">
+        <!-- Wishlist items loaded here -->
+      </div>
+    </div>
+
+    <!-- Checkout / Form View -->
+    <div id="checkout-view" class="view-panel">
+      <div class="checkout-layout">
+        <!-- Form info -->
+        <div class="checkout-form-container">
+          <h2><i class="fa-solid fa-truck-ramp-box text-orange"></i> Informasi Pengiriman</h2>
+          <form id="checkout-form">
+            <div class="form-group-checkout">
+              <label for="checkout-name">Nama Penerima *</label>
+              <input type="text" id="checkout-name" placeholder="Contoh: Budi Santoso" required>
+            </div>
+            <div class="form-group-checkout">
+              <label for="checkout-phone">Nomor Whatsapp/HP *</label>
+              <input type="tel" id="checkout-phone" placeholder="Contoh: 081234567890" required>
+            </div>
+            <div class="form-group-checkout">
+              <label for="checkout-address">Alamat Pengiriman Lengkap *</label>
+              <textarea id="checkout-address" placeholder="Tuliskan nama jalan, nomor rumah, RT/RW, kelurahan, kecamatan, dan kota/kabupaten" rows="4" required></textarea>
+            </div>
+
+            <div class="checkout-options-row">
+              <div class="form-group-checkout">
+                <label for="checkout-shipping">Jasa Pengiriman *</label>
+                <select id="checkout-shipping" required>
+                  <option value="tokoinstan" data-price="25000">Kurir Toko Instan - Rp 25.000 (Langsung Sampai)</option>
+                  <option value="jnt" data-price="18000">J&T Express - Rp 18.000 (1-2 Hari)</option>
+                  <option value="jne" data-price="20000">JNE Reguler - Rp 20.000 (1-3 Hari)</option>
+                  <option value="pos" data-price="15000">Pos Indonesia - Rp 15.000 (2-4 Hari)</option>
+                </select>
+              </div>
+
+              <div class="form-group-checkout">
+                <label for="checkout-payment">Metode Pembayaran *</label>
+                <select id="checkout-payment" required>
+                  <option value="Transfer Bank Mandiri">Transfer Bank Mandiri (Verifikasi Cepat)</option>
+                  <option value="Transfer Bank BCA">Transfer Bank BCA</option>
+                  <option value="E-Wallet Gopay/OVO">E-Wallet (Gopay / OVO)</option>
+                  <option value="COD (Bayar di Tempat)">COD (Bayar di Tempat)</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Summary panel -->
+        <div class="checkout-summary-container">
+          <h2>Ringkasan Belanja</h2>
+          <div class="checkout-items-list" id="checkout-items-list">
+            <!-- Dynamic checkout items -->
+          </div>
+
+          <!-- Voucher Code Box -->
+          <div class="voucher-box">
+            <input type="text" id="voucher-input" placeholder="Masukkan Kode Voucher (e.g. BERKAHJAYA50)">
+            <button id="apply-voucher-btn">Gunakan</button>
+          </div>
+          <div id="voucher-message"></div>
+
+          <div class="billing-details">
+            <div class="billing-row">
+              <span>Subtotal Produk</span>
+              <span id="checkout-subtotal">Rp 0</span>
+            </div>
+            <div class="billing-row">
+              <span>Ongkos Kirim</span>
+              <span id="checkout-shipping-cost">Rp 0</span>
+            </div>
+            <div class="billing-row text-green" id="discount-row" style="display: none;">
+              <span>Diskon Voucher</span>
+              <span id="checkout-discount">-Rp 0</span>
+            </div>
+            <hr>
+            <div class="billing-row total-row">
+              <span>Total Pembayaran</span>
+              <span id="checkout-total-bill">Rp 0</span>
+            </div>
+          </div>
+
+          <button class="btn-primary btn-large" id="submit-order-btn">Buat Pesanan Sekarang</button>
+          <button class="btn-link text-center w-100" id="cancel-checkout-btn">Kembali ke Keranjang</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success View -->
+    <div id="success-view" class="view-panel">
+      <div class="success-card">
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h2>Pesanan Berhasil Dibuat!</h2>
+        <p>Terima kasih telah berbelanja di Berkah Jaya. Pesanan Anda telah diterima dan sedang diproses.</p>
+        
+        <div class="success-details-box">
+          <div class="success-row"><span>Kode Pesanan:</span><strong id="success-order-id">ORD-XXXXX</strong></div>
+          <div class="success-row"><span>Metode Pembayaran:</span><span id="success-payment">Transfer Bank</span></div>
+          <div class="success-row"><span>Total Pembayaran:</span><strong id="success-total" class="text-orange">Rp 0</strong></div>
+        </div>
+
+        <div class="payment-instructions" id="payment-instructions-box">
+          <h3><i class="fa-solid fa-circle-info"></i> Petunjuk Pembayaran:</h3>
+          <p id="payment-guide-text">Silakan transfer nominal di atas ke nomor rekening berikut:</p>
+          <div class="bank-account-card">
+            <span class="bank-name">BANK MANDIRI</span>
+            <strong class="account-number">111-00-1234567-8</strong>
+            <span class="account-holder">a.n CV BERKAH JAYA PADANG</span>
+          </div>
+          <p class="warning-text">* Kirimkan bukti transfer melalui fitur Chat Penjual agar pesanan segera dikirim.</p>
+        </div>
+
+        <div class="success-actions">
+          <button class="btn-primary" id="success-back-to-shop">Lanjut Belanja</button>
+          <button class="btn-secondary" id="success-chat-seller">Konfirmasi Pembayaran (Chat)</button>
+        </div>
+      </div>
+    </div>
+
+
+
+  </main>
+
+  <!-- Sidebar Cart Section -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-sidebar-header">
+      <h3><i class="fa-solid fa-cart-shopping"></i> Keranjang Belanja (<span id="cart-sidebar-count">0</span>)</h3>
+      <button class="close-cart-btn" id="close-cart-sidebar-btn">&times;</button>
+    </div>
+    
+    <div class="cart-items-wrapper" id="cart-items-wrapper">
+      <!-- Loaded dynamically -->
+      <div class="empty-cart-state">
+        <i class="fa-solid fa-cart-arrow-down"></i>
+        <p>Keranjang belanja Anda kosong.</p>
+        <button class="btn-primary btn-small" id="cart-start-shopping">Belanja Sekarang</button>
+      </div>
+    </div>
+
+    <div class="cart-sidebar-footer" id="cart-sidebar-footer-panel">
+      <div class="cart-subtotal-row">
+        <span>Subtotal Belanja:</span>
+        <strong id="cart-sidebar-subtotal">Rp 0</strong>
+      </div>
+      <p class="shipping-info-tip"><i class="fa-solid fa-circle-info"></i> Ongkir & diskon dihitung pada halaman pembayaran.</p>
+      <button class="btn-primary btn-large btn-checkout-go" id="go-to-checkout-btn">Lanjut ke Pembayaran</button>
+    </div>
+  </aside>
+
+  <!-- Floating Chat Assistant Bubble -->
+  <div class="chat-bubble-container" id="chat-bubble-container">
+    <button class="chat-toggle-bubble" id="chat-toggle-bubble" title="Chat dengan Penjual">
+      <span class="chat-icon"><i class="fa-regular fa-comments"></i></span>
+      <span class="chat-label">Chat Penjual</span>
+      <span class="chat-unread-dot" id="chat-unread-dot" style="display: none;"></span>
+    </button>
+  </div>
+
+  <!-- Chat Box Drawer Window -->
+  <div class="chat-drawer" id="chat-drawer">
+    <div class="chat-drawer-header">
+      <div class="chat-vendor-info">
+        <div class="vendor-avatar"><i class="fa-solid fa-store"></i></div>
+        <div class="vendor-status">
+          <h4>Admin Berkah Jaya</h4>
+          <span class="status-online"><span class="dot-online"></span> Online</span>
+        </div>
+      </div>
+      <button class="close-chat-drawer-btn" id="close-chat-drawer-btn">&times;</button>
+    </div>
+
+    <!-- Chat No-Login Info Banner -->
+    <div class="chat-info-banner">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>Fitur chat ini tidak memerlukan login. Tanyakan apa saja!</span>
+    </div>
+
+    <div class="chat-messages-container" id="chat-messages-container">
+      <!-- Dynamic chat dialog items -->
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" id="chat-user-message" placeholder="Tanyakan stok, pengiriman, diskon..." autocomplete="off">
+      <button id="chat-send-message-btn"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer Section -->
+  <footer class="store-footer">
+    <div class="container footer-grid">
+      <div class="footer-info-col">
+        <h3>CV Berkah Jaya</h3>
+        <p>Penyedia terpercaya untuk produk alat pertukangan bangunan, instalasi kelistrikan berkualitas, dan obat-obatan pupuk pertanian di Kabupaten Kendal.</p>
+        <div class="social-icons">
+          <a href="#"><i class="fa-brands fa-facebook"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>Kategori Produk</h4>
+        <ul>
+          <li><a href="#" class="footer-cat-link" data-category="bangunan">Alat Bangunan</a></li>
+          <li><a href="#" class="footer-cat-link" data-category="listrik">Alat Listrik</a></li>
+          <li><a href="#" class="footer-cat-link" data-category="pertanian">Obat Pertanian</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact-col">
+        <h4>Hubungi Kami</h4>
+        <p>
+          <i class="fa-solid fa-map-location-dot"></i>
+          <a href="https://maps.app.goo.gl/LX4Ssx2pg8R34i4JA" target="_blank" rel="noopener noreferrer">
+            25HF+CHP, Jl. Garuda, Penyangkringan, Karangmulyo, Kec. Pegandon, Kabupaten Kendal, Jawa Tengah 51357
+          </a>
+        </p>
+        <p><i class="fa-solid fa-envelope"></i> admin@berkahjaya.com</p>
+        <p><i class="fa-solid fa-phone"></i> +62 812-3456-7890</p>
+      </div>
+
+      <div class="footer-partners-col">
+        <h4>Partner Pembayaran</h4>
+        <div class="partner-logos">
+          <span>BCA</span>
+          <span>Mandiri</span>
+          <span>Gopay</span>
+          <span>OVO</span>
+          <span>COD</span>
+        </div>
+        <h4 style="margin-top: 15px;">Kurir Pengiriman</h4>
+        <div class="partner-logos">
+          <span>J&T</span>
+          <span>JNE</span>
+          <span>POS</span>
+          <span>Kurir Toko</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+        <p>&copy; 2026 CV Berkah Jaya. All Rights Reserved. Made with <i class="fa-solid fa-heart text-orange"></i> in Indonesia.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Auth Modal (Login / Register) -->
+  <div id="auth-modal" class="modal">
+    <div class="modal-content auth-card">
+      <button class="close-modal-btn" id="close-auth-modal-btn">&times;</button>
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tab-login-btn">Masuk</button>
+        <button class="auth-tab-btn" id="tab-register-btn">Daftar</button>
+      </div>
+      
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form active">
+        <div class="form-group-crud">
+          <label for="login-username">Username *</label>
+          <input type="text" id="login-username" required placeholder="Masukkan username Anda">
+        </div>
+        <div class="form-group-crud">
+          <label for="login-password">Password *</label>
+          <input type="password" id="login-password" required placeholder="Masukkan password Anda">
+        </div>
+        <button type="submit" class="btn-primary w-100" style="margin-top: 15px;">Masuk Sekarang</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form">
+        <div class="form-group-crud">
+          <label for="reg-name">Nama Lengkap *</label>
+          <input type="text" id="reg-name" required placeholder="Contoh: Budi Santoso">
+        </div>
+        <div class="form-group-crud">
+          <label for="reg-username">Username *</label>
+          <input type="text" id="reg-username" required placeholder="Pilih username unik">
+        </div>
+        <div class="form-group-crud">
+          <label for="reg-phone">Nomor Whatsapp/HP *</label>
+          <input type="tel" id="reg-phone" required placeholder="Contoh: 081234567890">
+        </div>
+        <div class="form-group-crud">
+          <label for="reg-password">Password *</label>
+          <input type="password" id="reg-password" required minlength="6" placeholder="Buat password minimal 6 karakter">
+        </div>
+        <button type="submit" class="btn-primary w-100" style="margin-top: 15px;">Daftar Akun Baru</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Script File -->
+  <script src="app.js"></script>
+</body>
+</html>

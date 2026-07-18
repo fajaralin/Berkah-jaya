@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Penjual - CV Berkah Jaya</title>
+  <meta name="description" content="Dashboard Pengelolaan Toko Berkah Jaya">
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Style Sheet -->
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Additional custom styling to ensure full width for admin dashboard on single page */
+    .admin-standalone-layout {
+      padding: 40px 0;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    .view-panel {
+      display: block !important; /* Force visible as it is standalone */
+    }
+  </style>
+</head>
+<body style="background-color: var(--bg-main);">
+
+
+
+  <main class="container admin-standalone-layout">
+    
+    <!-- Admin / Seller Dashboard View -->
+    <div id="admin-view" class="view-panel active">
+      <div class="admin-header-row">
+        <h2><i class="fa-solid fa-user-gear text-orange"></i> Dashboard Penjual</h2>
+        <div class="admin-top-actions">
+          <button class="btn-primary" id="admin-add-product-btn"><i class="fa-solid fa-plus"></i> Tambah Produk</button>
+          <a href="index.html" class="btn-secondary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-store"></i> Lihat Toko
+          </a>
+        </div>
+      </div>
+
+      <!-- Dashboard Stats Counters -->
+      <div class="admin-stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon-wrapper purple"><i class="fa-solid fa-rupiah-sign"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Total Pendapatan</span>
+            <h3 id="stat-revenue">Rp 0</h3>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-wrapper green"><i class="fa-solid fa-boxes-stacked"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Total Jenis Produk</span>
+            <h3 id="stat-products-count">0</h3>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-wrapper orange"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Pesanan Masuk</span>
+            <h3 id="stat-orders-count">0</h3>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-wrapper blue"><i class="fa-solid fa-dolly"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Item Terjual</span>
+            <h3 id="stat-units-sold">0</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Dashboard Grid Layout -->
+      <div class="admin-dashboard-grid">
+        <!-- Left: Sales Distribution & Product Management Table -->
+        <div class="admin-main-column">
+          <!-- Navigation tabs in Admin -->
+          <div class="admin-tab-bar">
+            <button class="admin-tab-btn active" id="admin-tab-products-btn">Manajemen Produk</button>
+            <button class="admin-tab-btn" id="admin-tab-orders-btn">Manajemen Pesanan</button>
+          </div>
+
+          <!-- Product Table Section -->
+          <div class="admin-panel-card active" id="admin-products-panel">
+            <div class="panel-header-search">
+              <h3>Daftar Produk Toko</h3>
+              <input type="text" id="admin-product-search" placeholder="Cari produk toko...">
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Produk</th>
+                    <th>Kategori</th>
+                    <th>Harga</th>
+                    <th>Stok</th>
+                    <th>Terjual</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-product-table-body">
+                  <!-- Load dynamic items -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Orders Table Section -->
+          <div class="admin-panel-card" id="admin-orders-panel">
+            <h3>Daftar Pesanan Masuk</h3>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Tanggal</th>
+                    <th>Nama Pelanggan</th>
+                    <th>Item</th>
+                    <th>Total Bayar</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-order-table-body">
+                  <!-- Load dynamic orders -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right side: Revenue Category Charts -->
+        <div class="admin-sidebar-column">
+          <div class="admin-panel-card">
+            <h3>Porsi Penjualan Kategori</h3>
+            <div class="sales-distribution-chart">
+              <!-- Render HTML/CSS progress bars representing shares -->
+              <div class="chart-progress-item">
+                <div class="chart-item-labels">
+                  <span>Alat Bangunan</span>
+                  <strong id="dist-bangunan-val">Rp 0</strong>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill orange" id="dist-bangunan-bar" style="width: 0%;"></div></div>
+              </div>
+
+              <div class="chart-progress-item">
+                <div class="chart-item-labels">
+                  <span>Alat Listrik</span>
+                  <strong id="dist-listrik-val">Rp 0</strong>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill blue" id="dist-listrik-bar" style="width: 0%;"></div></div>
+              </div>
+
+              <div class="chart-progress-item">
+                <div class="chart-item-labels">
+                  <span>Obat Pertanian</span>
+                  <strong id="dist-pertanian-val">Rp 0</strong>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill green" id="dist-pertanian-bar" style="width: 0%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-panel-card">
+            <h3>Aktivitas Terkini</h3>
+            <ul class="recent-activity-list" id="admin-recent-activities">
+              <!-- Dyn list -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Form Modal (Add / Edit) -->
+    <div id="product-form-modal" class="modal">
+      <div class="modal-content product-form-card">
+        <button class="close-modal-btn" id="close-form-modal-btn">&times;</button>
+        <h3 id="product-form-title">Tambah Produk Baru</h3>
+        <form id="product-crud-form">
+          <input type="hidden" id="form-product-id">
+          
+          <div class="form-row-grid">
+            <div class="form-group-crud">
+              <label for="form-product-name">Nama Produk *</label>
+              <input type="text" id="form-product-name" required placeholder="Contoh: Semen Gresik 50kg">
+            </div>
+            <div class="form-group-crud">
+              <label for="form-product-brand">Merek *</label>
+              <input type="text" id="form-product-brand" required placeholder="Contoh: Gresik">
+            </div>
+          </div>
+
+          <div class="form-row-grid">
+            <div class="form-group-crud">
+              <label for="form-product-category">Kategori *</label>
+              <select id="form-product-category" required>
+                <option value="bangunan">Alat Bangunan</option>
+                <option value="listrik">Alat Listrik</option>
+                <option value="pertanian">Obat Pertanian</option>
+              </select>
+            </div>
+            <div class="form-group-crud">
+              <label for="form-product-image">URL Gambar Produk</label>
+              <input type="url" id="form-product-image" placeholder="Biarkan kosong untuk default">
+            </div>
+          </div>
+
+          <div class="form-row-grid">
+            <div class="form-group-crud">
+              <label for="form-product-price">Harga (Rp) *</label>
+              <input type="number" id="form-product-price" required min="100" placeholder="Contoh: 75000">
+            </div>
+            <div class="form-group-crud">
+              <label for="form-product-stock">Stok Awal *</label>
+              <input type="number" id="form-product-stock" required min="0" placeholder="Contoh: 100">
+            </div>
+          </div>
+
+          <div class="form-group-crud">
+            <label for="form-product-desc">Deskripsi Produk *</label>
+            <textarea id="form-product-desc" required rows="4" placeholder="Tuliskan spesifikasi produk, keunggulan, kegunaan..."></textarea>
+          </div>
+
+          <div class="form-group-crud">
+            <label>Spesifikasi Produk (Tambahan)</label>
+            <div id="specs-fields-wrapper">
+              <div class="spec-field-pair">
+                <input type="text" class="spec-key" placeholder="Nama Spesifikasi (e.g. Berat)">
+                <input type="text" class="spec-value" placeholder="Nilai (e.g. 50 kg)">
+                <button type="button" class="btn-remove-spec"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+            <button type="button" class="btn-secondary btn-small" id="btn-add-spec-field"><i class="fa-solid fa-plus"></i> Tambah Kolom Spesifikasi</button>
+          </div>
+
+          <div class="form-actions-crud">
+            <button type="button" class="btn-secondary" id="btn-cancel-crud">Batal</button>
+            <button type="submit" class="btn-primary" id="btn-submit-crud">Simpan Produk</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Script File -->
+  <script src="dashboard.js"></script>
+</body>
+</html>

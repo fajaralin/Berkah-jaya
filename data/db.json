@@ -1,0 +1,403 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Semen Padang Portland Type I (50kg)",
+      "category": "bangunan",
+      "price": 72000,
+      "stock": 150,
+      "description": "Semen Portland berkualitas tinggi Standar Nasional Indonesia (SNI). Sangat kuat, cepat kering, dan cocok untuk segala jenis konstruksi bangunan rumah, gedung, beton cor, plasteran, dan pasang bata.",
+      "brand": "Semen Padang",
+      "rating": 4.8,
+      "sales": 1250,
+      "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Berat": "50 Kg",
+        "Tipe": "Portland Type I",
+        "Standar": "SNI 2049:2015"
+      },
+      "reviews": [
+        {
+          "user": "Budi Santoso",
+          "rating": 5,
+          "comment": "Semen kualitas terbaik, pengiriman cepat, bangunan jadi kokoh!",
+          "date": "2026-06-25"
+        },
+        {
+          "user": "Agus Salim",
+          "rating": 4,
+          "comment": "Bagus, tapi kantong semen agak tipis jadi ada yang bocor dikit.",
+          "date": "2026-06-20"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Sekop Pasir Baja Tebal Premium",
+      "category": "bangunan",
+      "price": 85000,
+      "stock": 45,
+      "description": "Sekop pasir dengan mata baja tebal berkualitas tinggi. Dilengkapi dengan gagang kayu jati kokoh berperekat karet ergonomis. Tahan karat dan sangat ideal untuk pekerjaan galian tanah, pasir, atau semen.",
+      "brand": "Camel",
+      "rating": 4.9,
+      "sales": 320,
+      "image": "https://images.unsplash.com/photo-1530124560072-aab71cc34f0c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Bahan": "Mata Baja, Gagang Kayu & Karet",
+        "Panjang": "95 cm",
+        "Lebar Mata": "24 cm"
+      },
+      "reviews": [
+        {
+          "user": "Dedi_07",
+          "rating": 5,
+          "comment": "Baja asli tebal sekali, gagang tidak licin. Mantap!",
+          "date": "2026-06-28"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Palu Kambing 16 Oz Gagang Karet Fiber",
+      "category": "bangunan",
+      "price": 45000,
+      "stock": 60,
+      "description": "Palu kambing (Claw Hammer) dengan berat kepala 16 oz (sekitar 450g) terbuat dari baja tempa karbon tinggi yang dipoles mengkilap. Gagang berlapis fiber dan karet anti-slip untuk meredam getaran saat memaku.",
+      "brand": "Tekiro",
+      "rating": 4.7,
+      "sales": 510,
+      "image": "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Ukuran": "16 oz / 450 gram",
+        "Bahan": "Baja Carbon Steel & Fiber",
+        "Fitur": "Magnet penahan paku"
+      },
+      "reviews": []
+    },
+    {
+      "id": "4",
+      "name": "Meteran Gulung Baja Coated 5 Meter",
+      "category": "bangunan",
+      "price": 28000,
+      "stock": 80,
+      "description": "Meteran roll otomatis 5 meter dengan pita baja lebar dilapisi nilon pelindung angka agar tidak mudah luntur. Dilengkapi tombol rem ganda dan klip sabuk berbahan logam.",
+      "brand": "Kenmaster",
+      "rating": 4.6,
+      "sales": 980,
+      "image": "https://images.unsplash.com/photo-1508873696983-2df519f0397e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Panjang": "5 Meter",
+        "Lebar Pita": "19 mm",
+        "Akurasi": "Kelas II Standar Eropa"
+      },
+      "reviews": []
+    },
+    {
+      "id": "5",
+      "name": "Cat Tembok Dulux Catylac Putih 5kg",
+      "category": "bangunan",
+      "price": 165000,
+      "stock": 35,
+      "description": "Dulux Catylac Exterior & Interior dengan teknologi Chroma Brite menghasilkan warna dinding cerah menakjubkan lebih lama. Minim bau, ramah lingkungan, aman, dan mudah dibersihkan.",
+      "brand": "Dulux",
+      "rating": 4.8,
+      "sales": 240,
+      "image": "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Berat": "5 Kg",
+        "Warna": "Super White (Putih Salju)",
+        "Daya Sebar": "10-12 m²/kg per lapis"
+      },
+      "reviews": []
+    },
+    {
+      "id": "6",
+      "name": "Stop Kontak Kaiser 5 Lubang + Saklar 3M",
+      "category": "listrik",
+      "price": 55000,
+      "stock": 90,
+      "description": "Stop kontak multi-socket Kaiser 5 lubang dengan saklar on/off individu lampu indikator merah. Panjang kabel 3 meter tembaga murni bersertifikasi SNI. Dilengkapi pengaman anak-anak (child protector) dan proteksi petir overload.",
+      "brand": "Kaiser",
+      "rating": 4.9,
+      "sales": 870,
+      "image": "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Lubang": "5 Lubang + Saklar Mandiri",
+        "Kabel": "3 Meter, Tembaga Murni",
+        "Daya Maks": "2500 Watt - 10A"
+      },
+      "reviews": [
+        {
+          "user": "Eko Listrik",
+          "rating": 5,
+          "comment": "Bagus banget ada saklar masing-masing, aman buat anak kecil.",
+          "date": "2026-06-29"
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "name": "Kabel Listrik NYM 2x1.5mm Supreme 50M",
+      "category": "listrik",
+      "price": 385000,
+      "stock": 24,
+      "description": "Kabel Supreme NYM ukuran 2 x 1.5 mm dengan panjang 50 meter full. Tembaga murni standar SNI LMK untuk instalasi kelistrikan dalam ruangan gedung atau rumah tinggal.",
+      "brand": "Supreme",
+      "rating": 5,
+      "sales": 151,
+      "image": "https://images.unsplash.com/photo-1558346489-19413db48e5b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Tipe": "NYM (Kawat Tembaga Ganda)",
+        "Ukuran Core": "2 x 1.5 mm",
+        "Panjang": "50 Meter Roll"
+      },
+      "reviews": []
+    },
+    {
+      "id": "8",
+      "name": "Lampu Bohlam LED Philips MyCare 12W",
+      "category": "listrik",
+      "price": 42000,
+      "stock": 300,
+      "description": "Philips MyCare LED bulb 12 Watt menghasilkan cahaya putih terang (Cool Daylight) yang lembut di mata berkat teknologi Interlaced Optics. Hemat energi hingga 89% dibandingkan lampu pijar biasa.",
+      "brand": "Philips",
+      "rating": 4.8,
+      "sales": 3200,
+      "image": "https://images.unsplash.com/photo-1550985616-10810253b84d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Daya": "12 Watt (Setara 98W Pijar)",
+        "Warna": "Cool Daylight (Putih 6500K)",
+        "Lumens": "1360 lm"
+      },
+      "reviews": []
+    },
+    {
+      "id": "9",
+      "name": "Saklar Seri Ganda Panasonic Style Putih",
+      "category": "listrik",
+      "price": 19500,
+      "stock": 120,
+      "description": "Saklar dinding ganda (seri) Panasonic tipe Style modern minimalis. Terbuat dari material berkualitas tahan panas tinggi dan tidak mudah berubah warna kekuningan.",
+      "brand": "Panasonic",
+      "rating": 4.7,
+      "sales": 1420,
+      "image": "https://images.unsplash.com/photo-1618090584176-7132b9911657?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Tipe": "Saklar Seri Double",
+        "Warna": "Putih Salju",
+        "Pemasangan": "In-bow (Tanam)"
+      },
+      "reviews": []
+    },
+    {
+      "id": "10",
+      "name": "Obeng Tespen Listrik Digital LCD",
+      "category": "listrik",
+      "price": 24000,
+      "stock": 70,
+      "description": "Tespen digital pintar untuk mendeteksi arus bolak-balik (AC) dan searah (DC) 12V-220V. Menampilkan voltase pada layar LCD kecil secara langsung tanpa baterai tambahan.",
+      "brand": "Mitzuda",
+      "rating": 4.6,
+      "sales": 640,
+      "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Rentang Pengukuran": "12V - 250V AC/DC",
+        "Display": "LCD Digital & Indikator Neon",
+        "Fitur": "Deteksi kabel putus (breakpoint)"
+      },
+      "reviews": []
+    },
+    {
+      "id": "11",
+      "name": "Pembasmi Rumput RoundUp 486 SL 1 Liter",
+      "category": "pertanian",
+      "price": 115000,
+      "stock": 50,
+      "description": "Herbisida sistemik purna tumbuh berbahan aktif glifosat 486 g/l. Sangat ampuh membasmi gulma berdaun lebar dan sempit hingga ke akar-akarnya di lahan kelapa sawit, karet, jagung, atau pekarangan rumah.",
+      "brand": "Monsanto / Bayer",
+      "rating": 4.9,
+      "sales": 1150,
+      "image": "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Volume": "1 Liter",
+        "Bahan Aktif": "Isopropilamina Glifosat 486 g/l",
+        "Sifat": "Sistemik (Mati ke akar)"
+      },
+      "reviews": [
+        {
+          "user": "Pak Tani Maju",
+          "rating": 5,
+          "comment": "Paling jos gandos rumput liar mati semua dalam 5 hari.",
+          "date": "2026-06-24"
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "name": "Insektisida Hama Decis 25 EC 250ml",
+      "category": "pertanian",
+      "price": 49000,
+      "stock": 85,
+      "description": "Insektisida kontak lambung berbahan aktif deltametrin 25 g/l. Sangat efektif mengendalikan hama ulat, belalang, kutu daun, wereng, dan kumbang pada tanaman padi, cabai, bawang merah, dan buah-buahan.",
+      "brand": "Bayer",
+      "rating": 4.8,
+      "sales": 760,
+      "image": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Volume": "250 ml",
+        "Bahan Aktif": "Deltametrin 25 g/l",
+        "Dosis Rata-rata": "1-2 ml per Liter air"
+      },
+      "reviews": []
+    },
+    {
+      "id": "13",
+      "name": "Pupuk NPK Mutiara 16-16-16 (1kg Repack)",
+      "category": "pertanian",
+      "price": 18000,
+      "stock": 200,
+      "description": "Pupuk NPK Mutiara impor kualitas terbaik dengan komposisi seimbang Nitrogen 16%, Fosfat 16%, Kalium 16%. Berbentuk butiran biru (granular) mudah larut air untuk mempercepat pertumbuhan vegetatif dan buah tanaman.",
+      "brand": "YaraMila",
+      "rating": 4.9,
+      "sales": 4300,
+      "image": "https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Berat": "1 Kg (Repack)",
+        "Komposisi": "N 16%, P2O5 16%, K2O 16%",
+        "Asal": "Norwegia"
+      },
+      "reviews": [
+        {
+          "user": "Ibu HobiBunga",
+          "rating": 5,
+          "comment": "Tanaman hias aglonema saya langsung tumbuh tunas baru pakai pupuk ini.",
+          "date": "2026-06-27"
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "name": "Fungisida Antracol 70 WP Anti Jamur 250g",
+      "category": "pertanian",
+      "price": 38000,
+      "stock": 65,
+      "description": "Fungisida kontak protektif berbentuk tepung kuning zinc-propineb 70%. Mencegah dan mengobati penyakit busuk daun, bercak daun, cacar daun, dan antraknosa pada tanaman sayur dan hias.",
+      "brand": "Bayer",
+      "rating": 4.7,
+      "sales": 540,
+      "image": "https://images.unsplash.com/photo-1463171359979-300c4e11a310?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Berat": "250 gram",
+        "Bahan Aktif": "Propineb 70%",
+        "Formulasi": "WP (Wettable Powder)"
+      },
+      "reviews": []
+    },
+    {
+      "id": "15",
+      "name": "Hormon Giberelin GA3 Cair Pemicu Tumbuh",
+      "category": "pertanian",
+      "price": 15000,
+      "stock": 100,
+      "description": "Zat Pengatur Tumbuh (ZPT) Giberelin Acid 3 pekatan tinggi. Berfungsi memicu pembungaan serempak, mencegah rontok buah, serta merangsang pertumbuhan tunas dan perpanjangan batang secara maksimal.",
+      "brand": "GreenGrow",
+      "rating": 4.5,
+      "sales": 490,
+      "image": "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "specifications": {
+        "Volume": "100 ml",
+        "Kandungan": "Giberelin GA3 200ppm",
+        "Aplikasi": "Disemprotkan ke daun"
+      },
+      "reviews": []
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-73521",
+      "date": "2026-07-18",
+      "customerName": "Muhammad Fajar Alin Faza",
+      "phone": "08222",
+      "address": "karangmulyo",
+      "items": [
+        {
+          "productId": "7",
+          "name": "Kabel Listrik NYM 2x1.5mm Supreme 50M",
+          "price": 385000,
+          "quantity": 1
+        }
+      ],
+      "total": 403000,
+      "shippingCost": 18000,
+      "status": "Diproses",
+      "paymentMethod": "Transfer Bank BCA (J&T Express - Rp 18.000 (1-2 Hari))"
+    },
+    {
+      "id": "ORD-75218",
+      "date": "2026-07-03",
+      "customerName": "Sutrisno",
+      "phone": "081234567890",
+      "address": "Jl. Merdeka No. 45, Padang, Sumatera Barat",
+      "items": [
+        {
+          "productId": "1",
+          "name": "Semen Padang Portland Type I (50kg)",
+          "price": 72000,
+          "quantity": 10
+        },
+        {
+          "productId": "3",
+          "name": "Palu Kambing 16 Oz Gagang Karet Fiber",
+          "price": 45000,
+          "quantity": 1
+        }
+      ],
+      "total": 765000,
+      "shippingCost": 50000,
+      "status": "Dalam Pengiriman",
+      "paymentMethod": "Transfer Bank"
+    },
+    {
+      "id": "ORD-12895",
+      "date": "2026-07-04",
+      "customerName": "Fanny Wijaya",
+      "phone": "087799882211",
+      "address": "Perum Indah Lestari Blok B-12, Solok, Sumatera Barat",
+      "items": [
+        {
+          "productId": "8",
+          "name": "Lampu Bohlam LED Philips MyCare 12W",
+          "price": 42000,
+          "quantity": 5
+        },
+        {
+          "productId": "13",
+          "name": "Pupuk NPK Mutiara 16-16-16 (1kg Repack)",
+          "price": 18000,
+          "quantity": 2
+        }
+      ],
+      "total": 246000,
+      "shippingCost": 15000,
+      "status": "Selesai",
+      "paymentMethod": "E-Wallet (Gopay)"
+    }
+  ],
+  "chats": [
+    {
+      "id": "chat-admin-1",
+      "sender": "admin",
+      "message": "Halo! Selamat datang di Berkah Jaya. Ada yang bisa kami bantu? Apa yang ingin Anda tanyakan?",
+      "timestamp": "2026-07-18T11:35:00Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "usr-1784349173423",
+      "username": "testuser",
+      "password": "password123",
+      "name": "Test User",
+      "phone": "08122334455"
+    }
+  ]
+}
