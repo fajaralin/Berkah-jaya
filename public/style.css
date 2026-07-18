@@ -2307,48 +2307,57 @@ img {
 
 .admin-quick-add-group {
   display: flex;
-  gap: 4px;
-  background-color: #f1f5f9;
-  padding: 4px;
-  border-radius: 24px;
-  border: 1px solid #e2e8f0;
+  gap: 10px;
+  background: transparent;
+  padding: 0;
+  border: none;
+  border-radius: 0;
 }
 
 .admin-quick-add-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  background: transparent;
+  font-weight: 700;
+  color: white !important;
   border: none;
   border-radius: 20px;
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   transition: all 0.2s ease;
 }
 
 .admin-quick-add-btn i {
-  font-size: 11px;
+  font-size: 12px;
 }
 
+.admin-quick-add-btn.bangunan {
+  background-color: var(--color-bangunan);
+}
 .admin-quick-add-btn.bangunan:hover {
-  background-color: #eff6ff;
-  color: #2563eb;
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+  background-color: hsl(215, 75%, 42%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
 }
 
+.admin-quick-add-btn.listrik {
+  background-color: var(--color-listrik);
+}
 .admin-quick-add-btn.listrik:hover {
-  background-color: #fffbeb;
-  color: #d97706;
-  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.08);
+  background-color: hsl(35, 90%, 42%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(217, 119, 6, 0.2);
 }
 
+.admin-quick-add-btn.pertanian {
+  background-color: var(--color-pertanian);
+}
 .admin-quick-add-btn.pertanian:hover {
-  background-color: #ecfdf5;
-  color: #059669;
-  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.08);
+  background-color: hsl(145, 65%, 32%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(5, 150, 105, 0.2);
 }
 
 /* Tables */
