@@ -141,6 +141,7 @@ function renderAdminOrdersTable(recentOrders) {
   
   recentOrders.forEach(o => {
     const row = document.createElement('tr');
+    row.style.cursor = 'pointer';
     
     const itemsText = o.items.map(i => `${i.name} (x${i.quantity})`).join(', ');
     const statClass = o.status === 'Selesai' ? 'selesai' : o.status === 'Dalam Pengiriman' ? 'kirim' : 'proses';
@@ -157,11 +158,19 @@ function renderAdminOrdersTable(recentOrders) {
       <td><span class="status-badge ${statClass}">${o.status}</span></td>
       <td>
         <div class="action-links">
+          <button class="admin-view-order-btn" title="Rincian Pesanan"><i class="fa-solid fa-eye"></i></button>
           ${o.status !== 'Selesai' ? `<button class="admin-complete-order-btn" data-id="${o.id}" title="Tandai Selesai"><i class="fa-solid fa-circle-check"></i></button>` : `<span class="text-green"><i class="fa-solid fa-circle-check"></i></span>`}
         </div>
       </td>
     `;
     
+    // Attach click event to row / view order button
+    row.addEventListener('click', (e) => {
+      if (!e.target.closest('.admin-complete-order-btn')) {
+        openAdminOrderDetailModal(o);
+      }
+    });
+
     // Attach listener to update order status
     const compBtn = row.querySelector('.admin-complete-order-btn');
     if (compBtn) {
@@ -173,6 +182,97 @@ function renderAdminOrdersTable(recentOrders) {
     
     tbody.appendChild(row);
   });
+}
+
+function openAdminOrderDetailModal(o) {
+  const modal = document.getElementById('admin-order-detail-modal');
+  const badge = document.getElementById('order-detail-status-badge');
+  const bodyContent = document.getElementById('order-modal-body-content');
+  const waBtn = document.getElementById('order-detail-wa-btn');
+  const completeBtn = document.getElementById('order-detail-complete-btn');
+
+  // Set status badge
+  const statClass = o.status === 'Selesai' ? 'selesai' : o.status === 'Dalam Pengiriman' ? 'kirim' : 'proses';
+  badge.className = `status-badge ${statClass}`;
+  badge.innerText = o.status;
+
+  // Clean WhatsApp phone number
+  let cleanPhone = o.phone ? o.phone.replace(/[^0-9]/g, '') : '';
+  if (cleanPhone.startsWith('0')) {
+    cleanPhone = '62' + cleanPhone.slice(1);
+  }
+  const waMsg = encodeURIComponent(`Halo ${o.customerName}, mengenai pesanan #${o.id} di Toko Berkah Jaya:`);
+  waBtn.href = `https://api.whatsapp.com/send/?phone=${cleanPhone}&text=${waMsg}`;
+
+  if (o.status === 'Selesai') {
+    completeBtn.style.display = 'none';
+  } else {
+    completeBtn.style.display = 'inline-flex';
+    completeBtn.onclick = async () => {
+      closeAdminOrderDetailModal();
+      await updateOrderStatus(o.id, 'Selesai');
+    };
+  }
+
+  // Populate Body
+  bodyContent.innerHTML = `
+    <div class="order-detail-grid">
+      <div class="order-detail-section">
+        <h4><i class="fa-solid fa-user text-orange"></i> Informasi Pemesan</h4>
+        <div class="order-info-group">
+          <div class="info-row"><span>Kode Pesanan:</span> <strong>#${o.id}</strong></div>
+          <div class="info-row"><span>Tanggal Transaksi:</span> <span>${o.date}</span></div>
+          <div class="info-row"><span>Nama Pembeli:</span> <strong>${o.customerName}</strong></div>
+          <div class="info-row"><span>No. Telepon / WA:</span> <span>${o.phone}</span></div>
+          <div class="info-row">
+            <span>Alamat Pengiriman:</span>
+            <div class="address-box">${o.address || 'Alamat tidak dicantumkan'}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-detail-section">
+        <h4><i class="fa-solid fa-credit-card text-orange"></i> Pembayaran & Pengiriman</h4>
+        <div class="order-info-group">
+          <div class="info-row"><span>Metode Pembayaran:</span> <span>${o.paymentMethod || 'Transfer Bank'}</span></div>
+          <div class="info-row"><span>Ongkos Kirim:</span> <span>${formatRupiah(o.shippingCost || 0)}</span></div>
+          <div class="info-row highlight-total"><span>Total Tagihan:</span> <strong class="text-orange">${formatRupiah(o.total)}</strong></div>
+        </div>
+      </div>
+
+      <div class="order-detail-section full-width">
+        <h4><i class="fa-solid fa-box-open text-orange"></i> Daftar Barang Dipesan (${o.items ? o.items.length : 0} Barang)</h4>
+        <div class="order-items-table-wrapper">
+          <table class="order-items-table">
+            <thead>
+              <tr>
+                <th>Nama Barang</th>
+                <th>Harga Satuan</th>
+                <th>Jumlah</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${(o.items || []).map(item => `
+                <tr>
+                  <td><strong>${item.name}</strong></td>
+                  <td>${formatRupiah(item.price)}</td>
+                  <td>x${item.quantity}</td>
+                  <td><strong>${formatRupiah(item.price * item.quantity)}</strong></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+
+  modal.classList.add('active');
+}
+
+function closeAdminOrderDetailModal() {
+  document.getElementById('admin-order-detail-modal').classList.remove('active');
 }
 
 async function updateOrderStatus(orderId, newStatus) {
@@ -474,10 +574,15 @@ function setupAdminEventListeners() {
     container.appendChild(row);
   });
 
+  document.getElementById('close-order-modal-btn')?.addEventListener('click', closeAdminOrderDetailModal);
+  document.getElementById('order-detail-close-btn')?.addEventListener('click', closeAdminOrderDetailModal);
+
   // Close modals on clicking outside modal-content
   window.addEventListener('click', (e) => {
-    const modal = document.getElementById('product-form-modal');
-    if (e.target === modal) closeProductCrudModal();
+    const pModal = document.getElementById('product-form-modal');
+    if (e.target === pModal) closeProductCrudModal();
+    const oModal = document.getElementById('admin-order-detail-modal');
+    if (e.target === oModal) closeAdminOrderDetailModal();
   });
 }
 
