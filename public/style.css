@@ -905,15 +905,20 @@ img {
 }
 
 .product-tag {
-  position: absolute;
-  top: 10px;
-  left: 10px;
+  display: inline-block;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   color: #fff;
   padding: 3px 8px;
   border-radius: 4px;
+}
+
+.product-card .product-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5;
 }
 
 .product-tag.bangunan { background-color: var(--color-bangunan); }
@@ -3085,7 +3090,7 @@ tr:last-child td {
     right: 6px !important;
   }
   
-  .product-tag {
+  .product-card .product-tag {
     top: 6px !important;
     left: 6px !important;
     font-size: 8px !important;

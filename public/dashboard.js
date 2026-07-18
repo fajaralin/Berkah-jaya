@@ -194,6 +194,47 @@ async function deleteStoreProduct(id) {
   }
 }
 
+// Default specifications templates for each category
+const categorySpecTemplates = {
+  bangunan: {
+    "Berat": "",
+    "Bahan": "",
+    "Tipe": "",
+    "Standar": "SNI"
+  },
+  listrik: {
+    "Daya (Watt)": "",
+    "Panjang Kabel": "",
+    "Voltase": "220V",
+    "Warna": ""
+  },
+  pertanian: {
+    "Volume / Berat": "",
+    "Bahan Aktif": "",
+    "Sifat / Cara Pakai": "",
+    "Dosis / Komposisi": ""
+  }
+};
+
+// Function to populate specs based on category
+function applyCategorySpecsTemplate(category) {
+  const wrapper = document.getElementById('specs-fields-wrapper');
+  wrapper.innerHTML = ''; // clear existing
+  
+  const specs = categorySpecTemplates[category] || {};
+  Object.keys(specs).forEach(k => {
+    const row = document.createElement('div');
+    row.className = 'spec-field-pair';
+    row.innerHTML = `
+      <input type="text" class="spec-key" value="${k}" placeholder="Nama Spesifikasi">
+      <input type="text" class="spec-value" value="${specs[k]}" placeholder="Nilai">
+      <button type="button" class="btn-remove-spec"><i class="fa-solid fa-trash"></i></button>
+    `;
+    row.querySelector('.btn-remove-spec').addEventListener('click', () => row.remove());
+    wrapper.appendChild(row);
+  });
+}
+
 // Open Product Form Crud Modal (Add/Edit)
 async function openProductCrudModal(productId = null) {
   const modal = document.getElementById('product-form-modal');
@@ -242,6 +283,8 @@ async function openProductCrudModal(productId = null) {
     }
   } else {
     title.innerText = 'Tambah Produk Baru';
+    // Auto populate template for new product (default category 'bangunan')
+    applyCategorySpecsTemplate('bangunan');
   }
   
   modal.classList.add('active');
@@ -371,6 +414,15 @@ function setupAdminEventListeners() {
 
   document.getElementById('close-form-modal-btn').addEventListener('click', closeProductCrudModal);
   document.getElementById('btn-cancel-crud').addEventListener('click', closeProductCrudModal);
+
+  // Admin Product Category change template applicator
+  document.getElementById('form-product-category').addEventListener('change', (e) => {
+    const isNew = !document.getElementById('form-product-id').value;
+    const hasSpecs = document.querySelectorAll('#specs-fields-wrapper .spec-field-pair').length > 0;
+    if (isNew || !hasSpecs || confirm('Ganti template spesifikasi sesuai kategori baru? (Spesifikasi saat ini akan direset)')) {
+      applyCategorySpecsTemplate(e.target.value);
+    }
+  });
 
   // Admin Product Form Submit
   document.getElementById('product-crud-form').addEventListener('submit', (e) => {
