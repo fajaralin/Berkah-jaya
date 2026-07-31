@@ -410,6 +410,21 @@ app.post('/api/login', async (req, res) => {
   res.json(userResponse);
 });
 
+// 13. POST /api/git-sync - Auto Commit & Push to GitHub to trigger Render Auto-Deploy
+app.post('/api/git-sync', async (req, res) => {
+  const { exec } = require('child_process');
+  const commitMsg = `auto: Update data produk & foto dari Studio Dashboard (${new Date().toLocaleTimeString('id-ID')})`;
+  
+  exec(`git add . && git commit -m "${commitMsg}" && git push origin main`, (error, stdout, stderr) => {
+    if (error) {
+      console.error('Git Auto-Sync Error:', error.message);
+      return res.status(500).json({ error: 'Gagal sync ke GitHub. Pastikan koneksi internet lancar.', details: error.message });
+    }
+    console.log('🚀 Git Auto-Sync Berhasil:', stdout);
+    res.json({ message: 'Berhasil di-push ke GitHub! Render sedang memproses Auto-Deploy website online Anda.', stdout });
+  });
+});
+
 server.listen(PORT, () => {
   console.log(`⚡ Server Berkah Jaya + Reverb Realtime Engine berjalan di http://localhost:${PORT}`);
 });

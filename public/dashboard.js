@@ -587,6 +587,27 @@ function setupAdminEventListeners() {
   document.getElementById('form-product-image')?.addEventListener('input', updateFormImagePreview);
   document.getElementById('btn-open-image-editor')?.addEventListener('click', openImageEditorModal);
 
+  // Sync to GitHub & Render Online button
+  document.getElementById('btn-git-sync-render')?.addEventListener('click', async () => {
+    const btn = document.getElementById('btn-git-sync-render');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Syncing ke Render...';
+    showToast('Proses Sync ke GitHub & Render dimulai...', 'info');
+
+    try {
+      const res = await fetch('/api/git-sync', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Gagal sync');
+      showToast('🚀 Berhasil Sync ke GitHub! Website online Render sedang di-deploy.', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-orange"></i> Sync ke Render (Live)';
+    }
+  });
+
   // Close modals on clicking outside modal-content
   window.addEventListener('click', (e) => {
     const pModal = document.getElementById('product-form-modal');
