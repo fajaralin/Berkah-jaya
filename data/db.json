@@ -5,11 +5,11 @@
       "name": "jokowi",
       "category": "bangunan",
       "price": 72000,
-      "stock": 150,
+      "stock": 149,
       "description": "Semen Portland berkualitas tinggi Standar Nasional Indonesia (SNI). Sangat kuat, cepat kering, dan cocok untuk segala jenis konstruksi bangunan rumah, gedung, beton cor, plasteran, dan pasang bata.",
       "brand": "Semen Padang",
       "rating": 4.8,
-      "sales": 1250,
+      "sales": 1251,
       "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Berat": "50 Kg",
@@ -36,11 +36,11 @@
       "name": "Sekop Pasir Baja Tebal Premium",
       "category": "bangunan",
       "price": 85000,
-      "stock": 45,
+      "stock": 44,
       "description": "Sekop pasir dengan mata baja tebal berkualitas tinggi. Dilengkapi dengan gagang kayu jati kokoh berperekat karet ergonomis. Tahan karat dan sangat ideal untuk pekerjaan galian tanah, pasir, atau semen.",
       "brand": "Camel",
       "rating": 4.9,
-      "sales": 320,
+      "sales": 321,
       "image": "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Bahan": "Mata Baja, Gagang Kayu & Karet",
@@ -313,6 +313,39 @@
     }
   ],
   "orders": [
+    {
+      "id": "POS-70204",
+      "type": "offline",
+      "date": "2026-07-31",
+      "time": "03.16",
+      "customerName": "Pembeli Offline / Kasir",
+      "phone": "-",
+      "address": "Pembelian Langsung di Toko Fisik CV Berkah Jaya",
+      "items": [
+        {
+          "productId": "1",
+          "name": "jokowi",
+          "price": 72000,
+          "quantity": 1,
+          "stock": 150
+        },
+        {
+          "productId": "2",
+          "name": "Sekop Pasir Baja Tebal Premium",
+          "price": 85000,
+          "quantity": 1,
+          "stock": 45
+        }
+      ],
+      "subtotal": 157000,
+      "discount": 0,
+      "total": 157000,
+      "shippingCost": 0,
+      "cashReceived": 200000,
+      "change": 43000,
+      "status": "Selesai",
+      "paymentMethod": "Tunai (Cash)"
+    },
     {
       "id": "ORD-73521",
       "date": "2026-07-18",
