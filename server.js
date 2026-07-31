@@ -225,7 +225,136 @@ app.post('/api/orders', async (req, res) => {
   db.orders.unshift(newOrder); // Add to beginning
   await writeDB(db);
 
+  io.emit('orders:changed', { action: 'add', order: newOrder, timestamp: Date.now() });
+  io.emit('products:changed', { action: 'update', timestamp: Date.now() });
+
   res.status(201).json(newOrder);
+});
+
+// 6b. POST /api/pos/checkout - Submit Offline POS Cashier Order
+app.post('/api/pos/checkout', async (req, res) => {
+  const db = await readDB();
+  const { customerName, phone, items, paymentMethod, cashReceived, discount } = req.body;
+
+  if (!items || items.length === 0 || !paymentMethod) {
+    return res.status(400).json({ error: 'Keranjang kasir kosong atau metode pembayaran tidak dipilih.' });
+  }
+
+  // Verify stock for all items
+  for (const item of items) {
+    const product = db.products.find(p => p.id === item.productId);
+    if (!product) {
+      return res.status(404).json({ error: `Produk dengan ID ${item.productId} tidak ditemukan.` });
+    }
+    if (product.stock < item.quantity) {
+      return res.status(400).json({ error: `Stok produk "${product.name}" tidak mencukupi (Tersisa: ${product.stock}).` });
+    }
+  }
+
+  // Deduct stock and increment sales
+  let subtotal = 0;
+  for (const item of items) {
+    const product = db.products.find(p => p.id === item.productId);
+    product.stock -= item.quantity;
+    product.sales += item.quantity;
+    subtotal += product.price * item.quantity;
+  }
+
+  const disc = Number(discount) || 0;
+  const total = Math.max(0, subtotal - disc);
+  const cash = Number(cashReceived) || total;
+  const change = Math.max(0, cash - total);
+
+  const newOrder = {
+    id: `POS-${Math.floor(10000 + Math.random() * 90000)}`,
+    type: 'offline',
+    date: new Date().toISOString().split('T')[0],
+    time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+    customerName: customerName || 'Pembeli Offline / Kasir',
+    phone: phone || '-',
+    address: 'Pembelian Langsung di Toko Fisik CV Berkah Jaya',
+    items,
+    subtotal,
+    discount: disc,
+    total,
+    shippingCost: 0,
+    cashReceived: cash,
+    change,
+    status: 'Selesai',
+    paymentMethod: paymentMethod || 'Tunai (Cash)'
+  };
+
+  db.orders.unshift(newOrder);
+  await writeDB(db);
+
+  // Broadcast WebSocket event to all devices
+  io.emit('orders:changed', { action: 'add', order: newOrder, timestamp: Date.now() });
+  io.emit('products:changed', { action: 'update', timestamp: Date.now() });
+
+  res.status(201).json({ message: 'Transaksi kasir berhasil diselesaikan.', order: newOrder });
+});
+
+// 6c. GET /api/reports/monthly - Get Monthly Sales Report & Stats
+app.get('/api/reports/monthly', async (req, res) => {
+  const db = await readDB();
+  const { month } = req.query; // YYYY-MM or 'all'
+
+  let filtered = [...db.orders];
+  if (month && month !== 'all') {
+    filtered = filtered.filter(o => o.date && o.date.startsWith(month));
+  }
+
+  const totalRevenue = filtered.reduce((sum, o) => sum + o.total, 0);
+  const totalOrders = filtered.length;
+  
+  let onlineRevenue = 0;
+  let offlineRevenue = 0;
+  let onlineCount = 0;
+  let offlineCount = 0;
+  let totalUnitsSold = 0;
+
+  const productSalesMap = {};
+
+  filtered.forEach(o => {
+    if (o.type === 'offline' || o.id.startsWith('POS-')) {
+      offlineRevenue += o.total;
+      offlineCount++;
+    } else {
+      onlineRevenue += o.total;
+      onlineCount++;
+    }
+
+    if (o.items) {
+      o.items.forEach(item => {
+        totalUnitsSold += item.quantity;
+        if (!productSalesMap[item.name]) {
+          productSalesMap[item.name] = { qty: 0, revenue: 0 };
+        }
+        productSalesMap[item.name].qty += item.quantity;
+        productSalesMap[item.name].revenue += (item.price * item.quantity);
+      });
+    }
+  });
+
+  // Top products
+  const topProducts = Object.keys(productSalesMap).map(name => ({
+    name,
+    qty: productSalesMap[name].qty,
+    revenue: productSalesMap[name].revenue
+  })).sort((a, b) => b.qty - a.qty).slice(0, 5);
+
+  res.json({
+    month: month || 'all',
+    totalRevenue,
+    totalOrders,
+    onlineRevenue,
+    offlineRevenue,
+    onlineCount,
+    offlineCount,
+    totalUnitsSold,
+    topProducts,
+    orders: filtered
+  });
 });
 
 // 7. GET /api/orders - Get all orders

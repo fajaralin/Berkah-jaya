@@ -84,8 +84,10 @@
         <div class="admin-main-column">
           <!-- Navigation tabs in Admin -->
           <div class="admin-tab-bar">
-            <button class="admin-tab-btn active" id="admin-tab-products-btn">Manajemen Produk</button>
-            <button class="admin-tab-btn" id="admin-tab-orders-btn">Manajemen Pesanan</button>
+            <button class="admin-tab-btn active" id="admin-tab-products-btn"><i class="fa-solid fa-boxes-stacked"></i> Produk</button>
+            <button class="admin-tab-btn" id="admin-tab-orders-btn"><i class="fa-solid fa-file-invoice"></i> Pesanan</button>
+            <button class="admin-tab-btn" id="admin-tab-pos-btn"><i class="fa-solid fa-cash-register text-orange"></i> Kasir (POS)</button>
+            <button class="admin-tab-btn" id="admin-tab-reports-btn"><i class="fa-solid fa-chart-pie text-blue"></i> Laporan & Ekspor</button>
           </div>
 
           <!-- Product Table Section -->
@@ -138,6 +140,186 @@
                     <th>Tanggal</th>
                     <th>Nama Pelanggan</th>
                     <th>Item</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-orders-table-body">
+                  <!-- Load dynamic orders -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- POS Kasir Offline Section -->
+          <div class="admin-panel-card" id="admin-pos-panel">
+            <div class="pos-layout-grid">
+              <!-- Left: Catalog & Search -->
+              <div class="pos-catalog-column">
+                <div class="pos-header-bar">
+                  <h3><i class="fa-solid fa-cash-register text-orange"></i> Kasir Penjualan Toko Fisik</h3>
+                  <input type="text" id="pos-product-search" placeholder="Cari produk / scan nama...">
+                </div>
+
+                <div class="pos-category-pills">
+                  <button type="button" class="pos-pill active" data-category="all">Semua</button>
+                  <button type="button" class="pos-pill" data-category="bangunan">Bangunan</button>
+                  <button type="button" class="pos-pill" data-category="listrik">Listrik</button>
+                  <button type="button" class="pos-pill" data-category="pertanian">Pertanian</button>
+                </div>
+
+                <div class="pos-products-grid" id="pos-products-grid">
+                  <!-- Dynamic POS catalog items -->
+                </div>
+              </div>
+
+              <!-- Right: Cart & Cash Calculator -->
+              <div class="pos-cart-column">
+                <div class="pos-cart-card">
+                  <h4><i class="fa-solid fa-basket-shopping text-orange"></i> Keranjang Kasir</h4>
+                  <div class="pos-cart-items-list" id="pos-cart-items-list">
+                    <!-- Dynamic POS Basket Items -->
+                  </div>
+
+                  <div class="pos-cart-summary-box">
+                    <div class="pos-summary-row">
+                      <span>Subtotal:</span>
+                      <strong id="pos-subtotal-val">Rp 0</strong>
+                    </div>
+
+                    <div class="pos-summary-row">
+                      <label for="pos-discount-input">Diskon Kasir (Rp):</label>
+                      <input type="number" id="pos-discount-input" value="0" min="0" step="1000" style="width: 120px; padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px;">
+                    </div>
+
+                    <div class="pos-summary-row pos-total-highlight">
+                      <span>TOTAL TAGIHAN:</span>
+                      <strong id="pos-total-val" class="text-orange" style="font-size: 1.2rem;">Rp 0</strong>
+                    </div>
+
+                    <div class="pos-calculator-group">
+                      <div class="editor-control-group">
+                        <label for="pos-payment-method">Metode Pembayaran:</label>
+                        <select id="pos-payment-method">
+                          <option value="Tunai (Cash)">💵 Tunai (Cash)</option>
+                          <option value="QRIS / E-Wallet">📱 QRIS / E-Wallet</option>
+                          <option value="Transfer Bank">💳 Transfer Bank</option>
+                          <option value="Nota / Kredit Toko">📝 Nota / Kredit Toko</option>
+                        </select>
+                      </div>
+
+                      <div class="editor-control-group" id="pos-cash-input-wrapper">
+                        <label for="pos-cash-received">Uang Diterima (Rp):</label>
+                        <input type="number" id="pos-cash-received" placeholder="Masukkan jumlah uang tunai" min="0" step="1000">
+                      </div>
+
+                      <div class="pos-change-box" id="pos-change-box">
+                        <span>UANG KEMBALIAN:</span>
+                        <h3 id="pos-change-val" class="text-green">Rp 0</h3>
+                      </div>
+                    </div>
+
+                    <div class="pos-actions-row">
+                      <button type="button" class="btn-secondary" id="btn-clear-pos-cart">Reset</button>
+                      <button type="button" class="btn-primary" id="btn-process-pos-checkout" style="flex: 1;">
+                        <i class="fa-solid fa-circle-check"></i> Proses & Cetak Struk
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reports & Monthly Export Section -->
+          <div class="admin-panel-card" id="admin-reports-panel">
+            <div class="reports-header-row">
+              <div class="reports-title">
+                <h3><i class="fa-solid fa-chart-line text-blue"></i> Laporan Pendapatan Bulanan</h3>
+                <p>Analisis penjualan, statistik online/offline, dan ekspor laporan ke Excel & Word</p>
+              </div>
+
+              <div class="reports-action-bar">
+                <div class="report-filter-date">
+                  <label for="report-month-select"><i class="fa-solid fa-calendar-days"></i> Periode:</label>
+                  <select id="report-month-select">
+                    <option value="2026-08">Agustus 2026</option>
+                    <option value="2026-07">Juli 2026</option>
+                    <option value="2026-06">Juni 2026</option>
+                    <option value="all">Semua Periode</option>
+                  </select>
+                </div>
+
+                <button type="button" class="btn-export-excel" id="btn-export-excel" title="Unduh File Excel Rekapitulasi (.xlsx)">
+                  <i class="fa-solid fa-file-excel"></i> Ekspor Excel (.xlsx)
+                </button>
+
+                <button type="button" class="btn-export-word" id="btn-export-word" title="Unduh File Word Ber-Kop Surat (.doc)">
+                  <i class="fa-solid fa-file-word"></i> Ekspor Word (.doc Kop Surat)
+                </button>
+              </div>
+            </div>
+
+            <!-- Monthly Report Stats Cards Grid -->
+            <div class="report-stats-grid">
+              <div class="stat-card report-card">
+                <div class="stat-icon-wrapper green"><i class="fa-solid fa-wallet"></i></div>
+                <div class="stat-info">
+                  <span class="stat-label">Total Pendapatan Periode Ini</span>
+                  <h3 id="report-stat-total-revenue">Rp 0</h3>
+                </div>
+              </div>
+
+              <div class="stat-card report-card">
+                <div class="stat-icon-wrapper blue"><i class="fa-solid fa-store"></i></div>
+                <div class="stat-info">
+                  <span class="stat-label">Penjualan Toko Offline (Kasir)</span>
+                  <h3 id="report-stat-offline-revenue">Rp 0</h3>
+                  <small id="report-stat-offline-count">0 Transaksi Kasir</small>
+                </div>
+              </div>
+
+              <div class="stat-card report-card">
+                <div class="stat-icon-wrapper orange"><i class="fa-solid fa-globe"></i></div>
+                <div class="stat-info">
+                  <span class="stat-label">Penjualan Toko Online</span>
+                  <h3 id="report-stat-online-revenue">Rp 0</h3>
+                  <small id="report-stat-online-count">0 Pesanan Website</small>
+                </div>
+              </div>
+
+              <div class="stat-card report-card">
+                <div class="stat-icon-wrapper purple"><i class="fa-solid fa-box-open"></i></div>
+                <div class="stat-info">
+                  <span class="stat-label">Total Item Terjual</span>
+                  <h3 id="report-stat-units-sold">0 Item</h3>
+                </div>
+              </div>
+            </div>
+
+            <!-- Report Details Table -->
+            <div class="table-responsive" style="margin-top: 20px;">
+              <h4>Rincian Transaksi Penjualan Periode Ini</h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID Transaksi</th>
+                    <th>Tanggal</th>
+                    <th>Pelanggan</th>
+                    <th>Jenis</th>
+                    <th>Metode Bayar</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="report-transactions-table-body">
+                  <!-- Dynamic transactions -->
+                </tbody>
+              </table>
+            </div>
+          </div>
                     <th>Total Bayar</th>
                     <th>Status</th>
                     <th>Aksi</th>
@@ -468,6 +650,56 @@
           </div>
         </div>
 
+    <!-- POS Thermal Receipt Modal -->
+    <div id="pos-receipt-modal" class="modal">
+      <div class="modal-content receipt-modal-card">
+        <button class="close-modal-btn" id="close-receipt-modal-btn">&times;</button>
+        <div class="receipt-paper" id="receipt-paper">
+          <div class="receipt-header">
+            <h2>CV BERKAH JAYA</h2>
+            <p>Alat Bangunan, Listrik & Obat Pertanian</p>
+            <p class="receipt-address">Jl. Garuda, Penyangkringan, Pegandon, Kendal<br>Telp/WA: 085172369447</p>
+            <div class="receipt-divider">================================</div>
+          </div>
+          
+          <div class="receipt-info" id="receipt-info-box">
+            <!-- Dynamic order receipt metadata -->
+          </div>
+
+          <div class="receipt-divider">--------------------------------</div>
+
+          <table class="receipt-items-table">
+            <thead>
+              <tr>
+                <th style="text-align: left;">Item</th>
+                <th style="text-align: center;">Qty</th>
+                <th style="text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody id="receipt-items-body">
+              <!-- Dynamic receipt items -->
+            </tbody>
+          </table>
+
+          <div class="receipt-divider">--------------------------------</div>
+
+          <div class="receipt-totals" id="receipt-totals-box">
+            <!-- Dynamic totals, cash, change -->
+          </div>
+
+          <div class="receipt-divider">================================</div>
+          <div class="receipt-footer">
+            <p>Terima kasih telah berbelanja!</p>
+            <p>Barang yang sudah dibeli tidak dapat ditukar/dikembalikan.</p>
+          </div>
+        </div>
+
+        <div class="receipt-actions">
+          <button type="button" class="btn-secondary" id="btn-close-receipt">Tutup</button>
+          <button type="button" class="btn-primary" id="btn-print-receipt">
+            <i class="fa-solid fa-print"></i> Cetak Struk (Print)
+          </button>
+        </div>
       </div>
     </div>
 

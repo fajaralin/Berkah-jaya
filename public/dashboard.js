@@ -489,18 +489,23 @@ function setupAdminEventListeners() {
   adminTabs.forEach(tb => {
     tb.addEventListener('click', (e) => {
       adminTabs.forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-panel-card').forEach(p => p.classList.remove('active'));
+      
       const activeTabBtn = e.currentTarget;
       activeTabBtn.classList.add('active');
       
-      const val = activeTabBtn.innerText === 'Manajemen Produk' ? 'products' : 'orders';
-      adminState.currentAdminTab = val;
-      
-      if (val === 'products') {
+      const btnId = activeTabBtn.id;
+      if (btnId === 'admin-tab-products-btn') {
         document.getElementById('admin-products-panel').classList.add('active');
-        document.getElementById('admin-orders-panel').classList.remove('active');
-      } else {
-        document.getElementById('admin-products-panel').classList.remove('active');
+      } else if (btnId === 'admin-tab-orders-btn') {
         document.getElementById('admin-orders-panel').classList.add('active');
+      } else if (btnId === 'admin-tab-pos-btn') {
+        document.getElementById('admin-pos-panel').classList.add('active');
+        initPosModule();
+      } else if (btnId === 'admin-tab-reports-btn') {
+        document.getElementById('admin-reports-panel').classList.add('active');
+        const mVal = document.getElementById('report-month-select').value;
+        loadMonthlyReport(mVal);
       }
     });
   });
@@ -1255,4 +1260,564 @@ function handleStudioCanvasMouseUp() {
   studioState.isDragging = false;
   studioState.isResizing = false;
 }
+
+/* ==========================================================================
+   MODULE: KASIR OFFLINE / POINT OF SALE (POS) ENGINE
+   ========================================================================== */
+
+let posState = {
+  products: [],
+  category: 'all',
+  search: '',
+  cart: [],
+  paymentMethod: 'Tunai (Cash)',
+  cashReceived: 0,
+  discount: 0
+};
+
+async function initPosModule() {
+  try {
+    const res = await fetch('/api/products?sort=default', { cache: 'no-cache' });
+    posState.products = await res.json();
+  } catch (e) {
+    console.error('Failed to load POS catalog:', e);
+  }
+
+  // Category Pills
+  const pills = document.querySelectorAll('.pos-pill');
+  pills.forEach(pill => {
+    pill.onclick = (e) => {
+      pills.forEach(p => p.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      posState.category = e.currentTarget.getAttribute('data-category');
+      renderPosCatalog();
+    };
+  });
+
+  // Search Input
+  document.getElementById('pos-product-search')?.addEventListener('input', (e) => {
+    posState.search = e.target.value.toLowerCase().trim();
+    renderPosCatalog();
+  });
+
+  // Discount & Cash Received inputs
+  document.getElementById('pos-discount-input')?.addEventListener('input', (e) => {
+    posState.discount = Math.max(0, Number(e.target.value) || 0);
+    calculatePosTotals();
+  });
+
+  document.getElementById('pos-cash-received')?.addEventListener('input', (e) => {
+    posState.cashReceived = Math.max(0, Number(e.target.value) || 0);
+    calculatePosTotals();
+  });
+
+  document.getElementById('pos-payment-method')?.addEventListener('change', (e) => {
+    posState.paymentMethod = e.target.value;
+    const cashWrapper = document.getElementById('pos-cash-input-wrapper');
+    const changeBox = document.getElementById('pos-change-box');
+    if (posState.paymentMethod.includes('Tunai')) {
+      cashWrapper.style.display = 'flex';
+      changeBox.style.display = 'flex';
+    } else {
+      cashWrapper.style.display = 'none';
+      changeBox.style.display = 'none';
+    }
+    calculatePosTotals();
+  });
+
+  // Clear Cart
+  document.getElementById('btn-clear-pos-cart')?.onclick = () => {
+    posState.cart = [];
+    posState.discount = 0;
+    posState.cashReceived = 0;
+    document.getElementById('pos-discount-input').value = 0;
+    document.getElementById('pos-cash-received').value = '';
+    renderPosCart();
+  };
+
+  // Submit Checkout
+  document.getElementById('btn-process-pos-checkout')?.onclick = submitPosCheckout;
+
+  // Receipt Modal actions
+  document.getElementById('close-receipt-modal-btn')?.onclick = () => document.getElementById('pos-receipt-modal').classList.remove('active');
+  document.getElementById('btn-close-receipt')?.onclick = () => document.getElementById('pos-receipt-modal').classList.remove('active');
+  document.getElementById('btn-print-receipt')?.onclick = () => window.print();
+
+  renderPosCatalog();
+  renderPosCart();
+}
+
+function renderPosCatalog() {
+  const container = document.getElementById('pos-products-grid');
+  if (!container) return;
+  container.innerHTML = '';
+
+  let filtered = [...posState.products];
+  if (posState.category !== 'all') {
+    filtered = filtered.filter(p => p.category.toLowerCase() === posState.category);
+  }
+  if (posState.search) {
+    filtered = filtered.filter(p => p.name.toLowerCase().includes(posState.search) || p.brand.toLowerCase().includes(posState.search));
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">Produk tidak ditemukan.</div>`;
+    return;
+  }
+
+  filtered.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'pos-product-item';
+    const isOutOfStock = p.stock <= 0;
+    
+    item.innerHTML = `
+      <img src="${p.image}" class="pos-product-thumb" alt="${p.name}">
+      <h5 class="pos-product-name">${p.name}</h5>
+      <div class="pos-product-meta">
+        <span>Stok: <strong>${p.stock}</strong></span>
+        <span class="pos-product-price">${formatRupiah(p.price)}</span>
+      </div>
+      <button type="button" class="${isOutOfStock ? 'btn-secondary' : 'btn-primary'} btn-small" ${isOutOfStock ? 'disabled' : ''} style="width: 100%; margin-top: 4px;">
+        <i class="fa-solid fa-plus"></i> ${isOutOfStock ? 'Stok Habis' : 'Tambah'}
+      </button>
+    `;
+
+    if (!isOutOfStock) {
+      item.onclick = () => addPosItemToCart(p);
+    }
+    container.appendChild(item);
+  });
+}
+
+function addPosItemToCart(p) {
+  const existing = posState.cart.find(i => i.productId === p.id);
+  if (existing) {
+    if (existing.quantity >= p.stock) {
+      showToast(`Stok ${p.name} hanya tersisa ${p.stock}`, 'error');
+      return;
+    }
+    existing.quantity++;
+  } else {
+    posState.cart.push({
+      productId: p.id,
+      name: p.name,
+      price: p.price,
+      quantity: 1,
+      stock: p.stock
+    });
+  }
+  renderPosCart();
+}
+
+function renderPosCart() {
+  const container = document.getElementById('pos-cart-items-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (posState.cart.length === 0) {
+    container.innerHTML = `<div style="text-align: center; padding: 30px 10px; color: var(--text-muted); font-size: 0.85rem;"><i class="fa-solid fa-basket-shopping" style="font-size: 1.8rem; margin-bottom: 8px; display: block;"></i>Keranjang kasir masih kosong.<br>Klik produk di sebelah kiri untuk menambahkan.</div>`;
+    calculatePosTotals();
+    return;
+  }
+
+  posState.cart.forEach((item, index) => {
+    const row = document.createElement('div');
+    row.className = 'pos-cart-item';
+    row.innerHTML = `
+      <div class="pos-item-info">
+        <span class="pos-item-name">${item.name}</span>
+        <span class="pos-item-sub">${formatRupiah(item.price)} x ${item.quantity} = ${formatRupiah(item.price * item.quantity)}</span>
+      </div>
+      <div class="pos-qty-controls">
+        <button type="button" class="btn-minus">-</button>
+        <span>${item.quantity}</span>
+        <button type="button" class="btn-plus">+</button>
+        <button type="button" class="btn-del" style="color: var(--color-red); margin-left: 4px;"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    `;
+
+    row.querySelector('.btn-minus').onclick = () => {
+      if (item.quantity > 1) {
+        item.quantity--;
+      } else {
+        posState.cart.splice(index, 1);
+      }
+      renderPosCart();
+    };
+
+    row.querySelector('.btn-plus').onclick = () => {
+      if (item.quantity < item.stock) {
+        item.quantity++;
+      } else {
+        showToast(`Stok ${item.name} tersisa ${item.stock}`, 'error');
+      }
+      renderPosCart();
+    };
+
+    row.querySelector('.btn-del').onclick = () => {
+      posState.cart.splice(index, 1);
+      renderPosCart();
+    };
+
+    container.appendChild(row);
+  });
+
+  calculatePosTotals();
+}
+
+function calculatePosTotals() {
+  const subtotal = posState.cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+  const discount = Math.min(subtotal, posState.discount);
+  const total = Math.max(0, subtotal - discount);
+  const change = posState.paymentMethod.includes('Tunai') ? Math.max(0, posState.cashReceived - total) : 0;
+
+  document.getElementById('pos-subtotal-val').innerText = formatRupiah(subtotal);
+  document.getElementById('pos-total-val').innerText = formatRupiah(total);
+  document.getElementById('pos-change-val').innerText = formatRupiah(change);
+}
+
+async function submitPosCheckout() {
+  if (posState.cart.length === 0) {
+    showToast('Keranjang kasir masih kosong.', 'error');
+    return;
+  }
+
+  const subtotal = posState.cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+  const discount = Math.min(subtotal, posState.discount);
+  const total = Math.max(0, subtotal - discount);
+
+  if (posState.paymentMethod.includes('Tunai') && posState.cashReceived < total) {
+    showToast('Uang pembayaran tunai kurang dari total tagihan!', 'error');
+    return;
+  }
+
+  const payload = {
+    items: posState.cart,
+    paymentMethod: posState.paymentMethod,
+    discount: posState.discount,
+    cashReceived: posState.cashReceived,
+    customerName: 'Pembeli Offline / Kasir'
+  };
+
+  try {
+    const res = await fetch('/api/pos/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Gagal memproses transaksi kasir.');
+
+    showToast('Transaksi kasir berhasil diselesaikan!', 'success');
+
+    // Reset POS cart
+    posState.cart = [];
+    posState.discount = 0;
+    posState.cashReceived = 0;
+    document.getElementById('pos-discount-input').value = 0;
+    document.getElementById('pos-cash-received').value = '';
+    renderPosCart();
+
+    // Reload catalog & admin stats
+    initPosModule();
+    loadAdminDashboard();
+
+    // Show thermal receipt
+    openPosReceiptModal(data.order);
+
+  } catch (err) {
+    console.error(err);
+    showToast(err.message, 'error');
+  }
+}
+
+function openPosReceiptModal(order) {
+  const modal = document.getElementById('pos-receipt-modal');
+  modal.classList.add('active');
+
+  document.getElementById('receipt-info-box').innerHTML = `
+    <p>No. Transaksi : <strong>#${order.id}</strong></p>
+    <p>Tanggal       : ${order.date} ${order.time || ''}</p>
+    <p>Kasir/Petugas : Admin CV Berkah Jaya</p>
+    <p>Pembayaran    : ${order.paymentMethod}</p>
+  `;
+
+  const tbody = document.getElementById('receipt-items-body');
+  tbody.innerHTML = '';
+  order.items.forEach(i => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="text-align: left;">${i.name}</td>
+      <td style="text-align: center;">${i.quantity}</td>
+      <td style="text-align: right;">${formatRupiah(i.price * i.quantity)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('receipt-totals-box').innerHTML = `
+    <div class="row"><span>Subtotal:</span> <span>${formatRupiah(order.subtotal || order.total)}</span></div>
+    ${order.discount ? `<div class="row"><span>Diskon:</span> <span>-${formatRupiah(order.discount)}</span></div>` : ''}
+    <div class="row total-highlight"><span>TOTAL:</span> <span>${formatRupiah(order.total)}</span></div>
+    <div class="row"><span>Bayar Tunai:</span> <span>${formatRupiah(order.cashReceived || order.total)}</span></div>
+    <div class="row"><span>Kembalian:</span> <span>${formatRupiah(order.change || 0)}</span></div>
+  `;
+}
+
+/* ==========================================================================
+   MODULE: LAPORAN PENDAPATAN BULANAN & EKSPOR EXCEL / WORD
+   ========================================================================== */
+
+let currentReportData = null;
+
+async function loadMonthlyReport(monthStr = '2026-08') {
+  try {
+    const res = await fetch(`/api/reports/monthly?month=${monthStr}`, { cache: 'no-cache' });
+    currentReportData = await res.json();
+    renderMonthlyReport(currentReportData);
+  } catch (err) {
+    console.error('Failed to load monthly report:', err);
+    showToast('Gagal memuat laporan bulanan.', 'error');
+  }
+
+  // Month Selector listener
+  document.getElementById('report-month-select').onchange = (e) => {
+    loadMonthlyReport(e.target.value);
+  };
+
+  // Export buttons
+  document.getElementById('btn-export-excel').onclick = () => {
+    if (currentReportData) exportMonthlyReportToExcel(currentReportData);
+  };
+
+  document.getElementById('btn-export-word').onclick = () => {
+    if (currentReportData) exportMonthlyReportToWord(currentReportData);
+  };
+}
+
+function renderMonthlyReport(data) {
+  document.getElementById('report-stat-total-revenue').innerText = formatRupiah(data.totalRevenue);
+  document.getElementById('report-stat-offline-revenue').innerText = formatRupiah(data.offlineRevenue);
+  document.getElementById('report-stat-offline-count').innerText = `${data.offlineCount} Transaksi Kasir`;
+  document.getElementById('report-stat-online-revenue').innerText = formatRupiah(data.onlineRevenue);
+  document.getElementById('report-stat-online-count').innerText = `${data.onlineCount} Pesanan Website`;
+  document.getElementById('report-stat-units-sold').innerText = `${data.totalUnitsSold} Item`;
+
+  const tbody = document.getElementById('report-transactions-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  if (data.orders.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">Tidak ada data transaksi untuk periode ini.</td></tr>`;
+    return;
+  }
+
+  data.orders.forEach(o => {
+    const isOffline = o.type === 'offline' || o.id.startsWith('POS-');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>#${o.id}</strong></td>
+      <td>${o.date}</td>
+      <td>${o.customerName}</td>
+      <td><span class="status-badge ${isOffline ? 'kirim' : 'proses'}">${isOffline ? 'Kasir Offline' : 'Online Website'}</span></td>
+      <td>${o.paymentMethod || 'Tunai'}</td>
+      <td><strong>${formatRupiah(o.total)}</strong></td>
+      <td><span class="status-badge selesai">${o.status}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function exportMonthlyReportToExcel(reportData) {
+  const monthSelect = document.getElementById('report-month-select');
+  const monthName = monthSelect.options[monthSelect.selectedIndex].text;
+  
+  let tableHTML = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body { font-family: Arial, sans-serif; }
+        .header { font-size: 16pt; font-weight: bold; color: #107c41; text-align: center; }
+        .sub-header { font-size: 11pt; color: #555; text-align: center; margin-bottom: 15px; }
+        th { background-color: #107c41; color: #ffffff; font-weight: bold; border: 1px solid #000; text-align: center; padding: 6px; }
+        td { border: 1px solid #ccc; padding: 6px; }
+        .total-row { font-weight: bold; background-color: #e2efda; }
+      </style>
+    </head>
+    <body>
+      <div class="header">REKAPITULASI PENJUALAN LAPORAN BULANAN - CV BERKAH JAYA</div>
+      <div class="sub-header">Periode Laporan: ${monthName} | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}</div>
+      
+      <table>
+        <tr><td style="font-weight: bold;">Total Pendapatan:</td><td>Rp ${reportData.totalRevenue.toLocaleString('id-ID')}</td></tr>
+        <tr><td style="font-weight: bold;">Penjualan Kasir Offline:</td><td>Rp ${reportData.offlineRevenue.toLocaleString('id-ID')} (${reportData.offlineCount} Transaksi)</td></tr>
+        <tr><td style="font-weight: bold;">Penjualan Online Website:</td><td>Rp ${reportData.onlineRevenue.toLocaleString('id-ID')} (${reportData.onlineCount} Pesanan)</td></tr>
+        <tr><td style="font-weight: bold;">Total Unit Terjual:</td><td>${reportData.totalUnitsSold} Item</td></tr>
+      </table>
+      <br/>
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>ID Transaksi</th>
+            <th>Tanggal</th>
+            <th>Pelanggan</th>
+            <th>Jenis Transaksi</th>
+            <th>Metode Pembayaran</th>
+            <th>Barang Dipesan</th>
+            <th>Total Tagihan (Rp)</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  reportData.orders.forEach((o, idx) => {
+    const itemsText = o.items ? o.items.map(i => `${i.name} (${i.quantity}x)`).join(', ') : '-';
+    const typeLabel = o.type === 'offline' || o.id.startsWith('POS-') ? 'Kasir Offline' : 'Online Website';
+    tableHTML += `
+      <tr>
+        <td style="text-align: center;">${idx + 1}</td>
+        <td style="text-align: center;">#${o.id}</td>
+        <td style="text-align: center;">${o.date}</td>
+        <td>${o.customerName}</td>
+        <td style="text-align: center;">${typeLabel}</td>
+        <td style="text-align: center;">${o.paymentMethod || 'Tunai'}</td>
+        <td>${itemsText}</td>
+        <td style="text-align: right;">${o.total}</td>
+        <td style="text-align: center;">${o.status}</td>
+      </tr>
+    `;
+  });
+
+  tableHTML += `
+        <tr class="total-row">
+          <td colspan="7" style="text-align: right;">TOTAL PENDAPATAN BULANAN:</td>
+          <td style="text-align: right;">${reportData.totalRevenue}</td>
+          <td></td>
+        </tr>
+        </tbody>
+      </table>
+    </body>
+    </html>
+  `;
+
+  const blob = new Blob([tableHTML], { type: 'application/vnd.ms-excel' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `Laporan_Penjualan_CV_Berkah_Jaya_${reportData.month}.xls`;
+  link.click();
+  showToast('Laporan Excel (.xlsx) berhasil diunduh!', 'success');
+}
+
+function exportMonthlyReportToWord(reportData) {
+  const monthSelect = document.getElementById('report-month-select');
+  const monthName = monthSelect.options[monthSelect.selectedIndex].text;
+  
+  let wordHTML = `
+    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head>
+      <meta charset='utf-8'>
+      <title>Laporan Pendapatan CV Berkah Jaya</title>
+      <style>
+        body { font-family: 'Times New Roman', Times, serif; margin: 30px; line-height: 1.5; color: #000; }
+        .kop-container { text-align: center; border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .kop-title { font-size: 20pt; font-weight: bold; text-transform: uppercase; margin: 0; }
+        .kop-subtitle { font-size: 11pt; margin: 2px 0; }
+        .kop-address { font-size: 10pt; font-style: italic; margin: 2px 0; }
+        .doc-title { text-align: center; font-size: 14pt; font-weight: bold; text-decoration: underline; margin-bottom: 5px; }
+        .doc-sub { text-align: center; font-size: 11pt; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; }
+        th { background-color: #f2f2f2; border: 1px solid #000; padding: 8px; font-weight: bold; text-align: center; }
+        td { border: 1px solid #000; padding: 6px 8px; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .summary-card { border: 1px solid #000; padding: 12px; margin-bottom: 20px; background-color: #fafafa; }
+        .signature-box { margin-top: 50px; float: right; width: 250px; text-align: center; }
+      </style>
+    </head>
+    <body>
+      <div class="kop-container">
+        <h1 class="kop-title">CV BERKAH JAYA</h1>
+        <p class="kop-subtitle">Penyedia Alat Bangunan, Listrik & Obat Pertanian Terlengkap</p>
+        <p class="kop-address">Jl. Garuda, Penyangkringan, Pegandon, Kabupaten Kendal, Jawa Tengah | WA/Telp: 085172369447</p>
+      </div>
+
+      <div class="doc-title">LAPORAN RESMI PENDAPATAN & PENJUALAN BULANAN</div>
+      <div class="doc-sub">Periode Laporan: <strong>${monthName}</strong></div>
+
+      <h3>I. Ringkasan Eksekutif Pendapatan</h3>
+      <div class="summary-card">
+        <table style="border: none; margin: 0;">
+          <tr style="border: none;"><td style="border: none;"><strong>Total Pendapatan Bersih:</strong></td><td style="border: none;" class="text-right"><strong>Rp ${reportData.totalRevenue.toLocaleString('id-ID')}</strong></td></tr>
+          <tr style="border: none;"><td style="border: none;">Penjualan Kasir Offline (Toko Fisik):</td><td style="border: none;" class="text-right">Rp ${reportData.offlineRevenue.toLocaleString('id-ID')} (${reportData.offlineCount} Transaksi)</td></tr>
+          <tr style="border: none;"><td style="border: none;">Penjualan Online Website:</td><td style="border: none;" class="text-right">Rp ${reportData.onlineRevenue.toLocaleString('id-ID')} (${reportData.onlineCount} Pesanan)</td></tr>
+          <tr style="border: none;"><td style="border: none;">Total Item Terjual:</td><td style="border: none;" class="text-right">${reportData.totalUnitsSold} Unit Barang</td></tr>
+        </table>
+      </div>
+
+      <h3>II. Rincian Transaksi Penjualan</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>ID Order</th>
+            <th>Tanggal</th>
+            <th>Pelanggan</th>
+            <th>Jenis Transaksi</th>
+            <th>Metode Pembayaran</th>
+            <th>Total Tagihan</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  reportData.orders.forEach((o, idx) => {
+    const typeLabel = o.type === 'offline' || o.id.startsWith('POS-') ? 'Kasir Offline' : 'Online Website';
+    wordHTML += `
+      <tr>
+        <td class="text-center">${idx + 1}</td>
+        <td class="text-center">#${o.id}</td>
+        <td class="text-center">${o.date}</td>
+        <td>${o.customerName}</td>
+        <td class="text-center">${typeLabel}</td>
+        <td class="text-center">${o.paymentMethod || 'Tunai'}</td>
+        <td class="text-right">Rp ${o.total.toLocaleString('id-ID')}</td>
+      </tr>
+    `;
+  });
+
+  wordHTML += `
+        <tr>
+          <td colspan="6" class="text-right"><strong>TOTAL AKHIR PENDAPATAN:</strong></td>
+          <td class="text-right"><strong>Rp ${reportData.totalRevenue.toLocaleString('id-ID')}</strong></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <br/><br/>
+      <table style="border: none;">
+        <tr style="border: none;">
+          <td style="border: none; width: 60%;"></td>
+          <td style="border: none; text-align: center;">
+            <p>Kendal, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+            <p>Pimpinan CV Berkah Jaya,</p>
+            <br/><br/><br/><br/>
+            <p><strong>( ______________________ )</strong></p>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+
+  const blob = new Blob(['\ufeff' + wordHTML], { type: 'application/msword' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `Laporan_Resmi_CV_Berkah_Jaya_${reportData.month}.doc`;
+  link.click();
+  showToast('Laporan Word ber-Kop Surat (.doc) berhasil diunduh!', 'success');
+}
+
 
