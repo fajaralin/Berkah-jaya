@@ -54,23 +54,23 @@ async function loadAdminDashboard() {
     const stats = await response.json();
     
     // Render Counters
-    document.getElementById('stat-revenue').innerText = formatRupiah(stats.totalRevenue);
-    document.getElementById('stat-products-count').innerText = stats.totalProducts;
-    document.getElementById('stat-orders-count').innerText = stats.totalOrders;
-    document.getElementById('stat-units-sold').innerText = stats.totalSalesCount;
+    if (document.getElementById('stat-revenue')) document.getElementById('stat-revenue').innerText = formatRupiah(stats.totalRevenue);
+    if (document.getElementById('stat-products-count')) document.getElementById('stat-products-count').innerText = stats.totalProducts;
+    if (document.getElementById('stat-orders-count')) document.getElementById('stat-orders-count').innerText = stats.totalOrders;
+    if (document.getElementById('stat-units-sold')) document.getElementById('stat-units-sold').innerText = stats.totalSalesCount;
     
     // Draw Sales Distribution progress bars
     const dist = stats.categoryDistribution || { bangunan: 0, listrik: 0, pertanian: 0 };
     const maxVal = Math.max(dist.bangunan, dist.listrik, dist.pertanian, 1);
     
-    document.getElementById('dist-bangunan-val').innerText = formatRupiah(dist.bangunan);
-    document.getElementById('dist-bangunan-bar').style.width = `${(dist.bangunan / maxVal) * 100}%`;
+    if (document.getElementById('dist-bangunan-val')) document.getElementById('dist-bangunan-val').innerText = formatRupiah(dist.bangunan);
+    if (document.getElementById('dist-bangunan-bar')) document.getElementById('dist-bangunan-bar').style.width = `${(dist.bangunan / maxVal) * 100}%`;
     
-    document.getElementById('dist-listrik-val').innerText = formatRupiah(dist.listrik);
-    document.getElementById('dist-listrik-bar').style.width = `${(dist.listrik / maxVal) * 100}%`;
+    if (document.getElementById('dist-listrik-val')) document.getElementById('dist-listrik-val').innerText = formatRupiah(dist.listrik);
+    if (document.getElementById('dist-listrik-bar')) document.getElementById('dist-listrik-bar').style.width = `${(dist.listrik / maxVal) * 100}%`;
     
-    document.getElementById('dist-pertanian-val').innerText = formatRupiah(dist.pertanian);
-    document.getElementById('dist-pertanian-bar').style.width = `${(dist.pertanian / maxVal) * 100}%`;
+    if (document.getElementById('dist-pertanian-val')) document.getElementById('dist-pertanian-val').innerText = formatRupiah(dist.pertanian);
+    if (document.getElementById('dist-pertanian-bar')) document.getElementById('dist-pertanian-bar').style.width = `${(dist.pertanian / maxVal) * 100}%`;
     
     // Render Product table CRUD
     renderAdminProductsTable();
@@ -131,10 +131,11 @@ async function renderAdminProductsTable() {
 }
 
 function renderAdminOrdersTable(recentOrders) {
-  const tbody = document.getElementById('admin-order-table-body');
+  const tbody = document.getElementById('admin-orders-table-body') || document.getElementById('admin-order-table-body');
+  if (!tbody) return;
   tbody.innerHTML = '';
   
-  if (recentOrders.length === 0) {
+  if (!recentOrders || recentOrders.length === 0) {
     tbody.innerHTML = `<tr><td colspan="7" class="text-center text-light">Belum ada pesanan masuk.</td></tr>`;
     return;
   }
@@ -286,9 +287,10 @@ async function updateOrderStatus(orderId, newStatus) {
 
 function renderRecentActivities(orders) {
   const container = document.getElementById('admin-recent-activities');
+  if (!container) return;
   container.innerHTML = '';
   
-  if (orders.length === 0) {
+  if (!orders || orders.length === 0) {
     container.innerHTML = `<li class="text-light">Belum ada aktivitas baru.</li>`;
     return;
   }
