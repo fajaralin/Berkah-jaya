@@ -820,23 +820,38 @@ function initProductImageStudio() {
 
   // Export Buttons
   document.getElementById('btn-apply-editor-to-form')?.addEventListener('click', () => {
-    // Render without selection handles
-    renderStudioCanvas(false);
-    const dataUrl = studioState.canvas.toDataURL('image/png');
-    document.getElementById('form-product-image').value = dataUrl;
-    updateFormImagePreview();
-    closeImageEditorModal();
-    showToast('Gambar editan berhasil diterapkan pada produk!', 'success');
+    try {
+      // Render without selection handles
+      renderStudioCanvas(false);
+      let dataUrl;
+      try {
+        dataUrl = studioState.canvas.toDataURL('image/jpeg', 0.9);
+      } catch (e) {
+        dataUrl = studioState.canvas.toDataURL('image/png');
+      }
+      document.getElementById('form-product-image').value = dataUrl;
+      updateFormImagePreview();
+      closeImageEditorModal();
+      showToast('Gambar editan berhasil diterapkan pada form produk!', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Gagal mengekspor gambar. Jika menggunakan URL luar, unggah gambar dari file perangkat.', 'error');
+    }
   });
 
   document.getElementById('btn-download-editor-png')?.addEventListener('click', () => {
-    renderStudioCanvas(false);
-    const dataUrl = studioState.canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.download = 'produk-berkah-jaya.png';
-    link.href = dataUrl;
-    link.click();
-    showToast('Gambar berhasil diunduh', 'success');
+    try {
+      renderStudioCanvas(false);
+      const dataUrl = studioState.canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = 'produk-berkah-jaya.png';
+      link.href = dataUrl;
+      link.click();
+      showToast('Gambar berhasil diunduh', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Gagal mengunduh gambar. Silakan unggah gambar dasar dari file perangkat.', 'error');
+    }
   });
 
   // Canvas Mouse Interactions (Drag & Resize)
