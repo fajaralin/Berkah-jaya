@@ -45,10 +45,33 @@ async function readDB() {
   }
 }
 
-// Helper to write database
+const { exec } = require('child_process');
+
+// Helper to write database with Automatic Background Git Sync
+let syncDebounceTimer = null;
+
+function triggerAutoGitSync() {
+  if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
+
+  syncDebounceTimer = setTimeout(() => {
+    console.log('🔄 [AUTO-SYNC] Otomatis meng-commit & push data terbaru ke GitHub...');
+    const nowStr = new Date().toLocaleString('id-ID');
+    const cmd = `git add . && git commit -m "auto: Sync database updates [${nowStr}]" && git push origin main`;
+    exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        console.error('❌ [AUTO-SYNC ERROR]:', err.message);
+      } else {
+        console.log('🚀 [AUTO-SYNC SUCCESS]: Data otomatis ter-sync ke GitHub & website Render online!');
+        io.emit('sync:completed', { timestamp: Date.now() });
+      }
+    });
+  }, 2000);
+}
+
 async function writeDB(data) {
   try {
     await fs.writeFile(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
+    triggerAutoGitSync();
   } catch (error) {
     console.error('Error writing database:', error);
   }

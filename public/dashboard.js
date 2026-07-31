@@ -639,6 +639,9 @@ function initRealtimeReverbEngine() {
     });
     socket.on('products:changed', () => loadAdminDashboard());
     socket.on('orders:changed', () => loadAdminDashboard());
+    socket.on('sync:completed', () => {
+      showToast('🚀 Auto-Sync Berhasil: Perubahan data otomatis ter-sync ke GitHub & Render (Live)!', 'success');
+    });
   }
 }
 
