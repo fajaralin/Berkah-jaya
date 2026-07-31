@@ -545,6 +545,9 @@ function setupAdminEventListeners() {
   document.getElementById('admin-add-product-btn')?.addEventListener('click', () => {
     openProductCrudModal(null);
   });
+  document.getElementById('admin-add-product-btn-2')?.addEventListener('click', () => {
+    openProductCrudModal(null);
+  });
 
   // Admin Category filter buttons click
   const filterBtns = document.querySelectorAll('.admin-filter-btn');
@@ -1336,22 +1339,24 @@ async function initPosModule() {
   });
 
   // Clear Cart
-  document.getElementById('btn-clear-pos-cart')?.onclick = () => {
+  document.getElementById('btn-clear-pos-cart')?.addEventListener('click', () => {
     posState.cart = [];
     posState.discount = 0;
     posState.cashReceived = 0;
-    document.getElementById('pos-discount-input').value = 0;
-    document.getElementById('pos-cash-received').value = '';
+    const dInput = document.getElementById('pos-discount-input');
+    if (dInput) dInput.value = 0;
+    const cInput = document.getElementById('pos-cash-received');
+    if (cInput) cInput.value = '';
     renderPosCart();
-  };
+  });
 
   // Submit Checkout
-  document.getElementById('btn-process-pos-checkout')?.onclick = submitPosCheckout;
+  document.getElementById('btn-process-pos-checkout')?.addEventListener('click', submitPosCheckout);
 
   // Receipt Modal actions
-  document.getElementById('close-receipt-modal-btn')?.onclick = () => document.getElementById('pos-receipt-modal').classList.remove('active');
-  document.getElementById('btn-close-receipt')?.onclick = () => document.getElementById('pos-receipt-modal').classList.remove('active');
-  document.getElementById('btn-print-receipt')?.onclick = () => window.print();
+  document.getElementById('close-receipt-modal-btn')?.addEventListener('click', () => document.getElementById('pos-receipt-modal')?.classList.remove('active'));
+  document.getElementById('btn-close-receipt')?.addEventListener('click', () => document.getElementById('pos-receipt-modal')?.classList.remove('active'));
+  document.getElementById('btn-print-receipt')?.addEventListener('click', () => window.print());
 
   renderPosCatalog();
   renderPosCart();
@@ -1591,18 +1596,18 @@ async function loadMonthlyReport(monthStr = '2026-08') {
   }
 
   // Month Selector listener
-  document.getElementById('report-month-select').onchange = (e) => {
+  document.getElementById('report-month-select')?.addEventListener('change', (e) => {
     loadMonthlyReport(e.target.value);
-  };
+  });
 
   // Export buttons
-  document.getElementById('btn-export-excel').onclick = () => {
+  document.getElementById('btn-export-excel')?.addEventListener('click', () => {
     if (currentReportData) exportMonthlyReportToExcel(currentReportData);
-  };
+  });
 
-  document.getElementById('btn-export-word').onclick = () => {
+  document.getElementById('btn-export-word')?.addEventListener('click', () => {
     if (currentReportData) exportMonthlyReportToWord(currentReportData);
-  };
+  });
 }
 
 function renderMonthlyReport(data) {
