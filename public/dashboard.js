@@ -314,6 +314,11 @@ async function deleteStoreProduct(id) {
       method: 'DELETE'
     });
     if (!response.ok) throw new Error('Gagal menghapus produk');
+    
+    try {
+      localStorage.setItem('bj_products_updated', Date.now());
+    } catch (e) {}
+
     showToast('Produk berhasil dihapus.', 'success');
     loadAdminDashboard();
   } catch (err) {

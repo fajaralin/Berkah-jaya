@@ -647,11 +647,204 @@
           </button>
           <div class="footer-main-buttons">
             <button type="button" class="btn-secondary" id="btn-close-editor">Batal</button>
-            <button type="button" class="btn-primary" id="btn-apply-editor-to-form">
-              <i class="fa-solid fa-circle-check"></i> Terapkan ke Produk
-            </button>
+    <!-- Product CRUD Form Modal -->
+    <div id="product-form-modal" class="modal">
+      <div class="modal-content crud-modal-card">
+        <button class="close-modal-btn" id="close-form-modal-btn">&times;</button>
+        <h3 id="product-form-title">Tambah Produk Baru</h3>
+        
+        <form id="product-crud-form">
+          <input type="hidden" id="form-product-id">
+          
+          <div class="form-row-2">
+            <div class="form-group-crud">
+              <label for="form-product-name">Nama Produk *</label>
+              <input type="text" id="form-product-name" required placeholder="Contoh: Semen Gresik 50kg">
+            </div>
+            <div class="form-group-crud">
+              <label for="form-product-brand">Merek / Brand *</label>
+              <input type="text" id="form-product-brand" required placeholder="Contoh: Semen Indonesia">
+            </div>
+          </div>
+
+          <div class="form-row-3">
+            <div class="form-group-crud">
+              <label for="form-product-category">Kategori *</label>
+              <select id="form-product-category" required>
+                <option value="bangunan">Alat Bangunan</option>
+                <option value="listrik">Alat Listrik</option>
+                <option value="pertanian">Obat Pertanian</option>
+              </select>
+            </div>
+            <div class="form-group-crud">
+              <label for="form-product-price">Harga (Rp) *</label>
+              <input type="number" id="form-product-price" required min="0" placeholder="75000">
+            </div>
+            <div class="form-group-crud">
+              <label for="form-product-stock">Stok *</label>
+              <input type="number" id="form-product-stock" required min="0" placeholder="100">
+            </div>
+          </div>
+
+          <div class="form-group-crud">
+            <label for="form-product-image">URL Gambar Produk *</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="url" id="form-product-image" required placeholder="https://..." style="flex: 1;">
+              <button type="button" class="btn-secondary" id="btn-open-image-editor" title="Buka Product Image Studio">
+                <i class="fa-solid fa-wand-magic-sparkles text-orange"></i> Edit Foto Studio
+              </button>
+            </div>
+            <div class="image-preview-container" id="form-image-preview-wrapper" style="margin-top: 8px;">
+              <img id="form-image-preview" src="" alt="Preview" style="max-height: 80px; display: none; border-radius: 4px;">
+            </div>
+          </div>
+
+          <div class="form-group-crud">
+            <label for="form-product-desc">Deskripsi Produk *</label>
+            <textarea id="form-product-desc" rows="3" required placeholder="Deskripsi lengkap produk..."></textarea>
+          </div>
+
+          <!-- Dynamic Specifications -->
+          <div class="form-group-crud">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label>Spesifikasi Produk</label>
+              <button type="button" class="btn-secondary btn-small" id="btn-add-spec-field">
+                <i class="fa-solid fa-plus"></i> Tambah Spesifikasi
+              </button>
+            </div>
+            <div id="specs-fields-wrapper" class="specs-wrapper"></div>
+          </div>
+
+          <div class="modal-footer-actions">
+            <button type="button" class="btn-secondary" id="btn-cancel-crud">Batal</button>
+            <button type="submit" class="btn-primary">Simpan Produk</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="admin-order-detail-modal" class="modal">
+      <div class="modal-content order-modal-card">
+        <button class="close-modal-btn" id="close-order-modal-btn">&times;</button>
+        <div class="order-modal-header">
+          <h3>Detail Pesanan <span id="order-detail-id-title">#ORD-0000</span></h3>
+          <span class="status-badge" id="order-detail-status-badge">Diproses</span>
+        </div>
+        
+        <div id="order-modal-body-content" class="order-modal-body">
+          <!-- Dynamic order details -->
+        </div>
+
+        <div class="modal-footer-actions">
+          <a href="#" target="_blank" class="btn-secondary" id="order-detail-wa-btn">
+            <i class="fa-brands fa-whatsapp text-green"></i> Hubungi Pembeli
+          </a>
+          <button type="button" class="btn-primary" id="order-detail-complete-btn">
+            <i class="fa-solid fa-circle-check"></i> Tandai Selesai
+          </button>
+          <button type="button" class="btn-secondary" id="order-detail-close-btn">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Image Studio Editor Canvas Modal -->
+    <div id="image-editor-modal" class="modal">
+      <div class="modal-content image-editor-card">
+        <button class="close-modal-btn" id="close-image-editor-btn">&times;</button>
+        <div class="editor-header">
+          <h3><i class="fa-solid fa-wand-magic-sparkles text-orange"></i> Product Image Studio Editor</h3>
+          <p>Desain gambar produk profesional dengan stiker diskon, badge, teks, dan filter studio</p>
+        </div>
+
+        <div class="editor-main-layout">
+          <!-- Left: Canvas Area -->
+          <div class="editor-canvas-column">
+            <div class="canvas-wrapper">
+              <canvas id="studio-canvas" width="600" height="600"></canvas>
+            </div>
+            <div class="canvas-toolbar">
+              <button type="button" class="btn-secondary btn-small" id="btn-studio-undo"><i class="fa-solid fa-rotate-left"></i> Reset Layer</button>
+              <span style="font-size: 11px; color: var(--text-muted);">Geser / seret elemen di atas canvas</span>
+            </div>
+          </div>
+
+          <!-- Right: Controls Area -->
+          <div class="editor-controls-column">
+            <div class="editor-tabs-bar">
+              <button type="button" class="studio-tab-btn active" data-tab="overlays">Stiker & Badge</button>
+              <button type="button" class="studio-tab-btn" data-tab="text">Teks & Promo</button>
+              <button type="button" class="studio-tab-btn" data-tab="filters">Filter Canvas</button>
+            </div>
+
+            <!-- Tab 1: Overlays / Stickers -->
+            <div class="studio-tab-panel active" id="studio-panel-overlays">
+              <h4>Pilih Stiker & Badge</h4>
+              <div class="stickers-grid">
+                <button type="button" class="sticker-btn" data-sticker="diskon50">
+                  <span class="badge-preview discount">DISKON 50%</span>
+                </button>
+                <button type="button" class="sticker-btn" data-sticker="best-seller">
+                  <span class="badge-preview seller">BEST SELLER</span>
+                </button>
+                <button type="button" class="sticker-btn" data-sticker="original">
+                  <span class="badge-preview ori">100% ORIGINAL</span>
+                </button>
+                <button type="button" class="sticker-btn" data-sticker="sni">
+                  <span class="badge-preview sni">STANDAR SNI</span>
+                </button>
+                <button type="button" class="sticker-btn" data-sticker="gratis-ongkir">
+                  <span class="badge-preview ongkir">GRATIS ONGKIR</span>
+                </button>
+                <button type="button" class="sticker-btn" data-sticker="ready-stock">
+                  <span class="badge-preview ready">READY STOCK</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tab 2: Text -->
+            <div class="studio-tab-panel" id="studio-panel-text">
+              <h4>Tambah Teks Kustom</h4>
+              <div class="editor-control-group">
+                <input type="text" id="studio-text-input" placeholder="Ketik teks promo (misal: Rp 72.000 / Sak)">
+                <div style="display: flex; gap: 8px; margin-top: 6px;">
+                  <input type="color" id="studio-text-color" value="#ff6b00" style="width: 40px; height: 34px; padding: 0; border: none; border-radius: 4px; cursor: pointer;">
+                  <button type="button" class="btn-primary btn-small" id="btn-add-studio-text" style="flex: 1;">
+                    <i class="fa-solid fa-font"></i> Tambah Teks ke Canvas
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3: Filters -->
+            <div class="studio-tab-panel" id="studio-panel-filters">
+              <h4>Filter Kecerahan & Kontras</h4>
+              <div class="editor-control-group">
+                <label for="studio-brightness">Brightness: <span id="val-brightness">100%</span></label>
+                <input type="range" id="studio-brightness" min="50" max="150" value="100">
+              </div>
+              <div class="editor-control-group">
+                <label for="studio-contrast">Contrast: <span id="val-contrast">100%</span></label>
+                <input type="range" id="studio-contrast" min="50" max="150" value="100">
+              </div>
+            </div>
+
+            <!-- Layer List -->
+            <div class="layers-section">
+              <h4>Daftar Layer Canvas</h4>
+              <div id="studio-layers-list" class="layers-list"></div>
+            </div>
+
+            <div class="editor-actions">
+              <button type="button" class="btn-secondary" id="btn-cancel-studio">Batal</button>
+              <button type="button" class="btn-primary" id="btn-apply-editor-to-form">
+                <i class="fa-solid fa-check"></i> Terapkan ke Produk
+              </button>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
 
     <!-- POS Thermal Receipt Modal -->
     <div id="pos-receipt-modal" class="modal">
