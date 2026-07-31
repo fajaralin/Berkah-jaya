@@ -102,7 +102,11 @@
               <div class="pos-catalog-column">
                 <div class="pos-header-bar">
                   <h3><i class="fa-solid fa-cash-register text-orange"></i> Kasir Penjualan Toko Fisik</h3>
-                  <input type="text" id="pos-product-search" placeholder="Cari produk / scan nama...">
+                  
+                  <div class="pos-search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="pos-product-search" placeholder="Cari nama produk / scan kata kunci...">
+                  </div>
                 </div>
 
                 <div class="pos-category-pills">
@@ -153,8 +157,16 @@
                       </div>
 
                       <div class="editor-control-group" id="pos-cash-input-wrapper">
-                        <label for="pos-cash-received">Uang Diterima (Rp):</label>
-                        <input type="number" id="pos-cash-received" placeholder="Masukkan jumlah uang tunai" min="0" step="1000">
+                        <label for="pos-cash-received">Uang Diterima Pelanggan (Rp):</label>
+                        <input type="number" id="pos-cash-received" placeholder="Masukkan nominal tunai..." min="0" step="1000" class="pos-cash-input-custom">
+                        
+                        <div class="quick-cash-pills">
+                          <button type="button" class="cash-pill" data-amount="exact">Uang Pas</button>
+                          <button type="button" class="cash-pill" data-amount="10000">10rb</button>
+                          <button type="button" class="cash-pill" data-amount="20000">20rb</button>
+                          <button type="button" class="cash-pill" data-amount="50000">50rb</button>
+                          <button type="button" class="cash-pill" data-amount="100000">100rb</button>
+                        </div>
                       </div>
 
                       <div class="pos-change-box" id="pos-change-box">
@@ -194,7 +206,10 @@
                   <i class="fa-solid fa-wheat-awn"></i> Pertanian
                 </button>
               </div>
-              <input type="text" id="admin-product-search" placeholder="Cari produk toko...">
+              <div class="pos-search-wrapper" style="max-width: 320px;">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="admin-product-search" placeholder="Cari nama / merek produk...">
+              </div>
               <button type="button" class="btn-primary" id="admin-add-product-btn-2" style="white-space: nowrap;">
                 <i class="fa-solid fa-plus"></i> Tambah Produk Baru
               </button>
@@ -862,6 +877,6 @@
   <!-- Socket.io Realtime Client -->
   <script src="/socket.io/socket.io.js"></script>
   <!-- Script File -->
-  <script src="dashboard.js?v=5.0"></script>
+  <script src="dashboard.js?v=7.0"></script>
 </body>
 </html>

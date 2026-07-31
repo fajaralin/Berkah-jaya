@@ -36,11 +36,11 @@
       "name": "Sekop Pasir Baja Tebal Premium",
       "category": "bangunan",
       "price": 85000,
-      "stock": 44,
+      "stock": 43,
       "description": "Sekop pasir dengan mata baja tebal berkualitas tinggi. Dilengkapi dengan gagang kayu jati kokoh berperekat karet ergonomis. Tahan karat dan sangat ideal untuk pekerjaan galian tanah, pasir, atau semen.",
       "brand": "Camel",
       "rating": 4.9,
-      "sales": 321,
+      "sales": 322,
       "image": "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=500&auto=format&fit=crop&q=60",
       "specifications": {
         "Bahan": "Mata Baja, Gagang Kayu & Karet",
@@ -313,6 +313,32 @@
     }
   ],
   "orders": [
+    {
+      "id": "POS-45974",
+      "type": "offline",
+      "date": "2026-07-31",
+      "time": "04.08",
+      "customerName": "Pembeli Offline / Kasir",
+      "phone": "-",
+      "address": "Pembelian Langsung di Toko Fisik CV Berkah Jaya",
+      "items": [
+        {
+          "productId": "2",
+          "name": "Sekop Pasir Baja Tebal Premium",
+          "price": 85000,
+          "quantity": 1,
+          "stock": 44
+        }
+      ],
+      "subtotal": 85000,
+      "discount": 0,
+      "total": 85000,
+      "shippingCost": 0,
+      "cashReceived": 100000,
+      "change": 15000,
+      "status": "Selesai",
+      "paymentMethod": "Tunai (Cash)"
+    },
     {
       "id": "POS-70204",
       "type": "offline",

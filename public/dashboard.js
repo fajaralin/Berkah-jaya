@@ -1325,6 +1325,26 @@ async function initPosModule() {
     calculatePosTotals();
   });
 
+  // Quick Cash Pills listener
+  document.querySelectorAll('.cash-pill').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      const amt = e.currentTarget.getAttribute('data-amount');
+      const subtotal = posState.cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+      const discount = Math.min(subtotal, posState.discount);
+      const total = Math.max(0, subtotal - discount);
+
+      if (amt === 'exact') {
+        posState.cashReceived = total;
+      } else {
+        posState.cashReceived = Number(amt) || 0;
+      }
+
+      const cInput = document.getElementById('pos-cash-received');
+      if (cInput) cInput.value = posState.cashReceived || '';
+      calculatePosTotals();
+    });
+  });
+
   document.getElementById('pos-payment-method')?.addEventListener('change', (e) => {
     posState.paymentMethod = e.target.value;
     const cashWrapper = document.getElementById('pos-cash-input-wrapper');
@@ -1485,11 +1505,31 @@ function calculatePosTotals() {
   const subtotal = posState.cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
   const discount = Math.min(subtotal, posState.discount);
   const total = Math.max(0, subtotal - discount);
-  const change = posState.paymentMethod.includes('Tunai') ? Math.max(0, posState.cashReceived - total) : 0;
 
   document.getElementById('pos-subtotal-val').innerText = formatRupiah(subtotal);
   document.getElementById('pos-total-val').innerText = formatRupiah(total);
-  document.getElementById('pos-change-val').innerText = formatRupiah(change);
+  
+  const changeValEl = document.getElementById('pos-change-val');
+  if (!changeValEl) return;
+
+  if (!posState.paymentMethod.includes('Tunai')) {
+    changeValEl.innerText = formatRupiah(0);
+    changeValEl.style.color = '#10b981';
+    return;
+  }
+
+  const change = posState.cashReceived - total;
+
+  if (posState.cashReceived === 0) {
+    changeValEl.innerText = formatRupiah(0);
+    changeValEl.style.color = '#10b981';
+  } else if (change >= 0) {
+    changeValEl.innerText = formatRupiah(change);
+    changeValEl.style.color = '#10b981';
+  } else {
+    changeValEl.innerText = `Kurang ${formatRupiah(Math.abs(change))}`;
+    changeValEl.style.color = '#ef4444';
+  }
 }
 
 async function submitPosCheckout() {
