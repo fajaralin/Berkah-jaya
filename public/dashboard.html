@@ -87,81 +87,16 @@
       <div class="admin-dashboard-grid">
         <!-- Left: Sales Distribution & Product Management Table -->
         <div class="admin-main-column">
-          <!-- Navigation tabs in Admin -->
+          <!-- Navigation tabs in Admin (Kasir POS NO 1, Produk NO 2) -->
           <div class="admin-tab-bar">
-            <button class="admin-tab-btn active" id="admin-tab-products-btn"><i class="fa-solid fa-boxes-stacked"></i> Produk</button>
-            <button class="admin-tab-btn" id="admin-tab-orders-btn"><i class="fa-solid fa-file-invoice"></i> Pesanan</button>
-            <button class="admin-tab-btn" id="admin-tab-pos-btn"><i class="fa-solid fa-cash-register text-orange"></i> Kasir (POS)</button>
-            <button class="admin-tab-btn" id="admin-tab-reports-btn"><i class="fa-solid fa-chart-pie text-blue"></i> Laporan & Ekspor</button>
+            <button class="admin-tab-btn active" id="admin-tab-pos-btn"><i class="fa-solid fa-cash-register"></i> Kasir Penjualan (POS)</button>
+            <button class="admin-tab-btn" id="admin-tab-products-btn"><i class="fa-solid fa-boxes-stacked"></i> Manajemen Produk</button>
+            <button class="admin-tab-btn" id="admin-tab-orders-btn"><i class="fa-solid fa-file-invoice"></i> Pesanan Website</button>
+            <button class="admin-tab-btn" id="admin-tab-reports-btn"><i class="fa-solid fa-chart-pie"></i> Laporan & Ekspor</button>
           </div>
 
-          <!-- Product Table Section -->
-          <div class="admin-panel-card active" id="admin-products-panel">
-            <div class="panel-header-search">
-              <h3>Daftar Produk Toko</h3>
-              <div class="admin-filter-group">
-                <button type="button" class="admin-filter-btn semua active" data-category="all" title="Tampilkan Semua Kategori">
-                  <i class="fa-solid fa-list"></i> Semua
-                </button>
-                <button type="button" class="admin-filter-btn bangunan" data-category="bangunan" title="Filter Alat Bangunan">
-                  <i class="fa-solid fa-hammer"></i> Bangunan
-                </button>
-                <button type="button" class="admin-filter-btn listrik" data-category="listrik" title="Filter Alat Listrik">
-                  <i class="fa-solid fa-bolt"></i> Listrik
-                </button>
-                <button type="button" class="admin-filter-btn pertanian" data-category="pertanian" title="Filter Obat Pertanian">
-                  <i class="fa-solid fa-wheat-awn"></i> Pertanian
-                </button>
-              </div>
-              <input type="text" id="admin-product-search" placeholder="Cari produk toko...">
-              <button type="button" class="btn-primary" id="admin-add-product-btn-2" style="white-space: nowrap;">
-                <i class="fa-solid fa-plus"></i> Tambah Produk Baru
-              </button>
-            </div>
-            <div class="table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Produk</th>
-                    <th>Kategori</th>
-                    <th>Harga</th>
-                    <th>Stok</th>
-                    <th>Terjual</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-product-table-body">
-                  <!-- Load dynamic items -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Orders Table Section -->
-          <div class="admin-panel-card" id="admin-orders-panel">
-            <h3>Daftar Pesanan Masuk</h3>
-            <div class="table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Order ID</th>
-                    <th>Tanggal</th>
-                    <th>Nama Pelanggan</th>
-                    <th>Item</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-orders-table-body">
-                  <!-- Load dynamic orders -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- POS Kasir Offline Section -->
-          <div class="admin-panel-card" id="admin-pos-panel">
+          <!-- POS Kasir Offline Section (NO 1 ACTIVE DEFAULT) -->
+          <div class="admin-panel-card active" id="admin-pos-panel">
             <div class="pos-layout-grid">
               <!-- Left: Catalog & Search -->
               <div class="pos-catalog-column">
@@ -238,6 +173,71 @@
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Product Table Section (NO 2) -->
+          <div class="admin-panel-card" id="admin-products-panel">
+            <div class="panel-header-search">
+              <h3>Daftar Produk Toko</h3>
+              <div class="admin-filter-group">
+                <button type="button" class="admin-filter-btn semua active" data-category="all" title="Tampilkan Semua Kategori">
+                  <i class="fa-solid fa-list"></i> Semua
+                </button>
+                <button type="button" class="admin-filter-btn bangunan" data-category="bangunan" title="Filter Alat Bangunan">
+                  <i class="fa-solid fa-hammer"></i> Bangunan
+                </button>
+                <button type="button" class="admin-filter-btn listrik" data-category="listrik" title="Filter Alat Listrik">
+                  <i class="fa-solid fa-bolt"></i> Listrik
+                </button>
+                <button type="button" class="admin-filter-btn pertanian" data-category="pertanian" title="Filter Obat Pertanian">
+                  <i class="fa-solid fa-wheat-awn"></i> Pertanian
+                </button>
+              </div>
+              <input type="text" id="admin-product-search" placeholder="Cari produk toko...">
+              <button type="button" class="btn-primary" id="admin-add-product-btn-2" style="white-space: nowrap;">
+                <i class="fa-solid fa-plus"></i> Tambah Produk Baru
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Produk</th>
+                    <th>Kategori</th>
+                    <th>Harga</th>
+                    <th>Stok</th>
+                    <th>Terjual</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-product-table-body">
+                  <!-- Load dynamic items -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Orders Table Section -->
+          <div class="admin-panel-card" id="admin-orders-panel">
+            <h3>Daftar Pesanan Masuk</h3>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Tanggal</th>
+                    <th>Nama Pelanggan</th>
+                    <th>Item</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-orders-table-body">
+                  <!-- Load dynamic orders -->
+                </tbody>
+              </table>
             </div>
           </div>
 
@@ -862,6 +862,6 @@
   <!-- Socket.io Realtime Client -->
   <script src="/socket.io/socket.io.js"></script>
   <!-- Script File -->
-  <script src="dashboard.js?v=4.2"></script>
+  <script src="dashboard.js?v=5.0"></script>
 </body>
 </html>

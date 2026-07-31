@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initAdmin() {
   await loadAdminDashboard();
   setupAdminEventListeners();
+  initPosModule();
 }
 
 // Format number to Indonesian Rupiah
