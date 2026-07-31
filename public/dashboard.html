@@ -34,11 +34,19 @@
     <!-- Admin / Seller Dashboard View -->
     <div id="admin-view" class="view-panel active">
       <div class="admin-header-row">
-        <h2><i class="fa-solid fa-user-gear text-orange"></i> Dashboard Penjual</h2>
+        <div class="admin-header-title-box">
+          <h2><i class="fa-solid fa-store text-orange"></i> CV BERKAH JAYA</h2>
+          <div class="admin-sub-badge">
+            <span class="pulse-dot"></span>
+            <span>Panel Kelola Toko Penjual & Kasir POS • Sync Live Active</span>
+          </div>
+        </div>
         <div class="admin-top-actions">
-          <button class="btn-primary" id="admin-add-product-btn"><i class="fa-solid fa-plus"></i> Tambah Produk</button>
+          <button class="btn-primary" id="admin-add-product-btn">
+            <i class="fa-solid fa-plus"></i> Tambah Produk Baru
+          </button>
           <a href="index.html" class="btn-secondary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-store"></i> Lihat Toko
+            <i class="fa-solid fa-globe"></i> Lihat Toko Online
           </a>
         </div>
       </div>
@@ -904,6 +912,6 @@
   <!-- Socket.io Realtime Client -->
   <script src="/socket.io/socket.io.js"></script>
   <!-- Script File -->
-  <script src="dashboard.js?v=3.3"></script>
+  <script src="dashboard.js?v=4.0"></script>
 </body>
 </html>
