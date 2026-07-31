@@ -41,6 +41,7 @@ async function initApp() {
   setupEventListeners();
   startPromoSlider();
   initChatLogs();
+  initRealtimeReverbEngine();
 
   // Listen to product updates from dashboard (multi-tab sync)
   window.addEventListener('storage', (e) => {
@@ -48,6 +49,19 @@ async function initApp() {
       fetchProducts().then(() => renderProducts());
     }
   });
+}
+
+// WebSocket Realtime Engine (Reverb Equivalent)
+function initRealtimeReverbEngine() {
+  if (typeof io !== 'undefined') {
+    const socket = io();
+    socket.on('connect', () => {
+      console.log('⚡ Connected to Realtime Reverb WebSocket Engine');
+    });
+    socket.on('products:changed', (data) => {
+      fetchProducts().then(() => renderProducts());
+    });
+  }
 }
 
 // Local Storage helpers

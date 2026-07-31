@@ -1,10 +1,24 @@
 const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
+const http = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DB_PATH = path.join(__dirname, 'data', 'db.json');
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log(`⚡ Client terhubung ke Realtime WebSocket (Reverb Engine): ${socket.id}`);
+});
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -115,6 +129,7 @@ app.post('/api/products', async (req, res) => {
 
   db.products.push(newProduct);
   await writeDB(db);
+  io.emit('products:changed', { action: 'add', product: newProduct, timestamp: Date.now() });
   res.status(201).json(newProduct);
 });
 
@@ -143,6 +158,7 @@ app.put('/api/products/:id', async (req, res) => {
   };
 
   await writeDB(db);
+  io.emit('products:changed', { action: 'update', product: db.products[index], timestamp: Date.now() });
   res.json(db.products[index]);
 });
 
@@ -157,6 +173,7 @@ app.delete('/api/products/:id', async (req, res) => {
   }
 
   await writeDB(db);
+  io.emit('products:changed', { action: 'delete', id: req.params.id, timestamp: Date.now() });
   res.json({ message: 'Produk berhasil dihapus.' });
 });
 
@@ -393,6 +410,6 @@ app.post('/api/login', async (req, res) => {
   res.json(userResponse);
 });
 
-app.listen(PORT, () => {
-  console.log(`Server Berkah Jaya berjalan di http://localhost:${PORT}`);
+server.listen(PORT, () => {
+  console.log(`⚡ Server Berkah Jaya + Reverb Realtime Engine berjalan di http://localhost:${PORT}`);
 });

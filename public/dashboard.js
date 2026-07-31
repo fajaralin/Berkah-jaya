@@ -599,6 +599,19 @@ function setupAdminEventListeners() {
 
   // Initialize Product Image Studio Controls
   initProductImageStudio();
+  initRealtimeReverbEngine();
+}
+
+// Realtime Reverb Engine WebSocket Listener for Admin
+function initRealtimeReverbEngine() {
+  if (typeof io !== 'undefined') {
+    const socket = io();
+    socket.on('connect', () => {
+      console.log('⚡ Connected to Admin Realtime Reverb Engine');
+    });
+    socket.on('products:changed', () => loadAdminDashboard());
+    socket.on('orders:changed', () => loadAdminDashboard());
+  }
 }
 
 // Toast notification helper
