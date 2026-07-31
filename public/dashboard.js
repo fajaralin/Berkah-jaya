@@ -465,6 +465,11 @@ async function submitProductCrudForm() {
 
     if (!response.ok) throw new Error('Gagal menyimpan produk.');
     
+    // Broadcast product update signal to index.html/store tabs
+    try {
+      localStorage.setItem('bj_products_updated', Date.now());
+    } catch (e) {}
+
     showToast(id ? 'Detail produk berhasil diperbarui.' : 'Produk baru berhasil ditambahkan.', 'success');
     closeProductCrudModal();
     

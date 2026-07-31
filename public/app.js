@@ -41,6 +41,13 @@ async function initApp() {
   setupEventListeners();
   startPromoSlider();
   initChatLogs();
+
+  // Listen to product updates from dashboard (multi-tab sync)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'bj_products_updated') {
+      fetchProducts().then(() => renderProducts());
+    }
+  });
 }
 
 // Local Storage helpers
@@ -81,7 +88,7 @@ async function fetchProducts() {
       url += '?' + params.join('&');
     }
     
-    const response = await fetch(url);
+    const response = await fetch(url, { cache: 'no-cache' });
     if (!response.ok) throw new Error('Gagal mengambil data produk');
     appState.products = await response.json();
   } catch (error) {
