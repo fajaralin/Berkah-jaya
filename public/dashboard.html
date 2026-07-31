@@ -219,8 +219,17 @@
               </select>
             </div>
             <div class="form-group-crud">
-              <label for="form-product-image">URL Gambar Produk</label>
-              <input type="url" id="form-product-image" placeholder="Biarkan kosong untuk default">
+              <label for="form-product-image">Gambar Produk</label>
+              <div class="image-input-action-group" style="display: flex; gap: 8px;">
+                <input type="text" id="form-product-image" placeholder="URL Gambar / Data Base64" style="flex: 1;">
+                <button type="button" class="btn-secondary" id="btn-open-image-editor" style="white-space: nowrap;">
+                  <i class="fa-solid fa-wand-magic-sparkles text-orange"></i> Edit Studio
+                </button>
+              </div>
+              <div id="form-product-image-preview-container" style="margin-top: 8px; display: none; align-items: center; gap: 10px;">
+                <img id="form-product-image-preview" src="" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color);">
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Pratinjau Foto Produk</span>
+              </div>
             </div>
           </div>
 
@@ -258,6 +267,8 @@
           </div>
         </form>
       </div>
+    </div>
+
     <!-- Order Detail Modal -->
     <div id="admin-order-detail-modal" class="modal">
       <div class="modal-content order-detail-card">
@@ -280,6 +291,180 @@
           </button>
           <button type="button" class="btn-secondary" id="order-detail-close-btn">Tutup</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Product Image Studio / Editor Modal -->
+    <div id="image-editor-modal" class="modal">
+      <div class="modal-content image-editor-card">
+        <div class="editor-header">
+          <div class="editor-header-title">
+            <h3><i class="fa-solid fa-wand-magic-sparkles text-orange"></i> Studio Editor Gambar Produk</h3>
+            <p>Edit foto produk, tambahkan logo overlay, stiker promo, teks, dan filter warna</p>
+          </div>
+          <button class="close-modal-btn" id="close-image-editor-btn">&times;</button>
+        </div>
+
+        <div class="editor-main-layout">
+          <!-- Left / Center: Canvas Workspace & Tools -->
+          <div class="editor-canvas-container">
+            <div class="canvas-wrapper">
+              <canvas id="product-editor-canvas" width="600" height="600"></canvas>
+            </div>
+            <div class="canvas-quick-controls">
+              <button type="button" class="btn-icon" id="canvas-btn-delete" title="Hapus Layer Terpilih"><i class="fa-solid fa-trash text-red"></i> Hapus Layer</button>
+              <button type="button" class="btn-icon" id="canvas-btn-layer-up" title="Bawa ke Depan"><i class="fa-solid fa-arrow-up"></i> Depan</button>
+              <button type="button" class="btn-icon" id="canvas-btn-layer-down" title="Turunkan ke Belakang"><i class="fa-solid fa-arrow-down"></i> Belakang</button>
+              <button type="button" class="btn-icon" id="canvas-btn-clear" title="Reset Canvas"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+            </div>
+          </div>
+
+          <!-- Right Side: Sidebar Toolbar Controls -->
+          <div class="editor-sidebar-toolbar">
+            <!-- Editor Tabs -->
+            <div class="editor-tabs">
+              <button type="button" class="editor-tab-btn active" data-tab="tab-base-image"><i class="fa-solid fa-image"></i> Dasar</button>
+              <button type="button" class="editor-tab-btn" data-tab="tab-overlay-image"><i class="fa-solid fa-images"></i> Overlay</button>
+              <button type="button" class="editor-tab-btn" data-tab="tab-stickers"><i class="fa-solid fa-certificate"></i> Badge</button>
+              <button type="button" class="editor-tab-btn" data-tab="tab-text"><i class="fa-solid fa-font"></i> Teks</button>
+              <button type="button" class="editor-tab-btn" data-tab="tab-filters"><i class="fa-solid fa-sliders"></i> Filter</button>
+            </div>
+
+            <!-- Tab Content 1: Base Image -->
+            <div class="editor-tab-panel active" id="tab-base-image">
+              <h4>Foto Utama Produk</h4>
+              <div class="editor-control-group">
+                <label>Unggah Gambar dari Perangkat:</label>
+                <input type="file" id="editor-base-file-input" accept="image/*" class="file-input-styled">
+              </div>
+              <div class="editor-control-group">
+                <label>Atau Tempel URL Gambar:</label>
+                <div class="url-input-group">
+                  <input type="url" id="editor-base-url-input" placeholder="https://example.com/foto.jpg">
+                  <button type="button" class="btn-secondary" id="btn-load-base-url">Muat</button>
+                </div>
+              </div>
+              <div class="editor-control-group">
+                <label>Ukuran Canvas:</label>
+                <select id="editor-canvas-preset-size">
+                  <option value="600x600">Persegi Tokopedia/Shopee (600 x 600)</option>
+                  <option value="800x800">HD Square (800 x 800)</option>
+                  <option value="600x800">Portrait (600 x 800)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Tab Content 2: Overlay Image -->
+            <div class="editor-tab-panel" id="tab-overlay-image">
+              <h4>Tambah Gambar Overlay / Logo / Watermark</h4>
+              <div class="editor-control-group">
+                <label>Unggah Gambar Overlay (PNG/JPG):</label>
+                <input type="file" id="editor-overlay-file-input" accept="image/*" class="file-input-styled">
+              </div>
+              <div class="editor-control-group">
+                <label>Atau Tempel URL Overlay:</label>
+                <div class="url-input-group">
+                  <input type="url" id="editor-overlay-url-input" placeholder="https://example.com/logo.png">
+                  <button type="button" class="btn-secondary" id="btn-add-overlay-url">Tambah</button>
+                </div>
+              </div>
+              <p class="editor-help-text"><i class="fa-solid fa-lightbulb"></i> Tips: Gunakan format PNG transparan untuk logo toko atau watermark.</p>
+            </div>
+
+            <!-- Tab Content 3: Badges / Stickers -->
+            <div class="editor-tab-panel" id="tab-stickers">
+              <h4>Stiker & Badge Promo Toko</h4>
+              <p class="editor-help-text">Klik stiker di bawah untuk menambahkan langsung ke canvas:</p>
+              <div class="sticker-preset-grid">
+                <button type="button" class="sticker-preset-btn" data-badge="bestseller">
+                  <span class="badge-preview bestseller">⭐ BEST SELLER</span>
+                </button>
+                <button type="button" class="sticker-preset-btn" data-badge="original">
+                  <span class="badge-preview original">💯 ORIGINAL 100%</span>
+                </button>
+                <button type="button" class="sticker-preset-btn" data-badge="garansi">
+                  <span class="badge-preview garansi">🛡️ GARANSI RESMI</span>
+                </button>
+                <button type="button" class="sticker-preset-btn" data-badge="ongkir">
+                  <span class="badge-preview ongkir">🚚 GRATIS ONGKIR</span>
+                </button>
+                <button type="button" class="sticker-preset-btn" data-badge="diskon">
+                  <span class="badge-preview diskon">🔥 DISKON 50%</span>
+                </button>
+                <button type="button" class="sticker-preset-btn" data-badge="berkah">
+                  <span class="badge-preview berkah">🏢 CV BERKAH JAYA</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tab Content 4: Text Overlay -->
+            <div class="editor-tab-panel" id="tab-text">
+              <h4>Tambah Teks & Label</h4>
+              <div class="editor-control-group">
+                <label>Teks Promosi:</label>
+                <input type="text" id="editor-text-input" placeholder="Misal: Promo Rp 50.000">
+              </div>
+              <div class="form-row-grid">
+                <div class="editor-control-group">
+                  <label>Warna Teks:</label>
+                  <input type="color" id="editor-text-color" value="#ffffff" style="height: 40px; padding: 2px; width: 100%;">
+                </div>
+                <div class="editor-control-group">
+                  <label>Warna Latar (Pill):</label>
+                  <input type="color" id="editor-text-bg" value="#ff6b00" style="height: 40px; padding: 2px; width: 100%;">
+                </div>
+              </div>
+              <div class="editor-control-group">
+                <label>Ukuran Font (px):</label>
+                <input type="range" id="editor-text-size" min="14" max="60" value="24">
+              </div>
+              <button type="button" class="btn-primary btn-full" id="btn-add-text-layer">
+                <i class="fa-solid fa-plus"></i> Tambahkan Teks ke Canvas
+              </button>
+            </div>
+
+            <!-- Tab Content 5: Filters & Adjustments -->
+            <div class="editor-tab-panel" id="tab-filters">
+              <h4>Filter Warna & Kecerahan</h4>
+              <div class="editor-control-group">
+                <label>Kecerahan (Brightness): <span id="val-brightness">100%</span></label>
+                <input type="range" id="slider-brightness" min="50" max="150" value="100">
+              </div>
+              <div class="editor-control-group">
+                <label>Kontras (Contrast): <span id="val-contrast">100%</span></label>
+                <input type="range" id="slider-contrast" min="50" max="150" value="100">
+              </div>
+              <div class="editor-control-group">
+                <label>Saturasi Warna: <span id="val-saturation">100%</span></label>
+                <input type="range" id="slider-saturation" min="0" max="200" value="100">
+              </div>
+              <button type="button" class="btn-secondary btn-full" id="btn-reset-filters">Reset Filter</button>
+            </div>
+
+            <!-- Active Layers Management List -->
+            <div class="editor-layers-box">
+              <h4><i class="fa-solid fa-layer-group"></i> Layer Aktif Canvas</h4>
+              <div class="layers-list" id="editor-layers-list">
+                <!-- Dynamic list of layers -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="editor-footer-actions">
+          <button type="button" class="btn-secondary" id="btn-download-editor-png">
+            <i class="fa-solid fa-download"></i> Unduh PNG
+          </button>
+          <div class="footer-main-buttons">
+            <button type="button" class="btn-secondary" id="btn-close-editor">Batal</button>
+            <button type="button" class="btn-primary" id="btn-apply-editor-to-form">
+              <i class="fa-solid fa-circle-check"></i> Terapkan ke Produk
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
 

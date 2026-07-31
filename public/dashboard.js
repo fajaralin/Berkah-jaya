@@ -413,6 +413,7 @@ async function openProductCrudModal(productId = null) {
     applyCategorySpecsTemplate('bangunan');
   }
   
+  updateFormImagePreview();
   modal.classList.add('active');
 }
 
@@ -577,13 +578,22 @@ function setupAdminEventListeners() {
   document.getElementById('close-order-modal-btn')?.addEventListener('click', closeAdminOrderDetailModal);
   document.getElementById('order-detail-close-btn')?.addEventListener('click', closeAdminOrderDetailModal);
 
+  // Form Product Image input preview listener
+  document.getElementById('form-product-image')?.addEventListener('input', updateFormImagePreview);
+  document.getElementById('btn-open-image-editor')?.addEventListener('click', openImageEditorModal);
+
   // Close modals on clicking outside modal-content
   window.addEventListener('click', (e) => {
     const pModal = document.getElementById('product-form-modal');
     if (e.target === pModal) closeProductCrudModal();
     const oModal = document.getElementById('admin-order-detail-modal');
     if (e.target === oModal) closeAdminOrderDetailModal();
+    const eModal = document.getElementById('image-editor-modal');
+    if (e.target === eModal) closeImageEditorModal();
   });
+
+  // Initialize Product Image Studio Controls
+  initProductImageStudio();
 }
 
 // Toast notification helper
@@ -607,3 +617,588 @@ function showToast(message, type = 'info') {
     toast.remove();
   }, 3000);
 }
+
+// Update Image Preview in Product CRUD Form
+function updateFormImagePreview() {
+  const val = document.getElementById('form-product-image').value.trim();
+  const container = document.getElementById('form-product-image-preview-container');
+  const img = document.getElementById('form-product-image-preview');
+  if (val) {
+    img.src = val;
+    container.style.display = 'flex';
+  } else {
+    container.style.display = 'none';
+  }
+}
+
+/* ==========================================================================
+   PRODUCT IMAGE STUDIO / CANVAS MULTI-LAYER ENGINE
+   ========================================================================== */
+
+let studioState = {
+  canvas: null,
+  ctx: null,
+  layers: [],
+  selectedLayerId: null,
+  isDragging: false,
+  isResizing: false,
+  dragStartX: 0,
+  dragStartY: 0,
+  layerStartX: 0,
+  layerStartY: 0,
+  layerStartW: 0,
+  layerStartH: 0,
+  filters: {
+    brightness: 100,
+    contrast: 100,
+    saturation: 100
+  }
+};
+
+function openImageEditorModal() {
+  const modal = document.getElementById('image-editor-modal');
+  modal.classList.add('active');
+
+  const currentVal = document.getElementById('form-product-image').value.trim();
+  const defaultImg = currentVal || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80';
+  
+  loadBaseImageToStudio(defaultImg);
+}
+
+function closeImageEditorModal() {
+  document.getElementById('image-editor-modal').classList.remove('active');
+}
+
+function loadBaseImageToStudio(src) {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    // Set base image layer
+    studioState.layers = [{
+      id: 'base-layer',
+      type: 'base',
+      name: 'Foto Utama Produk',
+      img: img,
+      x: 0,
+      y: 0,
+      width: studioState.canvas.width,
+      height: studioState.canvas.height
+    }];
+    studioState.selectedLayerId = null;
+    renderStudioCanvas();
+    updateStudioLayersList();
+  };
+  img.onerror = () => {
+    showToast('Gagal memuat gambar utama. Menggunakan kanvas kosong.', 'error');
+    studioState.layers = [];
+    renderStudioCanvas();
+    updateStudioLayersList();
+  };
+  img.src = src;
+}
+
+function initProductImageStudio() {
+  const canvas = document.getElementById('product-editor-canvas');
+  if (!canvas) return;
+
+  studioState.canvas = canvas;
+  studioState.ctx = canvas.getContext('2d');
+
+  // Close buttons
+  document.getElementById('close-image-editor-btn')?.addEventListener('click', closeImageEditorModal);
+  document.getElementById('btn-close-editor')?.addEventListener('click', closeImageEditorModal);
+
+  // Tab switching
+  const tabs = document.querySelectorAll('.editor-tab-btn');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.editor-tab-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const targetPanel = document.getElementById(tab.getAttribute('data-tab'));
+      if (targetPanel) targetPanel.classList.add('active');
+    });
+  });
+
+  // Base Image Inputs
+  document.getElementById('editor-base-file-input')?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (evt) => loadBaseImageToStudio(evt.target.result);
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById('btn-load-base-url')?.addEventListener('click', () => {
+    const url = document.getElementById('editor-base-url-input').value.trim();
+    if (url) loadBaseImageToStudio(url);
+  });
+
+  document.getElementById('editor-canvas-preset-size')?.addEventListener('change', (e) => {
+    const [w, h] = e.target.value.split('x').map(Number);
+    studioState.canvas.width = w;
+    studioState.canvas.height = h;
+    if (studioState.layers.length > 0 && studioState.layers[0].type === 'base') {
+      studioState.layers[0].width = w;
+      studioState.layers[0].height = h;
+    }
+    renderStudioCanvas();
+  });
+
+  // Overlay Image Inputs
+  document.getElementById('editor-overlay-file-input')?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (evt) => addOverlayImageToStudio(evt.target.result, file.name);
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById('btn-add-overlay-url')?.addEventListener('click', () => {
+    const url = document.getElementById('editor-overlay-url-input').value.trim();
+    if (url) addOverlayImageToStudio(url, 'Overlay URL');
+  });
+
+  // Preset Stickers
+  document.querySelectorAll('.sticker-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const badgeType = btn.getAttribute('data-badge');
+      addBadgeStickerToStudio(badgeType);
+    });
+  });
+
+  // Add Text Layer
+  document.getElementById('btn-add-text-layer')?.addEventListener('click', () => {
+    const text = document.getElementById('editor-text-input').value.trim() || 'PROMO SPECIAL';
+    const color = document.getElementById('editor-text-color').value;
+    const bg = document.getElementById('editor-text-bg').value;
+    const fontSize = Number(document.getElementById('editor-text-size').value);
+
+    addTextLayerToStudio(text, color, bg, fontSize);
+  });
+
+  // Filter Sliders
+  const sliderB = document.getElementById('slider-brightness');
+  const sliderC = document.getElementById('slider-contrast');
+  const sliderS = document.getElementById('slider-saturation');
+
+  const updateFilters = () => {
+    studioState.filters.brightness = Number(sliderB.value);
+    studioState.filters.contrast = Number(sliderC.value);
+    studioState.filters.saturation = Number(sliderS.value);
+
+    document.getElementById('val-brightness').innerText = `${sliderB.value}%`;
+    document.getElementById('val-contrast').innerText = `${sliderC.value}%`;
+    document.getElementById('val-saturation').innerText = `${sliderS.value}%`;
+
+    renderStudioCanvas();
+  };
+
+  sliderB?.addEventListener('input', updateFilters);
+  sliderC?.addEventListener('input', updateFilters);
+  sliderS?.addEventListener('input', updateFilters);
+
+  document.getElementById('btn-reset-filters')?.addEventListener('click', () => {
+    sliderB.value = 100;
+    sliderC.value = 100;
+    sliderS.value = 100;
+    updateFilters();
+  });
+
+  // Quick Controls (Delete, Order Up, Order Down, Clear)
+  document.getElementById('canvas-btn-delete')?.addEventListener('click', deleteSelectedStudioLayer);
+  document.getElementById('canvas-btn-layer-up')?.addEventListener('click', () => moveSelectedStudioLayer(1));
+  document.getElementById('canvas-btn-layer-down')?.addEventListener('click', () => moveSelectedStudioLayer(-1));
+  document.getElementById('canvas-btn-clear')?.addEventListener('click', () => {
+    studioState.layers = studioState.layers.filter(l => l.type === 'base');
+    studioState.selectedLayerId = null;
+    renderStudioCanvas();
+    updateStudioLayersList();
+  });
+
+  // Export Buttons
+  document.getElementById('btn-apply-editor-to-form')?.addEventListener('click', () => {
+    // Render without selection handles
+    renderStudioCanvas(false);
+    const dataUrl = studioState.canvas.toDataURL('image/png');
+    document.getElementById('form-product-image').value = dataUrl;
+    updateFormImagePreview();
+    closeImageEditorModal();
+    showToast('Gambar editan berhasil diterapkan pada produk!', 'success');
+  });
+
+  document.getElementById('btn-download-editor-png')?.addEventListener('click', () => {
+    renderStudioCanvas(false);
+    const dataUrl = studioState.canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.download = 'produk-berkah-jaya.png';
+    link.href = dataUrl;
+    link.click();
+    showToast('Gambar berhasil diunduh', 'success');
+  });
+
+  // Canvas Mouse Interactions (Drag & Resize)
+  canvas.addEventListener('mousedown', handleStudioCanvasMouseDown);
+  canvas.addEventListener('mousemove', handleStudioCanvasMouseMove);
+  canvas.addEventListener('mouseup', handleStudioCanvasMouseUp);
+  canvas.addEventListener('mouseleave', handleStudioCanvasMouseUp);
+}
+
+function addOverlayImageToStudio(src, name = 'Overlay') {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    const id = 'layer-' + Date.now();
+    const aspect = img.width / img.height;
+    const w = 180;
+    const h = w / aspect;
+    const layer = {
+      id,
+      type: 'image',
+      name: name,
+      img: img,
+      x: (studioState.canvas.width - w) / 2,
+      y: (studioState.canvas.height - h) / 2,
+      width: w,
+      height: h,
+      rotation: 0
+    };
+    studioState.layers.push(layer);
+    studioState.selectedLayerId = id;
+    renderStudioCanvas();
+    updateStudioLayersList();
+  };
+  img.src = src;
+}
+
+function addBadgeStickerToStudio(badgeType) {
+  const id = 'layer-' + Date.now();
+  let text = '⭐ BEST SELLER';
+  if (badgeType === 'original') text = '💯 ORIGINAL 100%';
+  if (badgeType === 'garansi') text = '🛡️ GARANSI RESMI';
+  if (badgeType === 'ongkir') text = '🚚 GRATIS ONGKIR';
+  if (badgeType === 'diskon') text = '🔥 DISKON 50%';
+  if (badgeType === 'berkah') text = '🏢 CV BERKAH JAYA';
+
+  const layer = {
+    id,
+    type: 'badge',
+    badgeType: badgeType,
+    name: `Badge: ${text}`,
+    text: text,
+    x: 30,
+    y: 30,
+    width: 200,
+    height: 48,
+    rotation: 0
+  };
+
+  studioState.layers.push(layer);
+  studioState.selectedLayerId = id;
+  renderStudioCanvas();
+  updateStudioLayersList();
+}
+
+function addTextLayerToStudio(text, color, bg, fontSize) {
+  const id = 'layer-' + Date.now();
+  // estimate text width
+  studioState.ctx.font = `bold ${fontSize}px 'Outfit', 'Inter', sans-serif`;
+  const textWidth = studioState.ctx.measureText(text).width + 30;
+
+  const layer = {
+    id,
+    type: 'text',
+    name: `Teks: "${text.slice(0, 12)}..."`,
+    text: text,
+    color: color,
+    bg: bg,
+    fontSize: fontSize,
+    x: (studioState.canvas.width - textWidth) / 2,
+    y: (studioState.canvas.height - 50) / 2,
+    width: Math.max(textWidth, 120),
+    height: fontSize + 20,
+    rotation: 0
+  };
+
+  studioState.layers.push(layer);
+  studioState.selectedLayerId = id;
+  renderStudioCanvas();
+  updateStudioLayersList();
+}
+
+function deleteSelectedStudioLayer() {
+  if (!studioState.selectedLayerId) return;
+  studioState.layers = studioState.layers.filter(l => l.id !== studioState.selectedLayerId || l.type === 'base');
+  studioState.selectedLayerId = null;
+  renderStudioCanvas();
+  updateStudioLayersList();
+}
+
+function moveSelectedStudioLayer(dir) {
+  if (!studioState.selectedLayerId) return;
+  const idx = studioState.layers.findIndex(l => l.id === studioState.selectedLayerId);
+  if (idx <= 0) return; // cannot move base layer or top
+
+  const newIdx = idx + dir;
+  if (newIdx < 1 || newIdx >= studioState.layers.length) return;
+
+  const item = studioState.layers.splice(idx, 1)[0];
+  studioState.layers.splice(newIdx, 0, item);
+
+  renderStudioCanvas();
+  updateStudioLayersList();
+}
+
+function renderStudioCanvas(drawSelection = true) {
+  const { canvas, ctx, layers, filters, selectedLayerId } = studioState;
+  if (!ctx) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Apply Filter string
+  ctx.filter = `brightness(${filters.brightness}%) contrast(${filters.contrast}%) saturate(${filters.saturation}%)`;
+
+  // Draw layers bottom to top
+  layers.forEach(layer => {
+    if (layer.type === 'base') {
+      ctx.drawImage(layer.img, 0, 0, canvas.width, canvas.height);
+    } else if (layer.type === 'image') {
+      ctx.save();
+      ctx.translate(layer.x + layer.width/2, layer.y + layer.height/2);
+      ctx.rotate((layer.rotation || 0) * Math.PI / 180);
+      ctx.drawImage(layer.img, -layer.width/2, -layer.height/2, layer.width, layer.height);
+      ctx.restore();
+    } else if (layer.type === 'badge') {
+      drawStudioBadgeLayer(ctx, layer);
+    } else if (layer.type === 'text') {
+      drawStudioTextLayer(ctx, layer);
+    }
+  });
+
+  // Reset filter for selection box
+  ctx.filter = 'none';
+
+  // Draw selection box & resize handle if active layer is selected
+  if (drawSelection && selectedLayerId) {
+    const sel = layers.find(l => l.id === selectedLayerId && l.type !== 'base');
+    if (sel) {
+      ctx.save();
+      ctx.strokeStyle = '#ff6b00';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.strokeRect(sel.x, sel.y, sel.width, sel.height);
+
+      // Draw bottom-right resize handle
+      ctx.fillStyle = '#0070f3';
+      ctx.setLineDash([]);
+      ctx.fillRect(sel.x + sel.width - 6, sel.y + sel.height - 6, 12, 12);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(sel.x + sel.width - 6, sel.y + sel.height - 6, 12, 12);
+
+      ctx.restore();
+    }
+  }
+}
+
+function drawStudioBadgeLayer(ctx, layer) {
+  ctx.save();
+  ctx.translate(layer.x + layer.width/2, layer.y + layer.height/2);
+  ctx.rotate((layer.rotation || 0) * Math.PI / 180);
+
+  const w = layer.width;
+  const h = layer.height;
+  const rx = -w/2;
+  const ry = -h/2;
+
+  let grad;
+  if (layer.badgeType === 'bestseller') {
+    grad = ctx.createLinearGradient(rx, ry, rx + w, ry + h);
+    grad.addColorStop(0, '#ff9900'); grad.addColorStop(1, '#ff5500');
+  } else if (layer.badgeType === 'original') {
+    grad = ctx.createLinearGradient(rx, ry, rx + w, ry + h);
+    grad.addColorStop(0, '#00b09b'); grad.addColorStop(1, '#96c93d');
+  } else if (layer.badgeType === 'garansi') {
+    grad = ctx.createLinearGradient(rx, ry, rx + w, ry + h);
+    grad.addColorStop(0, '#1e3c72'); grad.addColorStop(1, '#2a5298');
+  } else if (layer.badgeType === 'ongkir') {
+    grad = ctx.createLinearGradient(rx, ry, rx + w, ry + h);
+    grad.addColorStop(0, '#11998e'); grad.addColorStop(1, '#38ef7d');
+  } else if (layer.badgeType === 'diskon') {
+    grad = ctx.createLinearGradient(rx, ry, rx + w, ry + h);
+    grad.addColorStop(0, '#ee0979'); grad.addColorStop(1, '#ff6a00');
+  } else {
+    grad = ctx.createLinearGradient(rx, ry, rx + w, ry + h);
+    grad.addColorStop(0, '#4776e6'); grad.addColorStop(1, '#8e54e9');
+  }
+
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  const radius = h / 2;
+  if (ctx.roundRect) ctx.roundRect(rx, ry, w, h, radius);
+  else ctx.rect(rx, ry, w, h);
+  ctx.fill();
+
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `bold ${Math.round(h * 0.45)}px 'Outfit', 'Inter', sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(layer.text, 0, 0);
+
+  ctx.restore();
+}
+
+function drawStudioTextLayer(ctx, layer) {
+  ctx.save();
+  ctx.translate(layer.x + layer.width/2, layer.y + layer.height/2);
+  ctx.rotate((layer.rotation || 0) * Math.PI / 180);
+
+  const w = layer.width;
+  const h = layer.height;
+  const rx = -w/2;
+  const ry = -h/2;
+
+  if (layer.bg) {
+    ctx.fillStyle = layer.bg;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(rx, ry, w, h, 6);
+    else ctx.rect(rx, ry, w, h);
+    ctx.fill();
+  }
+
+  ctx.fillStyle = layer.color || '#ffffff';
+  ctx.font = `bold ${layer.fontSize || 24}px 'Outfit', 'Inter', sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(layer.text, 0, 0);
+
+  ctx.restore();
+}
+
+function updateStudioLayersList() {
+  const container = document.getElementById('editor-layers-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  studioState.layers.forEach(layer => {
+    const row = document.createElement('div');
+    row.className = `layer-item-row ${layer.id === studioState.selectedLayerId ? 'active' : ''}`;
+    
+    let icon = '<i class="fa-solid fa-image"></i>';
+    if (layer.type === 'badge') icon = '<i class="fa-solid fa-certificate text-orange"></i>';
+    if (layer.type === 'text') icon = '<i class="fa-solid fa-font text-blue"></i>';
+
+    row.innerHTML = `
+      <div class="layer-item-title">${icon} <span>${layer.name}</span></div>
+      <div class="layer-item-actions">
+        ${layer.type !== 'base' ? `<button type="button" class="btn-del-layer" title="Hapus"><i class="fa-solid fa-trash"></i></button>` : ''}
+      </div>
+    `;
+
+    row.addEventListener('click', () => {
+      studioState.selectedLayerId = layer.id;
+      renderStudioCanvas();
+      updateStudioLayersList();
+    });
+
+    const delBtn = row.querySelector('.btn-del-layer');
+    if (delBtn) {
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        studioState.selectedLayerId = layer.id;
+        deleteSelectedStudioLayer();
+      });
+    }
+
+    container.appendChild(row);
+  });
+}
+
+function handleStudioCanvasMouseDown(e) {
+  const rect = studioState.canvas.getBoundingClientRect();
+  const scaleX = studioState.canvas.width / rect.width;
+  const scaleY = studioState.canvas.height / rect.height;
+  const mouseX = (e.clientX - rect.left) * scaleX;
+  const mouseY = (e.clientY - rect.top) * scaleY;
+
+  // Check resize handle click on active layer
+  if (studioState.selectedLayerId) {
+    const sel = studioState.layers.find(l => l.id === studioState.selectedLayerId && l.type !== 'base');
+    if (sel) {
+      const handleX = sel.x + sel.width - 6;
+      const handleY = sel.y + sel.height - 6;
+      if (mouseX >= handleX - 8 && mouseX <= handleX + 16 && mouseY >= handleY - 8 && mouseY <= handleY + 16) {
+        studioState.isResizing = true;
+        studioState.dragStartX = mouseX;
+        studioState.dragStartY = mouseY;
+        studioState.layerStartW = sel.width;
+        studioState.layerStartH = sel.height;
+        return;
+      }
+    }
+  }
+
+  // Hit test layers top to bottom (excluding base layer)
+  let found = null;
+  for (let i = studioState.layers.length - 1; i >= 0; i--) {
+    const layer = studioState.layers[i];
+    if (layer.type === 'base') continue;
+    if (mouseX >= layer.x && mouseX <= layer.x + layer.width && mouseY >= layer.y && mouseY <= layer.y + layer.height) {
+      found = layer;
+      break;
+    }
+  }
+
+  if (found) {
+    studioState.selectedLayerId = found.id;
+    studioState.isDragging = true;
+    studioState.dragStartX = mouseX;
+    studioState.dragStartY = mouseY;
+    studioState.layerStartX = found.x;
+    studioState.layerStartY = found.y;
+  } else {
+    studioState.selectedLayerId = null;
+  }
+
+  renderStudioCanvas();
+  updateStudioLayersList();
+}
+
+function handleStudioCanvasMouseMove(e) {
+  if (!studioState.isDragging && !studioState.isResizing) return;
+
+  const rect = studioState.canvas.getBoundingClientRect();
+  const scaleX = studioState.canvas.width / rect.width;
+  const scaleY = studioState.canvas.height / rect.height;
+  const mouseX = (e.clientX - rect.left) * scaleX;
+  const mouseY = (e.clientY - rect.top) * scaleY;
+
+  const sel = studioState.layers.find(l => l.id === studioState.selectedLayerId);
+  if (!sel) return;
+
+  if (studioState.isDragging) {
+    const dx = mouseX - studioState.dragStartX;
+    const dy = mouseY - studioState.dragStartY;
+    sel.x = studioState.layerStartX + dx;
+    sel.y = studioState.layerStartY + dy;
+  } else if (studioState.isResizing) {
+    const dw = mouseX - studioState.dragStartX;
+    const dh = mouseY - studioState.dragStartY;
+    sel.width = Math.max(30, studioState.layerStartW + dw);
+    sel.height = Math.max(20, studioState.layerStartH + dh);
+  }
+
+  renderStudioCanvas();
+}
+
+function handleStudioCanvasMouseUp() {
+  studioState.isDragging = false;
+  studioState.isResizing = false;
+}
+
