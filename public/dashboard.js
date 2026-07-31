@@ -511,12 +511,12 @@ function setupAdminEventListeners() {
   });
 
   // Admin Search filter
-  document.getElementById('admin-product-search').addEventListener('input', () => {
+  document.getElementById('admin-product-search')?.addEventListener('input', () => {
     filterAdminProducts();
   });
 
   // Admin Product Delete / Edit delegation
-  document.getElementById('admin-product-table-body').addEventListener('click', (e) => {
+  document.getElementById('admin-product-table-body')?.addEventListener('click', (e) => {
     const row = e.target.closest('tr');
     if (!row) return;
     const productId = row.getAttribute('data-id');
@@ -535,7 +535,7 @@ function setupAdminEventListeners() {
   });
 
   // Admin Add Product click
-  document.getElementById('admin-add-product-btn').addEventListener('click', () => {
+  document.getElementById('admin-add-product-btn')?.addEventListener('click', () => {
     openProductCrudModal(null);
   });
 
@@ -553,11 +553,11 @@ function setupAdminEventListeners() {
     });
   });
 
-  document.getElementById('close-form-modal-btn').addEventListener('click', closeProductCrudModal);
-  document.getElementById('btn-cancel-crud').addEventListener('click', closeProductCrudModal);
+  document.getElementById('close-form-modal-btn')?.addEventListener('click', closeProductCrudModal);
+  document.getElementById('btn-cancel-crud')?.addEventListener('click', closeProductCrudModal);
 
   // Admin Product Category change template applicator
-  document.getElementById('form-product-category').addEventListener('change', (e) => {
+  document.getElementById('form-product-category')?.addEventListener('change', (e) => {
     const isNew = !document.getElementById('form-product-id').value;
     const hasSpecs = document.querySelectorAll('#specs-fields-wrapper .spec-field-pair').length > 0;
     if (isNew || !hasSpecs || confirm('Ganti template spesifikasi sesuai kategori baru? (Spesifikasi saat ini akan direset)')) {
@@ -566,13 +566,13 @@ function setupAdminEventListeners() {
   });
 
   // Admin Product Form Submit
-  document.getElementById('product-crud-form').addEventListener('submit', (e) => {
+  document.getElementById('product-crud-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     submitProductCrudForm();
   });
 
   // Admin dynamic spec fields
-  document.getElementById('btn-add-spec-field').addEventListener('click', () => {
+  document.getElementById('btn-add-spec-field')?.addEventListener('click', () => {
     const container = document.getElementById('specs-fields-wrapper');
     const row = document.createElement('div');
     row.className = 'spec-field-pair';
