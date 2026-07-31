@@ -1321,28 +1321,16 @@ async function initPosModule() {
   });
 
   document.getElementById('pos-cash-received')?.addEventListener('input', (e) => {
-    posState.cashReceived = Math.max(0, Number(e.target.value) || 0);
+    let rawVal = e.target.value.replace(/\D/g, '');
+    if (!rawVal) {
+      posState.cashReceived = 0;
+      e.target.value = '';
+    } else {
+      const num = Number(rawVal);
+      posState.cashReceived = num;
+      e.target.value = num.toLocaleString('id-ID');
+    }
     calculatePosTotals();
-  });
-
-  // Quick Cash Pills listener
-  document.querySelectorAll('.cash-pill').forEach(pill => {
-    pill.addEventListener('click', (e) => {
-      const amt = e.currentTarget.getAttribute('data-amount');
-      const subtotal = posState.cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
-      const discount = Math.min(subtotal, posState.discount);
-      const total = Math.max(0, subtotal - discount);
-
-      if (amt === 'exact') {
-        posState.cashReceived = total;
-      } else {
-        posState.cashReceived = Number(amt) || 0;
-      }
-
-      const cInput = document.getElementById('pos-cash-received');
-      if (cInput) cInput.value = posState.cashReceived || '';
-      calculatePosTotals();
-    });
   });
 
   document.getElementById('pos-payment-method')?.addEventListener('change', (e) => {

@@ -158,7 +158,7 @@
 
                       <div class="editor-control-group" id="pos-cash-input-wrapper">
                         <label for="pos-cash-received">Uang Diterima Pelanggan (Rp):</label>
-                        <input type="number" id="pos-cash-received" placeholder="Masukkan nominal tunai..." min="0" step="1000" class="pos-cash-input-custom">
+                        <input type="text" id="pos-cash-received" placeholder="0" inputmode="numeric" class="pos-cash-input-custom">
                       </div>
 
                       <div class="pos-change-box" id="pos-change-box">
@@ -869,6 +869,6 @@
   <!-- Socket.io Realtime Client -->
   <script src="/socket.io/socket.io.js"></script>
   <!-- Script File -->
-  <script src="dashboard.js?v=7.1"></script>
+  <script src="dashboard.js?v=8.1"></script>
 </body>
 </html>
