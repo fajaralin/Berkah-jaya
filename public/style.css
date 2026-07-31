@@ -4954,6 +4954,25 @@ input[type=number] {
   border-color: #6ee7b7;
 }
 
+@media (max-width: 1200px) {
+  .pos-layout-grid {
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .admin-standalone-layout {
+    padding: 16px 16px 40px 16px;
+  }
+  .pos-layout-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .admin-header-row {
     flex-direction: column;
@@ -4967,6 +4986,12 @@ input[type=number] {
   .admin-tab-bar {
     width: 100%;
     overflow-x: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-stats-grid {
+    grid-template-columns: 1fr;
   }
 }
 
