@@ -1,5 +1,5 @@
 // Configuration
-const STORE_WA_NUMBER = '6281234567890';
+const STORE_WA_NUMBER = '6285172369447';
 
 // State Management
 let appState = {
