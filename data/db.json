@@ -111,31 +111,6 @@
       "reviews": []
     },
     {
-      "id": "6",
-      "name": "Stop Kontak Kaiser 5 Lubang + Saklar 3M",
-      "category": "listrik",
-      "price": 55000,
-      "stock": 90,
-      "description": "Stop kontak multi-socket Kaiser 5 lubang dengan saklar on/off individu lampu indikator merah. Panjang kabel 3 meter tembaga murni bersertifikasi SNI. Dilengkapi pengaman anak-anak (child protector) dan proteksi petir overload.",
-      "brand": "Kaiser",
-      "rating": 4.9,
-      "sales": 870,
-      "image": "https://images.unsplash.com/photo-1563770660941-20978e870e26?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Lubang": "5 Lubang + Saklar Mandiri",
-        "Kabel": "3 Meter, Tembaga Murni",
-        "Daya Maks": "2500 Watt - 10A"
-      },
-      "reviews": [
-        {
-          "user": "Eko Listrik",
-          "rating": 5,
-          "comment": "Bagus banget ada saklar masing-masing, aman buat anak kecil.",
-          "date": "2026-06-29"
-        }
-      ]
-    },
-    {
       "id": "7",
       "name": "Kabel Listrik NYM 2x1.5mm Supreme 50M",
       "category": "listrik",
