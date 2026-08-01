@@ -251,31 +251,6 @@
       "reviews": []
     },
     {
-      "id": "13",
-      "name": "Pupuk NPK Mutiara 16-16-16 (1kg Repack)",
-      "category": "pertanian",
-      "price": 18000,
-      "stock": 200,
-      "description": "Pupuk NPK Mutiara impor kualitas terbaik dengan komposisi seimbang Nitrogen 16%, Fosfat 16%, Kalium 16%. Berbentuk butiran biru (granular) mudah larut air untuk mempercepat pertumbuhan vegetatif dan buah tanaman.",
-      "brand": "YaraMila",
-      "rating": 4.9,
-      "sales": 4300,
-      "image": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Berat": "1 Kg (Repack)",
-        "Komposisi": "N 16%, P2O5 16%, K2O 16%",
-        "Asal": "Norwegia"
-      },
-      "reviews": [
-        {
-          "user": "Ibu HobiBunga",
-          "rating": 5,
-          "comment": "Tanaman hias aglonema saya langsung tumbuh tunas baru pakai pupuk ini.",
-          "date": "2026-06-27"
-        }
-      ]
-    },
-    {
       "id": "1785549830130",
       "name": "roundoup",
       "category": "pertanian",
