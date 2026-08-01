@@ -190,24 +190,6 @@
       "reviews": []
     },
     {
-      "id": "10",
-      "name": "Obeng Tespen Listrik Digital LCD",
-      "category": "listrik",
-      "price": 24000,
-      "stock": 70,
-      "description": "Tespen digital pintar untuk mendeteksi arus bolak-balik (AC) dan searah (DC) 12V-220V. Menampilkan voltase pada layar LCD kecil secara langsung tanpa baterai tambahan.",
-      "brand": "Mitzuda",
-      "rating": 4.6,
-      "sales": 640,
-      "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Rentang Pengukuran": "12V - 250V AC/DC",
-        "Display": "LCD Digital & Indikator Neon",
-        "Fitur": "Deteksi kabel putus (breakpoint)"
-      },
-      "reviews": []
-    },
-    {
       "id": "1785549830130",
       "name": "roundoup",
       "category": "pertanian",
