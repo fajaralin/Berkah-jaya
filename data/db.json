@@ -172,24 +172,6 @@
       "reviews": []
     },
     {
-      "id": "9",
-      "name": "Saklar Seri Ganda Panasonic Style Putih",
-      "category": "listrik",
-      "price": 19500,
-      "stock": 120,
-      "description": "Saklar dinding ganda (seri) Panasonic tipe Style modern minimalis. Terbuat dari material berkualitas tahan panas tinggi dan tidak mudah berubah warna kekuningan.",
-      "brand": "Panasonic",
-      "rating": 4.7,
-      "sales": 1420,
-      "image": "https://images.unsplash.com/photo-1621905252507-b354bc25edac?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Tipe": "Saklar Seri Double",
-        "Warna": "Putih Salju",
-        "Pemasangan": "In-bow (Tanam)"
-      },
-      "reviews": []
-    },
-    {
       "id": "1785549830130",
       "name": "roundoup",
       "category": "pertanian",
