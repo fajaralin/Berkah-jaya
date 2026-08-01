@@ -75,24 +75,6 @@
       "reviews": []
     },
     {
-      "id": "4",
-      "name": "Meteran Gulung Baja Coated 5 Meter",
-      "category": "bangunan",
-      "price": 28000,
-      "stock": 80,
-      "description": "Meteran roll otomatis 5 meter dengan pita baja lebar dilapisi nilon pelindung angka agar tidak mudah luntur. Dilengkapi tombol rem ganda dan klip sabuk berbahan logam.",
-      "brand": "Kenmaster",
-      "rating": 4.6,
-      "sales": 980,
-      "image": "https://images.unsplash.com/photo-1602052719522-3924c153f228?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Panjang": "5 Meter",
-        "Lebar Pita": "19 mm",
-        "Akurasi": "Kelas II Standar Eropa"
-      },
-      "reviews": []
-    },
-    {
       "id": "7",
       "name": "Kabel Listrik NYM 2x1.5mm Supreme 50M",
       "category": "listrik",
