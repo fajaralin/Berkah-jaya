@@ -742,15 +742,13 @@ function loadBaseImageToStudio(src) {
   img.onload = () => {
     const cw = studioState.canvas.width;
     const ch = studioState.canvas.height;
-    // Scale image to cover 800x800 canvas initially and center it
     const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
     const w = img.naturalWidth * scale;
     const h = img.naturalHeight * scale;
     const x = (cw - w) / 2;
     const y = (ch - h) / 2;
 
-    // Set base image layer
-    studioState.layers = [{
+    const baseLayer = {
       id: 'base-layer',
       type: 'base',
       name: 'Foto Utama Produk',
@@ -759,7 +757,10 @@ function loadBaseImageToStudio(src) {
       y: y,
       width: w,
       height: h
-    }];
+    };
+    clampBaseLayer(baseLayer, cw, ch);
+
+    studioState.layers = [baseLayer];
     studioState.selectedLayerId = null;
     renderStudioCanvas();
     updateStudioLayersList();
@@ -781,13 +782,13 @@ function initProductImageStudio() {
   studioState.ctx = canvas.getContext('2d');
   canvas.style.cursor = 'grab';
 
-  // Scroll wheel zoom on canvas (smooth & centered on mouse)
+  // Scroll wheel zoom on canvas (smooth & bounded)
   canvas.addEventListener('wheel', (e) => {
     e.preventDefault();
     const baseLayer = studioState.layers.find(l => l.type === 'base');
-    if (!baseLayer) return;
+    if (!baseLayer || !baseLayer.img) return;
 
-    const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+    const zoomFactor = e.deltaY > 0 ? 0.95 : 1.05;
 
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
@@ -795,14 +796,33 @@ function initProductImageStudio() {
     const mouseX = (e.clientX - rect.left) * scaleX;
     const mouseY = (e.clientY - rect.top) * scaleY;
 
-    const newW = baseLayer.width * zoomFactor;
-    const newH = baseLayer.height * zoomFactor;
+    const cw = canvas.width;
+    const ch = canvas.height;
+    const minScale = Math.max(cw / baseLayer.img.naturalWidth, ch / baseLayer.img.naturalHeight);
+    const minW = baseLayer.img.naturalWidth * minScale;
+    const minH = baseLayer.img.naturalHeight * minScale;
+    const maxW = minW * 4;
 
-    baseLayer.x = mouseX - (mouseX - baseLayer.x) * zoomFactor;
-    baseLayer.y = mouseY - (mouseY - baseLayer.y) * zoomFactor;
+    let newW = baseLayer.width * zoomFactor;
+    let newH = baseLayer.height * zoomFactor;
+
+    if (newW < minW || newH < minH) {
+      newW = minW;
+      newH = minH;
+    }
+    if (newW > maxW) {
+      newW = maxW;
+      newH = minH * 4;
+    }
+
+    const actualRatio = newW / baseLayer.width;
+
+    baseLayer.x = mouseX - (mouseX - baseLayer.x) * actualRatio;
+    baseLayer.y = mouseY - (mouseY - baseLayer.y) * actualRatio;
     baseLayer.width = newW;
     baseLayer.height = newH;
 
+    clampBaseLayer(baseLayer, cw, ch);
     renderStudioCanvas();
   }, { passive: false });
 
@@ -939,18 +959,12 @@ function initProductImageStudio() {
   // Export Buttons
   document.getElementById('btn-apply-editor-to-form')?.addEventListener('click', () => {
     try {
-      // Render without selection handles
       renderStudioCanvas(false);
-      let dataUrl;
-      try {
-        dataUrl = studioState.canvas.toDataURL('image/jpeg', 0.9);
-      } catch (e) {
-        dataUrl = studioState.canvas.toDataURL('image/png');
-      }
+      const dataUrl = studioState.canvas.toDataURL('image/png');
       document.getElementById('form-product-image').value = dataUrl;
       updateFormImagePreview();
       closeImageEditorModal();
-      showToast('Gambar editan berhasil diterapkan pada form produk!', 'success');
+      showToast('Gambar editan Super HD berhasil diterapkan!', 'success');
     } catch (err) {
       console.error(err);
       showToast('Gagal mengekspor gambar. Jika menggunakan URL luar, unggah gambar dari file perangkat.', 'error');
@@ -1088,7 +1102,12 @@ function renderStudioCanvas(drawSelection = true) {
   const { canvas, ctx, layers, filters, selectedLayerId } = studioState;
   if (!ctx) return;
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // High quality image smoothing
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
 
   // Apply Filter string
   ctx.filter = `brightness(${filters.brightness}%) contrast(${filters.contrast}%) saturate(${filters.saturation}%)`;
@@ -1391,6 +1410,9 @@ function handleStudioCanvasMouseMove(e) {
     const dy = mouseY - studioState.dragStartY;
     sel.x = studioState.layerStartX + dx;
     sel.y = studioState.layerStartY + dy;
+    if (sel.type === 'base') {
+      clampBaseLayer(sel, studioState.canvas.width, studioState.canvas.height);
+    }
   } else if (studioState.isResizing) {
     const dw = mouseX - studioState.dragStartX;
     const dh = mouseY - studioState.dragStartY;
@@ -1399,6 +1421,32 @@ function handleStudioCanvasMouseMove(e) {
   }
 
   renderStudioCanvas();
+}
+
+// Clamp Base Layer Bounds so no empty area is ever exposed (WhatsApp cropper style)
+function clampBaseLayer(layer, cw, ch) {
+  if (!layer || layer.type !== 'base' || !layer.img) return;
+
+  const minScale = Math.max(cw / layer.img.naturalWidth, ch / layer.img.naturalHeight);
+  const minW = layer.img.naturalWidth * minScale;
+  const minH = layer.img.naturalHeight * minScale;
+
+  if (layer.width < minW || layer.height < minH) {
+    layer.width = minW;
+    layer.height = minH;
+  }
+
+  if (layer.width >= cw) {
+    layer.x = Math.min(0, Math.max(cw - layer.width, layer.x));
+  } else {
+    layer.x = (cw - layer.width) / 2;
+  }
+
+  if (layer.height >= ch) {
+    layer.y = Math.min(0, Math.max(ch - layer.height, layer.y));
+  } else {
+    layer.y = (ch - layer.height) / 2;
+  }
 }
 
 function handleStudioCanvasMouseUp() {

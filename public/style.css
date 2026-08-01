@@ -3589,8 +3589,8 @@ tr:last-child td {
   max-width: 100%;
   max-height: 520px;
   cursor: crosshair;
-  background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
 }
 
 .canvas-quick-controls {
