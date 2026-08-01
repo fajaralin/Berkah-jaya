@@ -323,7 +323,8 @@
       "sales": 1,
       "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
       "specifications": {},
-      "reviews": []
+      "reviews": [],
+      "costPrice": 70000
     }
   ],
   "orders": [

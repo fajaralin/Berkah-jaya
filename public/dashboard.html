@@ -370,17 +370,8 @@
               </select>
             </div>
             <div class="form-group-crud">
-              <label for="form-product-image">Gambar Produk</label>
-              <div class="image-input-action-group" style="display: flex; gap: 8px;">
-                <input type="text" id="form-product-image" placeholder="URL Gambar / Data Base64" style="flex: 1;">
-                <button type="button" class="btn-secondary" id="btn-open-image-editor" style="white-space: nowrap;">
-                  <i class="fa-solid fa-wand-magic-sparkles text-orange"></i> Edit Studio
-                </button>
-              </div>
-              <div id="form-product-image-preview-container" style="margin-top: 8px; display: none; align-items: center; gap: 10px;">
-                <img id="form-product-image-preview" src="" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color);">
-                <span style="font-size: 0.85rem; color: var(--text-muted);">Pratinjau Foto Produk</span>
-              </div>
+              <label for="form-product-stock">Stok Awal *</label>
+              <input type="number" id="form-product-stock" required min="0" placeholder="Contoh: 100">
             </div>
           </div>
 
@@ -390,12 +381,19 @@
               <input type="number" id="form-product-cost-price" min="0" placeholder="Contoh: 60000">
             </div>
             <div class="form-group-crud">
-              <label for="form-product-price">Harga Jual (Rp) * <span style="font-size:0.78rem;color:var(--text-muted);font-weight:400;">(ditampilkan ke pelanggan)</span></label>
+              <label for="form-product-price">Harga Jual (Rp) * <small style="color:var(--text-muted);font-weight:400;">(ditampilkan ke pelanggan)</small></label>
               <input type="number" id="form-product-price" required min="100" placeholder="Contoh: 75000">
             </div>
-            <div class="form-group-crud">
-              <label for="form-product-stock">Stok Awal *</label>
-              <input type="number" id="form-product-stock" required min="0" placeholder="Contoh: 100">
+          </div>
+
+          <div class="form-group-crud">
+            <label for="form-product-image">Gambar Produk</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <img id="form-product-image-preview" src="" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--border-color);display:none;flex-shrink:0;">
+              <input type="text" id="form-product-image" placeholder="URL Gambar / Data Base64" style="flex: 1;">
+              <button type="button" class="btn-secondary" id="btn-open-image-editor" style="white-space: nowrap;">
+                <i class="fa-solid fa-wand-magic-sparkles text-orange"></i> Edit Studio
+              </button>
             </div>
           </div>
 
@@ -403,7 +401,6 @@
             <label for="form-product-desc">Deskripsi Produk *</label>
             <textarea id="form-product-desc" required rows="4" placeholder="Tuliskan spesifikasi produk, keunggulan, kegunaan..."></textarea>
           </div>
-
 
 
           <div class="form-actions-crud">
@@ -638,7 +635,7 @@
               <input type="number" id="form-product-cost-price" min="0" placeholder="60000">
             </div>
             <div class="form-group-crud">
-              <label for="form-product-price">Harga Jual (Rp) * <span style="font-size:0.78rem;color:var(--text-muted);font-weight:400;">(ditampilkan ke pelanggan)</span></label>
+              <label for="form-product-price">Harga Jual (Rp) * <small style="color:var(--text-muted);font-weight:400;">(ditampilkan ke pelanggan)</small></label>
               <input type="number" id="form-product-price" required min="0" placeholder="75000">
             </div>
             <div class="form-group-crud">

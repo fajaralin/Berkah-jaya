@@ -111,7 +111,7 @@ async function renderAdminProductsTable() {
           </div>
         </td>
         <td><span class="product-tag ${p.category}">${p.category}</span></td>
-        <td><span style="color:var(--text-muted);">${p.costPrice ? formatRupiah(p.costPrice) : '<em style="opacity:0.45;">—</em>'}</span></td>
+        <td style="color:var(--text-muted);">${p.costPrice ? formatRupiah(p.costPrice) : '—'}</td>
         <td><strong>${formatRupiah(p.price)}</strong></td>
         <td>${p.stock} pcs</td>
         <td>${p.sales} unit</td>
@@ -681,14 +681,17 @@ function showToast(message, type = 'info') {
 
 // Update Image Preview in Product CRUD Form
 function updateFormImagePreview() {
-  const val = document.getElementById('form-product-image').value.trim();
-  const container = document.getElementById('form-product-image-preview-container');
+  const imgInput = document.getElementById('form-product-image');
+  if (!imgInput) return;
+  const val = imgInput.value.trim();
   const img = document.getElementById('form-product-image-preview');
+  if (!img) return;
   if (val) {
     img.src = val;
-    container.style.display = 'flex';
+    img.style.display = 'block';
   } else {
-    container.style.display = 'none';
+    img.style.display = 'none';
+    img.src = '';
   }
 }
 
