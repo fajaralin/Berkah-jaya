@@ -451,7 +451,7 @@
           <!-- Left / Center: Canvas Workspace & Tools -->
           <div class="editor-canvas-container">
             <div class="canvas-wrapper">
-              <canvas id="product-editor-canvas" width="600" height="600"></canvas>
+              <canvas id="product-editor-canvas" width="800" height="800"></canvas>
             </div>
             <div class="canvas-quick-controls">
               <button type="button" class="btn-icon" id="canvas-btn-delete" title="Hapus Layer Terpilih"><i class="fa-solid fa-trash text-red"></i> Hapus Layer</button>
@@ -487,12 +487,10 @@
                 </div>
               </div>
               <div class="editor-control-group">
-                <label>Ukuran Canvas:</label>
-                <select id="editor-canvas-preset-size">
-                  <option value="600x600">Persegi Tokopedia/Shopee (600 x 600)</option>
-                  <option value="800x800">HD Square (800 x 800)</option>
-                  <option value="600x800">Portrait (600 x 800)</option>
-                </select>
+                <label>Kualitas Resolusi:</label>
+                <div style="padding: 8px 12px; background: rgba(0, 200, 83, 0.1); border: 1px solid rgba(0, 200, 83, 0.3); border-radius: 6px; color: #00897b; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-gem text-orange"></i> Super HD (800 × 800 px)
+                </div>
               </div>
             </div>
 
@@ -601,6 +599,14 @@
           </button>
           <div class="footer-main-buttons">
             <button type="button" class="btn-secondary" id="btn-close-editor">Batal</button>
+            <button type="button" class="btn-primary" id="btn-apply-editor-to-form" style="background: linear-gradient(135deg, #00c853, #009688); border: none;">
+              <i class="fa-solid fa-circle-check"></i> Simpan & Gunakan Foto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Product CRUD Form Modal -->
     <div id="product-form-modal" class="modal">
       <div class="modal-content crud-modal-card">

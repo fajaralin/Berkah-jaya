@@ -716,7 +716,10 @@ let studioState = {
     brightness: 100,
     contrast: 100,
     saturation: 100
-  }
+  },
+  cropAnchorX: 0.5, // 0=kiri, 0.5=tengah, 1=kanan
+  cropAnchorY: 0.5, // 0=atas, 0.5=tengah, 1=bawah
+  cropZoom: 1.0     // 1.0 = pas canvas, 2.0 = zoom 2x (crop lebih ketat)
 };
 
 function openImageEditorModal() {
@@ -737,16 +740,25 @@ function loadBaseImageToStudio(src) {
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = () => {
+    const cw = studioState.canvas.width;
+    const ch = studioState.canvas.height;
+    // Scale image to cover 800x800 canvas initially and center it
+    const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+    const w = img.naturalWidth * scale;
+    const h = img.naturalHeight * scale;
+    const x = (cw - w) / 2;
+    const y = (ch - h) / 2;
+
     // Set base image layer
     studioState.layers = [{
       id: 'base-layer',
       type: 'base',
       name: 'Foto Utama Produk',
       img: img,
-      x: 0,
-      y: 0,
-      width: studioState.canvas.width,
-      height: studioState.canvas.height
+      x: x,
+      y: y,
+      width: w,
+      height: h
     }];
     studioState.selectedLayerId = null;
     renderStudioCanvas();
@@ -767,6 +779,32 @@ function initProductImageStudio() {
 
   studioState.canvas = canvas;
   studioState.ctx = canvas.getContext('2d');
+  canvas.style.cursor = 'grab';
+
+  // Scroll wheel zoom on canvas (smooth & centered on mouse)
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const baseLayer = studioState.layers.find(l => l.type === 'base');
+    if (!baseLayer) return;
+
+    const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const mouseX = (e.clientX - rect.left) * scaleX;
+    const mouseY = (e.clientY - rect.top) * scaleY;
+
+    const newW = baseLayer.width * zoomFactor;
+    const newH = baseLayer.height * zoomFactor;
+
+    baseLayer.x = mouseX - (mouseX - baseLayer.x) * zoomFactor;
+    baseLayer.y = mouseY - (mouseY - baseLayer.y) * zoomFactor;
+    baseLayer.width = newW;
+    baseLayer.height = newH;
+
+    renderStudioCanvas();
+  }, { passive: false });
 
   // Close buttons
   document.getElementById('close-image-editor-btn')?.addEventListener('click', closeImageEditorModal);
@@ -799,14 +837,30 @@ function initProductImageStudio() {
     if (url) loadBaseImageToStudio(url);
   });
 
-  document.getElementById('editor-canvas-preset-size')?.addEventListener('change', (e) => {
-    const [w, h] = e.target.value.split('x').map(Number);
-    studioState.canvas.width = w;
-    studioState.canvas.height = h;
-    if (studioState.layers.length > 0 && studioState.layers[0].type === 'base') {
-      studioState.layers[0].width = w;
-      studioState.layers[0].height = h;
-    }
+
+
+  // Crop X slider (posisi horizontal)
+  document.getElementById('crop-x-slider')?.addEventListener('input', (e) => {
+    const v = Number(e.target.value);
+    studioState.cropAnchorX = v / 100;
+    const label = v < 30 ? 'Kiri' : v > 70 ? 'Kanan' : 'Tengah';
+    document.getElementById('crop-x-val').textContent = label;
+    renderStudioCanvas();
+  });
+
+  // Crop Y slider (posisi vertikal)
+  document.getElementById('crop-y-slider')?.addEventListener('input', (e) => {
+    const v = Number(e.target.value);
+    studioState.cropAnchorY = v / 100;
+    const label = v < 30 ? 'Atas' : v > 70 ? 'Bawah' : 'Tengah';
+    document.getElementById('crop-y-val').textContent = label;
+    renderStudioCanvas();
+  });
+
+  // Crop zoom slider
+  document.getElementById('crop-zoom-slider')?.addEventListener('input', (e) => {
+    studioState.cropZoom = Number(e.target.value) / 100;
+    document.getElementById('crop-zoom-val').textContent = e.target.value + '%';
     renderStudioCanvas();
   });
 
@@ -1042,7 +1096,7 @@ function renderStudioCanvas(drawSelection = true) {
   // Draw layers bottom to top
   layers.forEach(layer => {
     if (layer.type === 'base') {
-      ctx.drawImage(layer.img, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(layer.img, layer.x, layer.y, layer.width, layer.height);
     } else if (layer.type === 'image') {
       ctx.save();
       ctx.translate(layer.x + layer.width/2, layer.y + layer.height/2);
@@ -1056,8 +1110,13 @@ function renderStudioCanvas(drawSelection = true) {
     }
   });
 
-  // Reset filter for selection box
+  // Reset filter for selection box & grid
   ctx.filter = 'none';
+
+  // Draw WhatsApp profile crop grid overlay when editing
+  if (drawSelection) {
+    drawWaCropGridOverlay(ctx, canvas.width, canvas.height);
+  }
 
   // Draw selection box & resize handle if active layer is selected
   if (drawSelection && selectedLayerId) {
@@ -1080,6 +1139,61 @@ function renderStudioCanvas(drawSelection = true) {
       ctx.restore();
     }
   }
+}
+
+// Draw WhatsApp Profile Crop Grid Overlay (3x3 Rule-of-Thirds + L-shaped corners)
+function drawWaCropGridOverlay(ctx, w, h) {
+  ctx.save();
+  ctx.filter = 'none';
+
+  // 1. Grid 3x3 (Rule of Thirds)
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([]);
+
+  ctx.beginPath();
+  // Vertical grid lines
+  ctx.moveTo(w / 3, 0); ctx.lineTo(w / 3, h);
+  ctx.moveTo((2 * w) / 3, 0); ctx.lineTo((2 * w) / 3, h);
+  // Horizontal grid lines
+  ctx.moveTo(0, h / 3); ctx.lineTo(w, h / 3);
+  ctx.moveTo(0, (2 * h) / 3); ctx.lineTo(w, (2 * h) / 3);
+  ctx.stroke();
+
+  // 2. Outer border frame
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(0, 0, w, h);
+
+  // 3. Thick L-shaped corners & side handles (WA / IG Cropper style)
+  const len = Math.min(w, h) * 0.08;
+  const t = 4;
+  ctx.fillStyle = '#ffffff';
+
+  // Top-Left
+  ctx.fillRect(0, 0, len, t);
+  ctx.fillRect(0, 0, t, len);
+
+  // Top-Right
+  ctx.fillRect(w - len, 0, len, t);
+  ctx.fillRect(w - t, 0, t, len);
+
+  // Bottom-Left
+  ctx.fillRect(0, h - t, len, t);
+  ctx.fillRect(0, h - len, t, len);
+
+  // Bottom-Right
+  ctx.fillRect(w - len, h - t, len, t);
+  ctx.fillRect(w - t, h - len, t, len);
+
+  // Side handles
+  const midLen = len * 0.7;
+  ctx.fillRect((w - midLen) / 2, 0, midLen, t);
+  ctx.fillRect((w - midLen) / 2, h - t, midLen, t);
+  ctx.fillRect(0, (h - midLen) / 2, t, midLen);
+  ctx.fillRect(w - t, (h - midLen) / 2, t, midLen);
+
+  ctx.restore();
 }
 
 function drawStudioBadgeLayer(ctx, layer) {
@@ -1236,13 +1350,24 @@ function handleStudioCanvasMouseDown(e) {
 
   if (found) {
     studioState.selectedLayerId = found.id;
+  } else {
+    // Default drag base image if no overlay is clicked
+    const baseLayer = studioState.layers.find(l => l.type === 'base');
+    if (baseLayer) {
+      found = baseLayer;
+      studioState.selectedLayerId = 'base-layer';
+    } else {
+      studioState.selectedLayerId = null;
+    }
+  }
+
+  if (found) {
     studioState.isDragging = true;
     studioState.dragStartX = mouseX;
     studioState.dragStartY = mouseY;
     studioState.layerStartX = found.x;
     studioState.layerStartY = found.y;
-  } else {
-    studioState.selectedLayerId = null;
+    studioState.canvas.style.cursor = 'grabbing';
   }
 
   renderStudioCanvas();
@@ -1279,6 +1404,7 @@ function handleStudioCanvasMouseMove(e) {
 function handleStudioCanvasMouseUp() {
   studioState.isDragging = false;
   studioState.isResizing = false;
+  studioState.canvas.style.cursor = 'grab';
 }
 
 /* ==========================================================================
