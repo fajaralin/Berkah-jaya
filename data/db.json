@@ -208,49 +208,6 @@
       "reviews": []
     },
     {
-      "id": "11",
-      "name": "Pembasmi Rumput RoundUp 486 SL 1 Liter",
-      "category": "pertanian",
-      "price": 115000,
-      "stock": 50,
-      "description": "Herbisida sistemik purna tumbuh berbahan aktif glifosat 486 g/l. Sangat ampuh membasmi gulma berdaun lebar dan sempit hingga ke akar-akarnya di lahan kelapa sawit, karet, jagung, atau pekarangan rumah.",
-      "brand": "Monsanto / Bayer",
-      "rating": 4.9,
-      "sales": 1150,
-      "image": "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Volume": "1 Liter",
-        "Bahan Aktif": "Isopropilamina Glifosat 486 g/l",
-        "Sifat": "Sistemik (Mati ke akar)"
-      },
-      "reviews": [
-        {
-          "user": "Pak Tani Maju",
-          "rating": 5,
-          "comment": "Paling jos gandos rumput liar mati semua dalam 5 hari.",
-          "date": "2026-06-24"
-        }
-      ]
-    },
-    {
-      "id": "12",
-      "name": "Insektisida Hama Decis 25 EC 250ml",
-      "category": "pertanian",
-      "price": 49000,
-      "stock": 85,
-      "description": "Insektisida kontak lambung berbahan aktif deltametrin 25 g/l. Sangat efektif mengendalikan hama ulat, belalang, kutu daun, wereng, dan kumbang pada tanaman padi, cabai, bawang merah, dan buah-buahan.",
-      "brand": "Bayer",
-      "rating": 4.8,
-      "sales": 760,
-      "image": "https://images.unsplash.com/photo-1605000797499-95a51c7e69ae?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Volume": "250 ml",
-        "Bahan Aktif": "Deltametrin 25 g/l",
-        "Dosis Rata-rata": "1-2 ml per Liter air"
-      },
-      "reviews": []
-    },
-    {
       "id": "1785549830130",
       "name": "roundoup",
       "category": "pertanian",
