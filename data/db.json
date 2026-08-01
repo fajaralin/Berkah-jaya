@@ -57,24 +57,6 @@
       ]
     },
     {
-      "id": "3",
-      "name": "Palu Kambing 16 Oz Gagang Karet Fiber",
-      "category": "bangunan",
-      "price": 45000,
-      "stock": 60,
-      "description": "Palu kambing (Claw Hammer) dengan berat kepala 16 oz (sekitar 450g) terbuat dari baja tempa karbon tinggi yang dipoles mengkilap. Gagang berlapis fiber dan karet anti-slip untuk meredam getaran saat memaku.",
-      "brand": "Tekiro",
-      "rating": 4.7,
-      "sales": 510,
-      "image": "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Ukuran": "16 oz / 450 gram",
-        "Bahan": "Baja Carbon Steel & Fiber",
-        "Fitur": "Magnet penahan paku"
-      },
-      "reviews": []
-    },
-    {
       "id": "7",
       "name": "Kabel Listrik NYM 2x1.5mm Supreme 50M",
       "category": "listrik",
