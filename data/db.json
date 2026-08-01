@@ -1,37 +1,6 @@
 {
   "products": [
     {
-      "id": "1",
-      "name": "jokowi",
-      "category": "bangunan",
-      "price": 72000,
-      "stock": 149,
-      "description": "Semen Portland berkualitas tinggi Standar Nasional Indonesia (SNI). Sangat kuat, cepat kering, dan cocok untuk segala jenis konstruksi bangunan rumah, gedung, beton cor, plasteran, dan pasang bata.",
-      "brand": "Semen Padang",
-      "rating": 4.8,
-      "sales": 1251,
-      "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Berat": "50 Kg",
-        "Tipe": "Portland Type I",
-        "Standar": "SNI 2049:2015"
-      },
-      "reviews": [
-        {
-          "user": "Budi Santoso",
-          "rating": 5,
-          "comment": "Semen kualitas terbaik, pengiriman cepat, bangunan jadi kokoh!",
-          "date": "2026-06-25"
-        },
-        {
-          "user": "Agus Salim",
-          "rating": 4,
-          "comment": "Bagus, tapi kantong semen agak tipis jadi ada yang bocor dikit.",
-          "date": "2026-06-20"
-        }
-      ]
-    },
-    {
       "id": "7",
       "name": "Kabel Listrik NYM 2x1.5mm Supreme 50M",
       "category": "listrik",
