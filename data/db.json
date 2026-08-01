@@ -32,31 +32,6 @@
       ]
     },
     {
-      "id": "2",
-      "name": "Sekop Pasir Baja Tebal Premium",
-      "category": "bangunan",
-      "price": 85000,
-      "stock": 42,
-      "description": "Sekop pasir dengan mata baja tebal berkualitas tinggi. Dilengkapi dengan gagang kayu jati kokoh berperekat karet ergonomis. Tahan karat dan sangat ideal untuk pekerjaan galian tanah, pasir, atau semen.",
-      "brand": "Camel",
-      "rating": 4.9,
-      "sales": 323,
-      "image": "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Bahan": "Mata Baja, Gagang Kayu & Karet",
-        "Panjang": "95 cm",
-        "Lebar Mata": "24 cm"
-      },
-      "reviews": [
-        {
-          "user": "Dedi_07",
-          "rating": 5,
-          "comment": "Baja asli tebal sekali, gagang tidak licin. Mantap!",
-          "date": "2026-06-28"
-        }
-      ]
-    },
-    {
       "id": "7",
       "name": "Kabel Listrik NYM 2x1.5mm Supreme 50M",
       "category": "listrik",
