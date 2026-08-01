@@ -111,6 +111,7 @@ async function renderAdminProductsTable() {
           </div>
         </td>
         <td><span class="product-tag ${p.category}">${p.category}</span></td>
+        <td><span style="color:var(--text-muted);">${p.costPrice ? formatRupiah(p.costPrice) : '<em style="opacity:0.45;">—</em>'}</span></td>
         <td><strong>${formatRupiah(p.price)}</strong></td>
         <td>${p.stock} pcs</td>
         <td>${p.sales} unit</td>
@@ -391,6 +392,7 @@ async function openProductCrudModal(productId = null) {
       document.getElementById('form-product-brand').value = p.brand;
       document.getElementById('form-product-category').value = p.category;
       document.getElementById('form-product-image').value = p.image;
+      document.getElementById('form-product-cost-price').value = p.costPrice || '';
       document.getElementById('form-product-price').value = p.price;
       document.getElementById('form-product-stock').value = p.stock;
       document.getElementById('form-product-desc').value = p.description;
@@ -437,6 +439,7 @@ async function submitProductCrudForm() {
   const category = document.getElementById('form-product-category').value;
   const image = document.getElementById('form-product-image').value.trim();
   const price = Number(document.getElementById('form-product-price').value);
+  const costPrice = Number(document.getElementById('form-product-cost-price').value) || 0;
   const stock = Number(document.getElementById('form-product-stock').value);
   const description = document.getElementById('form-product-desc').value.trim();
 
@@ -451,7 +454,7 @@ async function submitProductCrudForm() {
     }
   });
 
-  const payload = { name, brand, category, image, price, stock, description, specifications: specsObj };
+  const payload = { name, brand, category, image, price, costPrice, stock, description, specifications: specsObj };
 
   try {
     let response;

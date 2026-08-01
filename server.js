@@ -129,7 +129,7 @@ app.get('/api/products/:id', async (req, res) => {
 // 3. POST /api/products - Add a new product (Admin)
 app.post('/api/products', async (req, res) => {
   const db = await readDB();
-  const { name, category, price, stock, description, brand, image, specifications } = req.body;
+  const { name, category, price, costPrice, stock, description, brand, image, specifications } = req.body;
 
   if (!name || !category || !price || stock === undefined || !description || !brand) {
     return res.status(400).json({ error: 'Mohon lengkapi semua field wajib produk.' });
@@ -140,6 +140,7 @@ app.post('/api/products', async (req, res) => {
     name,
     category,
     price: Number(price),
+    costPrice: costPrice ? Number(costPrice) : 0,
     stock: Number(stock),
     description,
     brand,
@@ -166,13 +167,14 @@ app.put('/api/products/:id', async (req, res) => {
   }
 
   const existingProduct = db.products[index];
-  const { name, category, price, stock, description, brand, image, specifications } = req.body;
+  const { name, category, price, costPrice, stock, description, brand, image, specifications } = req.body;
 
   db.products[index] = {
     ...existingProduct,
     name: name !== undefined ? name : existingProduct.name,
     category: category !== undefined ? category : existingProduct.category,
     price: price !== undefined ? Number(price) : existingProduct.price,
+    costPrice: costPrice !== undefined ? Number(costPrice) : (existingProduct.costPrice || 0),
     stock: stock !== undefined ? Number(stock) : existingProduct.stock,
     description: description !== undefined ? description : existingProduct.description,
     brand: brand !== undefined ? brand : existingProduct.brand,
