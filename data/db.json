@@ -93,24 +93,6 @@
       "reviews": []
     },
     {
-      "id": "5",
-      "name": "Cat Tembok Dulux Catylac Putih 5kg",
-      "category": "bangunan",
-      "price": 165000,
-      "stock": 35,
-      "description": "Dulux Catylac Exterior & Interior dengan teknologi Chroma Brite menghasilkan warna dinding cerah menakjubkan lebih lama. Minim bau, ramah lingkungan, aman, dan mudah dibersihkan.",
-      "brand": "Dulux",
-      "rating": 4.8,
-      "sales": 240,
-      "image": "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Berat": "5 Kg",
-        "Warna": "Super White (Putih Salju)",
-        "Daya Sebar": "10-12 m²/kg per lapis"
-      },
-      "reviews": []
-    },
-    {
       "id": "7",
       "name": "Kabel Listrik NYM 2x1.5mm Supreme 50M",
       "category": "listrik",
