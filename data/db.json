@@ -316,17 +316,43 @@
       "name": "roundoup",
       "category": "pertanian",
       "price": 80000,
-      "stock": 5,
+      "stock": 4,
       "description": "obat suket",
       "brand": "Semen Padang",
       "rating": 5,
-      "sales": 0,
+      "sales": 1,
       "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
       "specifications": {},
       "reviews": []
     }
   ],
   "orders": [
+    {
+      "id": "POS-12081",
+      "type": "offline",
+      "date": "2026-08-01",
+      "time": "09.05",
+      "customerName": "Pembeli Offline / Kasir",
+      "phone": "-",
+      "address": "Pembelian Langsung di Toko Fisik CV Berkah Jaya",
+      "items": [
+        {
+          "productId": "1785549830130",
+          "name": "roundoup",
+          "price": 80000,
+          "quantity": 1,
+          "stock": 5
+        }
+      ],
+      "subtotal": 80000,
+      "discount": 0,
+      "total": 80000,
+      "shippingCost": 0,
+      "cashReceived": 100000,
+      "change": 20000,
+      "status": "Selesai",
+      "paymentMethod": "Tunai (Cash)"
+    },
     {
       "id": "POS-33243",
       "type": "offline",
