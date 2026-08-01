@@ -294,24 +294,6 @@
       "reviews": []
     },
     {
-      "id": "15",
-      "name": "Hormon Giberelin GA3 Cair Pemicu Tumbuh",
-      "category": "pertanian",
-      "price": 15000,
-      "stock": 100,
-      "description": "Zat Pengatur Tumbuh (ZPT) Giberelin Acid 3 pekatan tinggi. Berfungsi memicu pembungaan serempak, mencegah rontok buah, serta merangsang pertumbuhan tunas dan perpanjangan batang secara maksimal.",
-      "brand": "GreenGrow",
-      "rating": 4.5,
-      "sales": 490,
-      "image": "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&auto=format&fit=crop&q=60",
-      "specifications": {
-        "Volume": "100 ml",
-        "Kandungan": "Giberelin GA3 200ppm",
-        "Aplikasi": "Disemprotkan ke daun"
-      },
-      "reviews": []
-    },
-    {
       "id": "1785549830130",
       "name": "roundoup",
       "category": "pertanian",
