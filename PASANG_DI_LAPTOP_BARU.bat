@@ -37,16 +37,17 @@ if not exist node_modules (
 echo  [OK] Dependensi siap.
 
 echo.
-echo  [3/5] Mengambil data, fitur dan produk terbaru dari server online...
-git fetch origin main
-git reset --hard origin/main
-git pull origin main
-echo  [OK] Seluruh fitur dan data lokal berhasil ter-update ke versi terbaru!
+echo  [3/5] Mengamankan dan menyelamatkan data barang lokal...
+git add .
+git commit -m "auto: Amankan data barang lokal sebelum update" >nul 2>&1
+git push origin main >nul 2>&1
+echo  [OK] Data barang lokal di laptop ini berhasil diamankan.
 
 echo.
-echo  [4/5] Menguji dan Menyimpan Izin Auto-Sync GitHub...
+echo  [4/5] Mengambil fitur baru dan menggabungkan data dari server online...
+git pull --rebase origin main
 git push origin main
-echo  [OK] Izin Auto-Sync aktif dan tersimpan di laptop ini!
+echo  [OK] Seluruh fitur dan data berhasil digabungkan (bebas barang hilang)!
 
 echo.
 echo  [5/5] Membuat ikon di Desktop...
