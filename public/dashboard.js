@@ -1994,9 +1994,8 @@ function exportMonthlyReportToExcel(reportData) {
             <th>ID Transaksi</th>
             <th>Tanggal</th>
             <th>Pelanggan</th>
-            <th>Jenis Transaksi</th>
+            <th>Barang Terjual</th>
             <th>Metode Pembayaran</th>
-            <th>Barang Dipesan</th>
             <th>Total Tagihan (Rp)</th>
             <th>Status</th>
           </tr>
@@ -2005,17 +2004,15 @@ function exportMonthlyReportToExcel(reportData) {
   `;
 
   reportData.orders.forEach((o, idx) => {
-    const itemsText = o.items ? o.items.map(i => `${i.name} (${i.quantity}x)`).join(', ') : '-';
-    const typeLabel = o.type === 'offline' || o.id.startsWith('POS-') ? 'Kasir Offline' : 'Online Website';
+    const itemsText = o.items ? o.items.map(i => `${i.name || i.productName || 'Produk'} (${i.quantity}x)`).join(', ') : '-';
     tableHTML += `
       <tr>
         <td style="text-align: center;">${idx + 1}</td>
         <td style="text-align: center;">#${o.id}</td>
         <td style="text-align: center;">${o.date}</td>
         <td>${o.customerName}</td>
-        <td style="text-align: center;">${typeLabel}</td>
-        <td style="text-align: center;">${o.paymentMethod || 'Tunai'}</td>
         <td>${itemsText}</td>
+        <td style="text-align: center;">${o.paymentMethod || 'Tunai'}</td>
         <td style="text-align: right;">${o.total}</td>
         <td style="text-align: center;">${o.status}</td>
       </tr>
@@ -2024,7 +2021,7 @@ function exportMonthlyReportToExcel(reportData) {
 
   tableHTML += `
         <tr class="total-row">
-          <td colspan="7" style="text-align: right;">TOTAL PENDAPATAN BULANAN:</td>
+          <td colspan="6" style="text-align: right;">TOTAL PENDAPATAN BULANAN:</td>
           <td style="text-align: right;">${reportData.totalRevenue}</td>
           <td></td>
         </tr>
@@ -2096,7 +2093,7 @@ function exportMonthlyReportToWord(reportData) {
             <th>ID Order</th>
             <th>Tanggal</th>
             <th>Pelanggan</th>
-            <th>Jenis Transaksi</th>
+            <th>Barang Terjual</th>
             <th>Metode Pembayaran</th>
             <th>Total Tagihan</th>
           </tr>
@@ -2105,14 +2102,17 @@ function exportMonthlyReportToWord(reportData) {
   `;
 
   reportData.orders.forEach((o, idx) => {
-    const typeLabel = o.type === 'offline' || o.id.startsWith('POS-') ? 'Kasir Offline' : 'Online Website';
+    const itemsText = o.items && o.items.length > 0
+      ? o.items.map(i => `${i.name || i.productName || 'Produk'} (${i.quantity}x)`).join(', ')
+      : '-';
+
     wordHTML += `
       <tr>
         <td class="text-center">${idx + 1}</td>
         <td class="text-center">#${o.id}</td>
         <td class="text-center">${o.date}</td>
         <td>${o.customerName}</td>
-        <td class="text-center">${typeLabel}</td>
+        <td>${itemsText}</td>
         <td class="text-center">${o.paymentMethod || 'Tunai'}</td>
         <td class="text-right">Rp ${o.total.toLocaleString('id-ID')}</td>
       </tr>
