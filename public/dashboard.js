@@ -91,7 +91,9 @@ async function loadAdminDashboard() {
 async function renderAdminProductsTable() {
   try {
     const response = await fetch('/api/products');
-    const products = await response.json();
+    let products = await response.json();
+    // Sort products alphabetically A-Z by name
+    products.sort((a, b) => a.name.localeCompare(b.name, 'id', { sensitivity: 'base' }));
     adminState.products = products; // Save to local state
     
     const tbody = document.getElementById('admin-product-table-body');
@@ -1665,6 +1667,8 @@ function renderPosCatalog() {
   if (posState.search) {
     filtered = filtered.filter(p => p.name.toLowerCase().includes(posState.search) || p.brand.toLowerCase().includes(posState.search));
   }
+  // Sort products alphabetically A-Z by name
+  filtered.sort((a, b) => a.name.localeCompare(b.name, 'id', { sensitivity: 'base' }));
 
   if (filtered.length === 0) {
     container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">Produk tidak ditemukan.</div>`;
