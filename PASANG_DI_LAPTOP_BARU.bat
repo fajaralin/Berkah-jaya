@@ -60,7 +60,9 @@ echo    1. Data barang versi terbaru sudah ter-update.
 echo    2. Izin Auto-Sync ke server online sudah aktif.
 echo    3. Ikon "Kasir Berkah Jaya" sudah ada di Desktop.
 echo.
-echo    Klik 2x ikon tersebut di Desktop untuk membuka kasir.
+echo    Membuka aplikasi Kasir Berkah Jaya otomatis...
 echo  ================================================
 echo.
-pause
+timeout /t 2 >nul
+start wscript.exe "%~dp0buka_kasir.vbs"
+exit /b 0
