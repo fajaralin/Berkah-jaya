@@ -592,6 +592,8 @@ app.post('/api/git-sync', async (req, res) => {
 
 server.listen(PORT, () => {
   console.log(`⚡ Server Berkah Jaya + Reverb Realtime Engine berjalan di http://localhost:${PORT}`);
-  // Perform background sync on server startup
-  performGitSync('auto: Startup sync data toko').catch(() => {});
+  // Perform background sync 3 seconds after server is ready
+  setTimeout(() => {
+    performGitSync('auto: Startup sync data toko').catch(() => {});
+  }, 3000);
 });
