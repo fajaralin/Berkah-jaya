@@ -1553,14 +1553,24 @@ async function sendChatMessage() {
   
   input.value = '';
   
-  // Render user message immediately
+  // Render user message immediately in chat box
   appendChatBubble(message, 'customer');
   scrollChatToBottom();
   
-  // Redirect to WhatsApp
-  const waText = `Halo Berkah Jaya, saya ingin bertanya:\n${message}`;
+  // Append system status note
+  setTimeout(() => {
+    appendChatBubble('📲 Mengarahkan ke WhatsApp Admin Berkah Jaya...', 'admin');
+    scrollChatToBottom();
+  }, 200);
+  
+  // Format WhatsApp message text
+  const waText = `Halo Berkah Jaya, saya ingin bertanya:\n\n"${message}"`;
   const waUrl = `https://wa.me/${STORE_WA_NUMBER}?text=${encodeURIComponent(waText)}`;
-  window.open(waUrl, '_blank');
+  
+  // Open WhatsApp in new tab / app directly
+  setTimeout(() => {
+    window.open(waUrl, '_blank');
+  }, 400);
 }
 
 function appendChatBubble(text, sender) {
