@@ -427,53 +427,11 @@ async function openProductCrudModal(productId = null) {
   modal.classList.add('active');
 }
 
-function closeProductCrudModal(force = false) {
-  if (force !== true) {
-    const name = document.getElementById('form-product-name')?.value.trim() || '';
-    const price = document.getElementById('form-product-price')?.value || '';
-    const desc = document.getElementById('form-product-desc')?.value.trim() || '';
-    const stock = document.getElementById('form-product-stock')?.value || '';
-
-    // Ask confirmation if form contains data using modern custom Web Modal UI
-    if (name !== '' || price !== '' || desc !== '' || stock !== '') {
-      showUnsavedConfirmModal(() => {
-        document.getElementById('product-form-modal').classList.remove('active');
-      });
-      return;
-    }
-  }
-  document.getElementById('product-form-modal').classList.remove('active');
-}
-
-function showUnsavedConfirmModal(onConfirm) {
-  const modal = document.getElementById('confirm-unsaved-modal');
-  if (!modal) {
-    onConfirm();
-    return;
-  }
-
-  modal.classList.add('active');
-
-  const discardBtn = document.getElementById('confirm-discard-btn');
-  const cancelBtn = document.getElementById('cancel-discard-btn');
-
-  const cleanup = () => {
+function closeProductCrudModal() {
+  const modal = document.getElementById('product-form-modal');
+  if (modal) {
     modal.classList.remove('active');
-    discardBtn.removeEventListener('click', handleDiscard);
-    cancelBtn.removeEventListener('click', handleCancel);
-  };
-
-  const handleDiscard = () => {
-    cleanup();
-    onConfirm();
-  };
-
-  const handleCancel = () => {
-    cleanup();
-  };
-
-  discardBtn.addEventListener('click', handleDiscard);
-  cancelBtn.addEventListener('click', handleCancel);
+  }
 }
 
 // Submit Product CRUD Form API Call
@@ -632,8 +590,14 @@ function setupAdminEventListeners() {
     });
   });
 
-  document.getElementById('close-form-modal-btn')?.addEventListener('click', closeProductCrudModal);
-  document.getElementById('btn-cancel-crud')?.addEventListener('click', closeProductCrudModal);
+  document.getElementById('close-form-modal-btn')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeProductCrudModal();
+  });
+  document.getElementById('btn-cancel-crud')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeProductCrudModal();
+  });
 
   // Admin Product Category change template applicator
   document.getElementById('form-product-category')?.addEventListener('change', (e) => {
