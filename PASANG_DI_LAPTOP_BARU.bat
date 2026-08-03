@@ -37,16 +37,16 @@ if not exist node_modules (
 echo  [OK] Dependensi siap.
 
 echo.
-echo  [3/5] Mengambil data, fitur & produk terbaru dari server online...
+echo  [3/5] Mengambil data, fitur dan produk terbaru dari server online...
 git fetch origin main
 git reset --hard origin/main
 git pull origin main
-echo  [OK] Seluruh fitur & data lokal berhasil ter-update ke versi terbaru!
+echo  [OK] Seluruh fitur dan data lokal berhasil ter-update ke versi terbaru!
 
 echo.
-echo  [4/5] Menguji & Menyimpan Izin Auto-Sync GitHub...
+echo  [4/5] Menguji dan Menyimpan Izin Auto-Sync GitHub...
 git push origin main
-echo  [OK] Izin Auto-Sync aktif & tersimpan di laptop ini!
+echo  [OK] Izin Auto-Sync aktif dan tersimpan di laptop ini!
 
 echo.
 echo  [5/5] Membuat ikon di Desktop...
@@ -55,7 +55,7 @@ echo  [OK] Ikon Kasir Berkah Jaya sudah muncul di Desktop!
 
 echo.
 echo  ================================================
-echo    SETUP SELESAI & SUKSES! 
+echo    SETUP SELESAI SUKSES! 
 echo    1. Data barang versi terbaru sudah ter-update.
 echo    2. Izin Auto-Sync ke server online sudah aktif.
 echo    3. Ikon "Kasir Berkah Jaya" sudah ada di Desktop.
