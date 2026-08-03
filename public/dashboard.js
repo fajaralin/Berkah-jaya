@@ -553,6 +553,26 @@ function setupAdminEventListeners() {
     openProductCrudModal(null);
   });
 
+  // Admin Sync Online click
+  document.getElementById('admin-sync-online-btn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('admin-sync-online-btn');
+    const originalText = btn.innerHTML;
+    try {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah...';
+      const res = await fetch('/api/git-sync', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Gagal sinkronisasi ke server online');
+      showToast('🚀 Berhasil di-sync ke server online! Website online akan ter-update dalam 1-2 menit.', 'success');
+    } catch (err) {
+      showToast(err.message || 'Gagal sync ke server online', 'error');
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  });
+
   // Admin Category filter buttons click
   const filterBtns = document.querySelectorAll('.admin-filter-btn');
   filterBtns.forEach(btn => {

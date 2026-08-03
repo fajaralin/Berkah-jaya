@@ -50,20 +50,35 @@ const { exec } = require('child_process');
 // Helper to write database with Automatic Background Git Sync
 let syncDebounceTimer = null;
 
+function performGitSync(customMsg) {
+  return new Promise((resolve, reject) => {
+    const nowStr = new Date().toLocaleString('id-ID');
+    const msg = customMsg || `auto: Sync database updates [${nowStr}]`;
+    console.log(`🔄 [GIT-SYNC] Mengunggah data terbaru ke GitHub: "${msg}"...`);
+
+    exec('git add .', (err1) => {
+      if (err1) console.warn('Git Add Warning:', err1.message);
+      exec(`git commit -m "${msg}"`, (err2, stdout2) => {
+        exec('git push origin main', (err3, stdout3, stderr3) => {
+          if (err3) {
+            console.error('❌ [GIT PUSH ERROR]:', err3.message || stderr3);
+            return reject(err3);
+          }
+          console.log('🚀 [GIT PUSH SUCCESS]: Data otomatis ter-sync ke GitHub & website online!');
+          io.emit('sync:completed', { timestamp: Date.now() });
+          resolve({ success: true, output: stdout3 || stdout2 });
+        });
+      });
+    });
+  });
+}
+
 function triggerAutoGitSync() {
   if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
 
   syncDebounceTimer = setTimeout(() => {
-    console.log('🔄 [AUTO-SYNC] Otomatis meng-commit & push data terbaru ke GitHub...');
-    const nowStr = new Date().toLocaleString('id-ID');
-    const cmd = `git add . && git commit -m "auto: Sync database updates [${nowStr}]" && git push origin main`;
-    exec(cmd, (err, stdout, stderr) => {
-      if (err) {
-        console.error('❌ [AUTO-SYNC ERROR]:', err.message);
-      } else {
-        console.log('🚀 [AUTO-SYNC SUCCESS]: Data otomatis ter-sync ke GitHub & website Render online!');
-        io.emit('sync:completed', { timestamp: Date.now() });
-      }
+    performGitSync().catch(err => {
+      console.error('❌ [AUTO-SYNC ERROR]:', err.message);
     });
   }, 2000);
 }
@@ -566,19 +581,16 @@ app.post('/api/login', async (req, res) => {
 
 // 13. POST /api/git-sync - Auto Commit & Push to GitHub to trigger Render Auto-Deploy
 app.post('/api/git-sync', async (req, res) => {
-  const { exec } = require('child_process');
-  const commitMsg = `auto: Update data produk & foto dari Studio Dashboard (${new Date().toLocaleTimeString('id-ID')})`;
-  
-  exec(`git add . && git commit -m "${commitMsg}" && git push origin main`, (error, stdout, stderr) => {
-    if (error) {
-      console.error('Git Auto-Sync Error:', error.message);
-      return res.status(500).json({ error: 'Gagal sync ke GitHub. Pastikan koneksi internet lancar.', details: error.message });
-    }
-    console.log('🚀 Git Auto-Sync Berhasil:', stdout);
-    res.json({ message: 'Berhasil di-push ke GitHub! Render sedang memproses Auto-Deploy website online Anda.', stdout });
-  });
+  try {
+    const result = await performGitSync(`manual: Sync dari Dashboard (${new Date().toLocaleTimeString('id-ID')})`);
+    res.json({ message: 'Berhasil di-push ke GitHub! Server online sedang memperbarui data.', result });
+  } catch (error) {
+    res.status(500).json({ error: 'Gagal sync ke GitHub. Pastikan koneksi internet lancar & akun GitHub tersimpan.', details: error.message });
+  }
 });
 
 server.listen(PORT, () => {
   console.log(`⚡ Server Berkah Jaya + Reverb Realtime Engine berjalan di http://localhost:${PORT}`);
+  // Perform background sync on server startup
+  performGitSync('auto: Startup sync data toko').catch(() => {});
 });
