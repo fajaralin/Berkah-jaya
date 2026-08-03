@@ -125,23 +125,6 @@
       "image": "https://tse1.mm.bing.net/th/id/OIP.YbmqT-r4FCanpVc_LMCufwHaHa?r=0&pid=Api&P=0&h=180",
       "specifications": {},
       "reviews": []
-    },
-    {
-      "id": "1785731362577",
-      "name": "bakso",
-      "category": "bangunan",
-      "price": 222222222,
-      "costPrice": 22222222222,
-      "stock": 1,
-      "description": "222222222",
-      "brand": "s",
-      "rating": 5,
-      "sales": 0,
-      "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-      "specifications": {
-        "Standar": "SNI"
-      },
-      "reviews": []
     }
   ],
   "orders": [
