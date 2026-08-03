@@ -313,7 +313,7 @@ app.post('/api/pos/checkout', async (req, res) => {
     time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
     customerName: customerName || 'Pembeli Offline / Kasir',
     phone: phone || '-',
-    address: 'Pembelian Langsung di Toko Fisik CV Berkah Jaya',
+    address: 'Pembelian Langsung di Toko Fisik Berkah Jaya',
     items,
     subtotal,
     discount: disc,

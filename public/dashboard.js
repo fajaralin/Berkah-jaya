@@ -1098,7 +1098,7 @@ function addBadgeStickerToStudio(badgeType) {
   if (badgeType === 'garansi') text = '🛡️ GARANSI RESMI';
   if (badgeType === 'ongkir') text = '🚚 GRATIS ONGKIR';
   if (badgeType === 'diskon') text = '🔥 DISKON 50%';
-  if (badgeType === 'berkah') text = '🏢 CV BERKAH JAYA';
+  if (badgeType === 'berkah') text = '🏢 BERKAH JAYA';
 
   const layer = {
     id,
@@ -1865,7 +1865,7 @@ function openPosReceiptModal(order) {
   document.getElementById('receipt-info-box').innerHTML = `
     <p>No. Transaksi : <strong>#${order.id}</strong></p>
     <p>Tanggal       : ${order.date} ${order.time || ''}</p>
-    <p>Kasir/Petugas : Admin CV Berkah Jaya</p>
+    <p>Kasir/Petugas : Admin Berkah Jaya</p>
     <p>Pembayaran    : ${order.paymentMethod}</p>
   `;
 
@@ -1977,7 +1977,7 @@ function exportMonthlyReportToExcel(reportData) {
       </style>
     </head>
     <body>
-      <div class="header">REKAPITULASI PENJUALAN LAPORAN BULANAN - CV BERKAH JAYA</div>
+      <div class="header">REKAPITULASI PENJUALAN LAPORAN BULANAN - BERKAH JAYA</div>
       <div class="sub-header">Periode Laporan: ${monthName} | Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}</div>
       
       <table>
@@ -2037,7 +2037,7 @@ function exportMonthlyReportToExcel(reportData) {
   const blob = new Blob([tableHTML], { type: 'application/vnd.ms-excel' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `Laporan_Penjualan_CV_Berkah_Jaya_${reportData.month}.xls`;
+  link.download = `Laporan_Penjualan_Berkah_Jaya_${reportData.month}.xls`;
   link.click();
   showToast('Laporan Excel (.xlsx) berhasil diunduh!', 'success');
 }
@@ -2050,7 +2050,7 @@ function exportMonthlyReportToWord(reportData) {
     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
     <head>
       <meta charset='utf-8'>
-      <title>Laporan Pendapatan CV Berkah Jaya</title>
+      <title>Laporan Pendapatan Berkah Jaya</title>
       <style>
         body { font-family: 'Times New Roman', Times, serif; margin: 30px; line-height: 1.5; color: #000; }
         .kop-container { text-align: center; border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px; }
@@ -2070,7 +2070,7 @@ function exportMonthlyReportToWord(reportData) {
     </head>
     <body>
       <div class="kop-container">
-        <h1 class="kop-title">CV BERKAH JAYA</h1>
+        <h1 class="kop-title">BERKAH JAYA</h1>
         <p class="kop-subtitle">Penyedia Alat Bangunan, Listrik & Obat Pertanian Terlengkap</p>
         <p class="kop-address">Jl. Garuda, Penyangkringan, Pegandon, Kabupaten Kendal, Jawa Tengah | WA/Telp: 085172369447</p>
       </div>
@@ -2133,7 +2133,7 @@ function exportMonthlyReportToWord(reportData) {
           <td style="border: none; width: 60%;"></td>
           <td style="border: none; text-align: center;">
             <p>Kendal, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-            <p>Pimpinan CV Berkah Jaya,</p>
+            <p>Pimpinan Berkah Jaya,</p>
             <br/><br/><br/><br/>
             <p><strong>( ______________________ )</strong></p>
           </td>
@@ -2146,7 +2146,7 @@ function exportMonthlyReportToWord(reportData) {
   const blob = new Blob(['\ufeff' + wordHTML], { type: 'application/msword' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `Laporan_Resmi_CV_Berkah_Jaya_${reportData.month}.doc`;
+  link.download = `Laporan_Resmi_Berkah_Jaya_${reportData.month}.doc`;
   link.click();
   showToast('Laporan Word ber-Kop Surat (.doc) berhasil diunduh!', 'success');
 }
