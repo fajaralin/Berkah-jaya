@@ -37,9 +37,11 @@ if not exist node_modules (
 echo  [OK] Dependensi siap.
 
 echo.
-echo  [3/5] Mengambil data & produk terbaru dari server online...
+echo  [3/5] Mengambil data, fitur & produk terbaru dari server online...
+git fetch origin main
+git reset --hard origin/main
 git pull origin main
-echo  [OK] Data lokal sudah ter-update ke versi terbaru.
+echo  [OK] Seluruh fitur & data lokal berhasil ter-update ke versi terbaru!
 
 echo.
 echo  [4/5] Menguji & Menyimpan Izin Auto-Sync GitHub...
