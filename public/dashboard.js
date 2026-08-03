@@ -434,13 +434,46 @@ function closeProductCrudModal(force = false) {
     const desc = document.getElementById('form-product-desc')?.value.trim() || '';
     const stock = document.getElementById('form-product-stock')?.value || '';
 
-    // Ask confirmation if form contains data
+    // Ask confirmation if form contains data using modern custom Web Modal UI
     if (name !== '' || price !== '' || desc !== '' || stock !== '') {
-      const isConfirmed = confirm('Data produk yang sedang Anda isi belum disimpan. Yakin ingin keluar? (Data yang sudah diketik akan hilang)');
-      if (!isConfirmed) return; // Batal -> Tetap berada di form
+      showUnsavedConfirmModal(() => {
+        document.getElementById('product-form-modal').classList.remove('active');
+      });
+      return;
     }
   }
   document.getElementById('product-form-modal').classList.remove('active');
+}
+
+function showUnsavedConfirmModal(onConfirm) {
+  const modal = document.getElementById('confirm-unsaved-modal');
+  if (!modal) {
+    onConfirm();
+    return;
+  }
+
+  modal.classList.add('active');
+
+  const discardBtn = document.getElementById('confirm-discard-btn');
+  const cancelBtn = document.getElementById('cancel-discard-btn');
+
+  const cleanup = () => {
+    modal.classList.remove('active');
+    discardBtn.removeEventListener('click', handleDiscard);
+    cancelBtn.removeEventListener('click', handleCancel);
+  };
+
+  const handleDiscard = () => {
+    cleanup();
+    onConfirm();
+  };
+
+  const handleCancel = () => {
+    cleanup();
+  };
+
+  discardBtn.addEventListener('click', handleDiscard);
+  cancelBtn.addEventListener('click', handleCancel);
 }
 
 // Submit Product CRUD Form API Call
