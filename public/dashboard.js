@@ -2076,12 +2076,12 @@ function exportMonthlyReportToWord(reportData) {
       <div class="doc-sub">Periode Laporan: <strong>${monthName}</strong></div>
 
       <h3>I. Ringkasan Eksekutif Pendapatan</h3>
-      <div class="summary-card">
-        <table style="border: none; margin: 0;">
-          <tr style="border: none;"><td style="border: none;"><strong>Total Pendapatan Bersih:</strong></td><td style="border: none;" class="text-right"><strong>Rp ${reportData.totalRevenue.toLocaleString('id-ID')}</strong></td></tr>
-          <tr style="border: none;"><td style="border: none;">Penjualan Kasir Offline (Toko Fisik):</td><td style="border: none;" class="text-right">Rp ${reportData.offlineRevenue.toLocaleString('id-ID')} (${reportData.offlineCount} Transaksi)</td></tr>
-          <tr style="border: none;"><td style="border: none;">Penjualan Online Website:</td><td style="border: none;" class="text-right">Rp ${reportData.onlineRevenue.toLocaleString('id-ID')} (${reportData.onlineCount} Pesanan)</td></tr>
-          <tr style="border: none;"><td style="border: none;">Total Item Terjual:</td><td style="border: none;" class="text-right">${reportData.totalUnitsSold} Unit Barang</td></tr>
+      <div class="summary-card" style="box-sizing: border-box; padding: 12px 16px;">
+        <table style="width: 100%; border-collapse: collapse; border: none; margin: 0;">
+          <tr style="border: none;"><td style="border: none; padding: 4px 0;"><strong>Total Pendapatan Bersih:</strong></td><td style="border: none; padding: 4px 0;" class="text-right"><strong>Rp ${reportData.totalRevenue.toLocaleString('id-ID')}</strong></td></tr>
+          <tr style="border: none;"><td style="border: none; padding: 4px 0;">Penjualan Kasir Offline (Toko Fisik):</td><td style="border: none; padding: 4px 0;" class="text-right">Rp ${reportData.offlineRevenue.toLocaleString('id-ID')} (${reportData.offlineCount} Transaksi)</td></tr>
+          <tr style="border: none;"><td style="border: none; padding: 4px 0;">Penjualan Online Website:</td><td style="border: none; padding: 4px 0;" class="text-right">Rp ${reportData.onlineRevenue.toLocaleString('id-ID')} (${reportData.onlineCount} Pesanan)</td></tr>
+          <tr style="border: none;"><td style="border: none; padding: 4px 0;">Total Item Terjual:</td><td style="border: none; padding: 4px 0;" class="text-right">${reportData.totalUnitsSold} Unit Barang</td></tr>
         </table>
       </div>
 
