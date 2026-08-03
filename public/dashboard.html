@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,9 @@
   <!-- Google Fonts: Outfit & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Style Sheet -->
@@ -20,22 +23,25 @@
       max-width: 1300px;
       margin: 0 auto;
     }
+
     .view-panel {
-      display: block !important; /* Force visible as it is standalone */
+      display: block !important;
+      /* Force visible as it is standalone */
     }
   </style>
 </head>
+
 <body style="background-color: var(--bg-main);">
 
 
 
   <main class="container admin-standalone-layout">
-    
+
     <!-- Admin / Seller Dashboard View -->
     <div id="admin-view" class="view-panel active">
       <div class="admin-header-row">
         <div class="admin-header-title-box">
-          <h2><i class="fa-solid fa-store text-orange"></i> CV BERKAH JAYA</h2>
+          <h2><i class="fa-solid fa-store text-orange"></i> BERKAH JAYA</h2>
           <div class="admin-sub-badge">
             <span class="pulse-dot"></span>
             <span>Panel Kelola Toko Penjual & Kasir POS • Sync Live Active</span>
@@ -45,10 +51,12 @@
           <button class="btn-primary" id="admin-add-product-btn">
             <i class="fa-solid fa-plus"></i> Tambah Produk Baru
           </button>
-          <button class="btn-secondary" id="admin-sync-online-btn" style="background-color: #2563eb; color: #fff; border: none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+          <button class="btn-secondary" id="admin-sync-online-btn"
+            style="background-color: #2563eb; color: #fff; border: none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
             <i class="fa-solid fa-rotate"></i> Sync ke Server Online
           </button>
-          <a href="index.html" class="btn-secondary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+          <a href="index.html" class="btn-secondary"
+            style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
             <i class="fa-solid fa-globe"></i> Lihat Toko Online
           </a>
         </div>
@@ -92,10 +100,14 @@
         <div class="admin-main-column">
           <!-- Navigation tabs in Admin (Kasir POS NO 1, Produk NO 2) -->
           <div class="admin-tab-bar">
-            <button class="admin-tab-btn active" id="admin-tab-pos-btn"><i class="fa-solid fa-cash-register"></i> Kasir Penjualan (POS)</button>
-            <button class="admin-tab-btn" id="admin-tab-products-btn"><i class="fa-solid fa-boxes-stacked"></i> Manajemen Produk</button>
-            <button class="admin-tab-btn" id="admin-tab-orders-btn"><i class="fa-solid fa-file-invoice"></i> Pesanan Website</button>
-            <button class="admin-tab-btn" id="admin-tab-reports-btn"><i class="fa-solid fa-chart-pie"></i> Laporan & Ekspor</button>
+            <button class="admin-tab-btn active" id="admin-tab-pos-btn"><i class="fa-solid fa-cash-register"></i> Kasir
+              Penjualan (POS)</button>
+            <button class="admin-tab-btn" id="admin-tab-products-btn"><i class="fa-solid fa-boxes-stacked"></i>
+              Manajemen Produk</button>
+            <button class="admin-tab-btn" id="admin-tab-orders-btn"><i class="fa-solid fa-file-invoice"></i> Pesanan
+              Website</button>
+            <button class="admin-tab-btn" id="admin-tab-reports-btn"><i class="fa-solid fa-chart-pie"></i> Laporan &
+              Ekspor</button>
           </div>
 
           <!-- POS Kasir Offline Section (NO 1 ACTIVE DEFAULT) -->
@@ -105,7 +117,7 @@
               <div class="pos-catalog-column">
                 <div class="pos-header-bar">
                   <h3><i class="fa-solid fa-cash-register text-orange"></i> Kasir Penjualan Toko Fisik</h3>
-                  
+
                   <div class="pos-search-wrapper">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
                     <input type="text" id="pos-product-search" placeholder="Cari nama produk / scan kata kunci...">
@@ -140,7 +152,8 @@
 
                     <div class="pos-summary-row">
                       <label for="pos-discount-input">Diskon Kasir (Rp):</label>
-                      <input type="number" id="pos-discount-input" value="0" min="0" step="1000" style="width: 120px; padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px;">
+                      <input type="number" id="pos-discount-input" value="0" min="0" step="1000"
+                        style="width: 120px; padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px;">
                     </div>
 
                     <div class="pos-summary-row pos-total-highlight">
@@ -161,7 +174,8 @@
 
                       <div class="editor-control-group" id="pos-cash-input-wrapper">
                         <label for="pos-cash-received">Uang Diterima Pelanggan (Rp):</label>
-                        <input type="text" id="pos-cash-received" placeholder="0" inputmode="numeric" class="pos-cash-input-custom">
+                        <input type="text" id="pos-cash-received" placeholder="0" inputmode="numeric"
+                          class="pos-cash-input-custom">
                       </div>
 
                       <div class="pos-change-box" id="pos-change-box">
@@ -188,16 +202,20 @@
             <div class="panel-header-search">
               <h3>Daftar Produk Toko</h3>
               <div class="admin-filter-group">
-                <button type="button" class="admin-filter-btn semua active" data-category="all" title="Tampilkan Semua Kategori">
+                <button type="button" class="admin-filter-btn semua active" data-category="all"
+                  title="Tampilkan Semua Kategori">
                   <i class="fa-solid fa-list"></i> Semua
                 </button>
-                <button type="button" class="admin-filter-btn bangunan" data-category="bangunan" title="Filter Alat Bangunan">
+                <button type="button" class="admin-filter-btn bangunan" data-category="bangunan"
+                  title="Filter Alat Bangunan">
                   <i class="fa-solid fa-hammer"></i> Bangunan
                 </button>
-                <button type="button" class="admin-filter-btn listrik" data-category="listrik" title="Filter Alat Listrik">
+                <button type="button" class="admin-filter-btn listrik" data-category="listrik"
+                  title="Filter Alat Listrik">
                   <i class="fa-solid fa-bolt"></i> Listrik
                 </button>
-                <button type="button" class="admin-filter-btn pertanian" data-category="pertanian" title="Filter Obat Pertanian">
+                <button type="button" class="admin-filter-btn pertanian" data-category="pertanian"
+                  title="Filter Obat Pertanian">
                   <i class="fa-solid fa-wheat-awn"></i> Pertanian
                 </button>
               </div>
@@ -271,11 +289,13 @@
                   </select>
                 </div>
 
-                <button type="button" class="btn-export-excel" id="btn-export-excel" title="Unduh File Excel Rekapitulasi (.xlsx)">
+                <button type="button" class="btn-export-excel" id="btn-export-excel"
+                  title="Unduh File Excel Rekapitulasi (.xlsx)">
                   <i class="fa-solid fa-file-excel"></i> Ekspor Excel (.xlsx)
                 </button>
 
-                <button type="button" class="btn-export-word" id="btn-export-word" title="Unduh File Word Ber-Kop Surat (.doc)">
+                <button type="button" class="btn-export-word" id="btn-export-word"
+                  title="Unduh File Word Ber-Kop Surat (.doc)">
                   <i class="fa-solid fa-file-word"></i> Ekspor Word (.doc Kop Surat)
                 </button>
               </div>
@@ -351,7 +371,7 @@
         <h3 id="product-form-title">Tambah Produk Baru</h3>
         <form id="product-crud-form">
           <input type="hidden" id="form-product-id">
-          
+
           <div class="form-row-grid">
             <div class="form-group-crud">
               <label for="form-product-name">Nama Produk *</label>
@@ -384,7 +404,8 @@
               <input type="number" id="form-product-cost-price" min="0" placeholder="Contoh: 60000">
             </div>
             <div class="form-group-crud">
-              <label for="form-product-price">Harga Jual (Rp) * <small style="color:var(--text-muted);font-weight:400;">(ditampilkan ke pelanggan)</small></label>
+              <label for="form-product-price">Harga Jual (Rp) * <small
+                  style="color:var(--text-muted);font-weight:400;">(ditampilkan ke pelanggan)</small></label>
               <input type="number" id="form-product-price" required min="100" placeholder="Contoh: 75000">
             </div>
           </div>
@@ -392,7 +413,8 @@
           <div class="form-group-crud">
             <label for="form-product-image">Gambar Produk</label>
             <div style="display: flex; gap: 8px; align-items: center;">
-              <img id="form-product-image-preview" src="" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--border-color);display:none;flex-shrink:0;">
+              <img id="form-product-image-preview" src="" alt=""
+                style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--border-color);display:none;flex-shrink:0;">
               <input type="text" id="form-product-image" placeholder="URL Gambar / Data Base64" style="flex: 1;">
               <button type="button" class="btn-secondary" id="btn-open-image-editor" style="white-space: nowrap;">
                 <i class="fa-solid fa-wand-magic-sparkles text-orange"></i> Edit Studio
@@ -402,7 +424,8 @@
 
           <div class="form-group-crud">
             <label for="form-product-desc">Deskripsi Produk *</label>
-            <textarea id="form-product-desc" required rows="4" placeholder="Tuliskan spesifikasi produk, keunggulan, kegunaan..."></textarea>
+            <textarea id="form-product-desc" required rows="4"
+              placeholder="Tuliskan spesifikasi produk, keunggulan, kegunaan..."></textarea>
           </div>
 
 
@@ -422,7 +445,7 @@
           <h3><i class="fa-solid fa-file-invoice text-orange"></i> Rincian Pesanan</h3>
           <span id="order-detail-status-badge" class="status-badge">Diproses</span>
         </div>
-        
+
         <div class="order-modal-body" id="order-modal-body-content">
           <!-- Dynamically filled order details -->
         </div>
@@ -457,10 +480,14 @@
               <canvas id="product-editor-canvas" width="800" height="800"></canvas>
             </div>
             <div class="canvas-quick-controls">
-              <button type="button" class="btn-icon" id="canvas-btn-delete" title="Hapus Layer Terpilih"><i class="fa-solid fa-trash text-red"></i> Hapus Layer</button>
-              <button type="button" class="btn-icon" id="canvas-btn-layer-up" title="Bawa ke Depan"><i class="fa-solid fa-arrow-up"></i> Depan</button>
-              <button type="button" class="btn-icon" id="canvas-btn-layer-down" title="Turunkan ke Belakang"><i class="fa-solid fa-arrow-down"></i> Belakang</button>
-              <button type="button" class="btn-icon" id="canvas-btn-clear" title="Reset Canvas"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+              <button type="button" class="btn-icon" id="canvas-btn-delete" title="Hapus Layer Terpilih"><i
+                  class="fa-solid fa-trash text-red"></i> Hapus Layer</button>
+              <button type="button" class="btn-icon" id="canvas-btn-layer-up" title="Bawa ke Depan"><i
+                  class="fa-solid fa-arrow-up"></i> Depan</button>
+              <button type="button" class="btn-icon" id="canvas-btn-layer-down" title="Turunkan ke Belakang"><i
+                  class="fa-solid fa-arrow-down"></i> Belakang</button>
+              <button type="button" class="btn-icon" id="canvas-btn-clear" title="Reset Canvas"><i
+                  class="fa-solid fa-rotate-left"></i> Reset</button>
             </div>
           </div>
 
@@ -468,11 +495,16 @@
           <div class="editor-sidebar-toolbar">
             <!-- Editor Tabs -->
             <div class="editor-tabs">
-              <button type="button" class="editor-tab-btn active" data-tab="tab-base-image"><i class="fa-solid fa-image"></i> Dasar</button>
-              <button type="button" class="editor-tab-btn" data-tab="tab-overlay-image"><i class="fa-solid fa-images"></i> Overlay</button>
-              <button type="button" class="editor-tab-btn" data-tab="tab-stickers"><i class="fa-solid fa-certificate"></i> Badge</button>
-              <button type="button" class="editor-tab-btn" data-tab="tab-text"><i class="fa-solid fa-font"></i> Teks</button>
-              <button type="button" class="editor-tab-btn" data-tab="tab-filters"><i class="fa-solid fa-sliders"></i> Filter</button>
+              <button type="button" class="editor-tab-btn active" data-tab="tab-base-image"><i
+                  class="fa-solid fa-image"></i> Dasar</button>
+              <button type="button" class="editor-tab-btn" data-tab="tab-overlay-image"><i
+                  class="fa-solid fa-images"></i> Overlay</button>
+              <button type="button" class="editor-tab-btn" data-tab="tab-stickers"><i
+                  class="fa-solid fa-certificate"></i> Badge</button>
+              <button type="button" class="editor-tab-btn" data-tab="tab-text"><i class="fa-solid fa-font"></i>
+                Teks</button>
+              <button type="button" class="editor-tab-btn" data-tab="tab-filters"><i class="fa-solid fa-sliders"></i>
+                Filter</button>
             </div>
 
             <!-- Tab Content 1: Base Image -->
@@ -491,7 +523,8 @@
               </div>
               <div class="editor-control-group">
                 <label>Kualitas Resolusi:</label>
-                <div style="padding: 8px 12px; background: rgba(0, 200, 83, 0.1); border: 1px solid rgba(0, 200, 83, 0.3); border-radius: 6px; color: #00897b; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                <div
+                  style="padding: 8px 12px; background: rgba(0, 200, 83, 0.1); border: 1px solid rgba(0, 200, 83, 0.3); border-radius: 6px; color: #00897b; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
                   <i class="fa-solid fa-gem text-orange"></i> Super HD (800 × 800 px)
                 </div>
               </div>
@@ -511,7 +544,8 @@
                   <button type="button" class="btn-secondary" id="btn-add-overlay-url">Tambah</button>
                 </div>
               </div>
-              <p class="editor-help-text"><i class="fa-solid fa-lightbulb"></i> Tips: Gunakan format PNG transparan untuk logo toko atau watermark.</p>
+              <p class="editor-help-text"><i class="fa-solid fa-lightbulb"></i> Tips: Gunakan format PNG transparan
+                untuk logo toko atau watermark.</p>
             </div>
 
             <!-- Tab Content 3: Badges / Stickers -->
@@ -550,11 +584,13 @@
               <div class="form-row-grid">
                 <div class="editor-control-group">
                   <label>Warna Teks:</label>
-                  <input type="color" id="editor-text-color" value="#ffffff" style="height: 40px; padding: 2px; width: 100%;">
+                  <input type="color" id="editor-text-color" value="#ffffff"
+                    style="height: 40px; padding: 2px; width: 100%;">
                 </div>
                 <div class="editor-control-group">
                   <label>Warna Latar (Pill):</label>
-                  <input type="color" id="editor-text-bg" value="#ff6b00" style="height: 40px; padding: 2px; width: 100%;">
+                  <input type="color" id="editor-text-bg" value="#ff6b00"
+                    style="height: 40px; padding: 2px; width: 100%;">
                 </div>
               </div>
               <div class="editor-control-group">
@@ -602,7 +638,8 @@
           </button>
           <div class="footer-main-buttons">
             <button type="button" class="btn-secondary" id="btn-close-editor">Batal</button>
-            <button type="button" class="btn-primary" id="btn-apply-editor-to-form" style="background: linear-gradient(135deg, #00c853, #009688); border: none;">
+            <button type="button" class="btn-primary" id="btn-apply-editor-to-form"
+              style="background: linear-gradient(135deg, #00c853, #009688); border: none;">
               <i class="fa-solid fa-circle-check"></i> Simpan & Gunakan Foto
             </button>
           </div>
@@ -615,10 +652,10 @@
       <div class="modal-content crud-modal-card">
         <button class="close-modal-btn" id="close-form-modal-btn">&times;</button>
         <h3 id="product-form-title">Tambah Produk Baru</h3>
-        
+
         <form id="product-crud-form">
           <input type="hidden" id="form-product-id">
-          
+
           <div class="form-row-2">
             <div class="form-group-crud">
               <label for="form-product-name">Nama Produk *</label>
@@ -644,7 +681,8 @@
               <input type="number" id="form-product-cost-price" min="0" placeholder="60000">
             </div>
             <div class="form-group-crud">
-              <label for="form-product-price">Harga Jual (Rp) * <small style="color:var(--text-muted);font-weight:400;">(ditampilkan ke pelanggan)</small></label>
+              <label for="form-product-price">Harga Jual (Rp) * <small
+                  style="color:var(--text-muted);font-weight:400;">(ditampilkan ke pelanggan)</small></label>
               <input type="number" id="form-product-price" required min="0" placeholder="75000">
             </div>
             <div class="form-group-crud">
@@ -662,7 +700,8 @@
               </button>
             </div>
             <div class="image-preview-container" id="form-image-preview-wrapper" style="margin-top: 8px;">
-              <img id="form-image-preview" src="" alt="Preview" style="max-height: 80px; display: none; border-radius: 4px;">
+              <img id="form-image-preview" src="" alt="Preview"
+                style="max-height: 80px; display: none; border-radius: 4px;">
             </div>
           </div>
 
@@ -698,7 +737,7 @@
           <h3>Detail Pesanan <span id="order-detail-id-title">#ORD-0000</span></h3>
           <span class="status-badge" id="order-detail-status-badge">Diproses</span>
         </div>
-        
+
         <div id="order-modal-body-content" class="order-modal-body">
           <!-- Dynamic order details -->
         </div>
@@ -731,7 +770,8 @@
               <canvas id="studio-canvas" width="600" height="600"></canvas>
             </div>
             <div class="canvas-toolbar">
-              <button type="button" class="btn-secondary btn-small" id="btn-studio-undo"><i class="fa-solid fa-rotate-left"></i> Reset Layer</button>
+              <button type="button" class="btn-secondary btn-small" id="btn-studio-undo"><i
+                  class="fa-solid fa-rotate-left"></i> Reset Layer</button>
               <span style="font-size: 11px; color: var(--text-muted);">Geser / seret elemen di atas canvas</span>
             </div>
           </div>
@@ -775,7 +815,8 @@
               <div class="editor-control-group">
                 <input type="text" id="studio-text-input" placeholder="Ketik teks promo (misal: Rp 72.000 / Sak)">
                 <div style="display: flex; gap: 8px; margin-top: 6px;">
-                  <input type="color" id="studio-text-color" value="#ff6b00" style="width: 40px; height: 34px; padding: 0; border: none; border-radius: 4px; cursor: pointer;">
+                  <input type="color" id="studio-text-color" value="#ff6b00"
+                    style="width: 40px; height: 34px; padding: 0; border: none; border-radius: 4px; cursor: pointer;">
                   <button type="button" class="btn-primary btn-small" id="btn-add-studio-text" style="flex: 1;">
                     <i class="fa-solid fa-font"></i> Tambah Teks ke Canvas
                   </button>
@@ -824,7 +865,7 @@
             <p class="receipt-address">Jl. Garuda, Penyangkringan, Pegandon, Kendal<br>Telp/WA: 085172369447</p>
             <div class="receipt-divider">================================</div>
           </div>
-          
+
           <div class="receipt-info" id="receipt-info-box">
             <!-- Dynamic order receipt metadata -->
           </div>
@@ -857,27 +898,35 @@
           </div>
         </div>
 
-        </div>
       </div>
+    </div>
     </div>
 
   </main>
 
   <!-- Modern In-Page Unsaved Changes Warning Popup -->
-  <div id="confirm-unsaved-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 999999; align-items: center; justify-content: center; padding: 20px;">
-    <div style="max-width: 420px; width: 100%; padding: 28px; border-radius: 20px; text-align: center; background: #ffffff; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); border: 1px solid #f1f5f9;">
-      <div style="width: 64px; height: 64px; border-radius: 50%; background: #fff7ed; color: #ea580c; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 16px auto; border: 2px solid #ffedd5;">
+  <div id="confirm-unsaved-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 999999; align-items: center; justify-content: center; padding: 20px;">
+    <div
+      style="max-width: 420px; width: 100%; padding: 28px; border-radius: 20px; text-align: center; background: #ffffff; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); border: 1px solid #f1f5f9;">
+      <div
+        style="width: 64px; height: 64px; border-radius: 50%; background: #fff7ed; color: #ea580c; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 16px auto; border: 2px solid #ffedd5;">
         <i class="fa-solid fa-triangle-exclamation"></i>
       </div>
-      <h3 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 8px; font-family: 'Outfit', sans-serif;">Data Belum Disimpan!</h3>
-      <p style="font-size: 14px; color: #64748b; margin-bottom: 24px; line-height: 1.5; font-family: 'Inter', sans-serif;">
+      <h3
+        style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 8px; font-family: 'Outfit', sans-serif;">
+        Data Belum Disimpan!</h3>
+      <p
+        style="font-size: 14px; color: #64748b; margin-bottom: 24px; line-height: 1.5; font-family: 'Inter', sans-serif;">
         Data produk yang sedang Anda isi belum disimpan. Yakin ingin keluar dan membuang perubahan?
       </p>
       <div style="display: flex; gap: 12px; justify-content: center;">
-        <button type="button" id="confirm-discard-btn" style="flex: 1; padding: 12px 16px; border-radius: 10px; background: #ef4444; color: #ffffff; border: none; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s;">
+        <button type="button" id="confirm-discard-btn"
+          style="flex: 1; padding: 12px 16px; border-radius: 10px; background: #ef4444; color: #ffffff; border: none; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s;">
           <i class="fa-solid fa-trash-can"></i> Buang & Keluar
         </button>
-        <button type="button" id="cancel-discard-btn" style="flex: 1; padding: 12px 16px; border-radius: 10px; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s;">
+        <button type="button" id="cancel-discard-btn"
+          style="flex: 1; padding: 12px 16px; border-radius: 10px; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s;">
           <i class="fa-solid fa-pen-to-square"></i> Lanjut Edit
         </button>
       </div>
@@ -892,4 +941,5 @@
   <!-- Script File -->
   <script src="dashboard.js?v=8.2"></script>
 </body>
+
 </html>
