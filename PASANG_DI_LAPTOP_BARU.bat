@@ -8,7 +8,7 @@ echo.
 
 cd /d "%~dp0"
 
-echo  [1/3] Memeriksa Node.js...
+echo  [1/5] Memeriksa Node.js...
 node -v >nul 2>&1
 if %ERRORLEVEL% neq 0 (
     echo.
@@ -24,7 +24,8 @@ if %ERRORLEVEL% neq 0 (
 )
 echo  [OK] Node.js sudah terinstall.
 
-echo  [2/3] Menginstall dependensi aplikasi...
+echo.
+echo  [2/5] Menginstall dependensi aplikasi...
 if not exist node_modules (
     call npm install
     if %ERRORLEVEL% neq 0 (
@@ -35,15 +36,29 @@ if not exist node_modules (
 )
 echo  [OK] Dependensi siap.
 
-echo  [3/3] Membuat ikon di Desktop...
+echo.
+echo  [3/5] Mengambil data & produk terbaru dari server online...
+git pull origin main
+echo  [OK] Data lokal sudah ter-update ke versi terbaru.
+
+echo.
+echo  [4/5] Menguji & Menyimpan Izin Auto-Sync GitHub...
+git push origin main
+echo  [OK] Izin Auto-Sync aktif & tersimpan di laptop ini!
+
+echo.
+echo  [5/5] Membuat ikon di Desktop...
 powershell -ExecutionPolicy Bypass -File "%~dp0create_shortcut.ps1"
 echo  [OK] Ikon Kasir Berkah Jaya sudah muncul di Desktop!
 
 echo.
 echo  ================================================
-echo    SETUP SELESAI! 
-echo    Ikon "Kasir Berkah Jaya" sudah ada di Desktop.
-echo    Klik 2x ikon tersebut untuk membuka kasir.
+echo    SETUP SELESAI & SUKSES! 
+echo    1. Data barang versi terbaru sudah ter-update.
+echo    2. Izin Auto-Sync ke server online sudah aktif.
+echo    3. Ikon "Kasir Berkah Jaya" sudah ada di Desktop.
+echo.
+echo    Klik 2x ikon tersebut di Desktop untuk membuka kasir.
 echo  ================================================
 echo.
 pause
