@@ -427,7 +427,19 @@ async function openProductCrudModal(productId = null) {
   modal.classList.add('active');
 }
 
-function closeProductCrudModal() {
+function closeProductCrudModal(force = false) {
+  if (force !== true) {
+    const name = document.getElementById('form-product-name')?.value.trim() || '';
+    const price = document.getElementById('form-product-price')?.value || '';
+    const desc = document.getElementById('form-product-desc')?.value.trim() || '';
+    const stock = document.getElementById('form-product-stock')?.value || '';
+
+    // Ask confirmation if form contains data
+    if (name !== '' || price !== '' || desc !== '' || stock !== '') {
+      const isConfirmed = confirm('Data produk yang sedang Anda isi belum disimpan. Yakin ingin keluar? (Data yang sudah diketik akan hilang)');
+      if (!isConfirmed) return; // Batal -> Tetap berada di form
+    }
+  }
   document.getElementById('product-form-modal').classList.remove('active');
 }
 
@@ -482,7 +494,7 @@ async function submitProductCrudForm() {
     } catch (e) {}
 
     showToast(id ? 'Detail produk berhasil diperbarui.' : 'Produk baru berhasil ditambahkan.', 'success');
-    closeProductCrudModal();
+    closeProductCrudModal(true);
     
     // Refresh admin data
     loadAdminDashboard();
@@ -647,14 +659,11 @@ function setupAdminEventListeners() {
     }
   });
 
-  // Close modals on clicking outside modal-content
+  // Close modals on clicking outside modal-content (Only view-only detail modals close on backdrop click)
   window.addEventListener('click', (e) => {
-    const pModal = document.getElementById('product-form-modal');
-    if (e.target === pModal) closeProductCrudModal();
+    // Note: Form modals (product-form-modal & image-editor-modal) will NEVER close on backdrop click to prevent losing typed data!
     const oModal = document.getElementById('admin-order-detail-modal');
     if (e.target === oModal) closeAdminOrderDetailModal();
-    const eModal = document.getElementById('image-editor-modal');
-    if (e.target === eModal) closeImageEditorModal();
   });
 
   // Initialize Product Image Studio Controls
