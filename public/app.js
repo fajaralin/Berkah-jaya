@@ -142,6 +142,35 @@ function startPromoSlider() {
   });
 }
 
+function mixCategories(products) {
+  if (!products || products.length <= 1) return products;
+
+  const categories = {};
+  products.forEach(p => {
+    const cat = (p.category || 'lainnya').toLowerCase();
+    if (!categories[cat]) categories[cat] = [];
+    categories[cat].push(p);
+  });
+
+  const keys = Object.keys(categories);
+  if (keys.length <= 1) return products;
+
+  const result = [];
+  let added = true;
+
+  while (added) {
+    added = false;
+    keys.forEach(k => {
+      if (categories[k].length > 0) {
+        result.push(categories[k].shift());
+        added = true;
+      }
+    });
+  }
+
+  return result;
+}
+
 // Render dynamic products grid
 function renderProducts() {
   const grid = document.getElementById('product-grid');
@@ -162,6 +191,11 @@ function renderProducts() {
     filtered = filtered.filter(p => p.rating >= appState.appliedRatingMin);
   }
   
+  // If viewing all categories on store page, interleave categories for visual variety
+  if (appState.activeCategory === 'semua' && appState.activeSort === 'default') {
+    filtered = mixCategories(filtered);
+  }
+
   renderFilterTags();
   renderBrandFilters(filtered);
 
