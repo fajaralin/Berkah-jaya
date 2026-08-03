@@ -1934,17 +1934,24 @@ function renderMonthlyReport(data) {
   tbody.innerHTML = '';
 
   if (data.orders.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">Tidak ada data transaksi untuk periode ini.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 20px;">Tidak ada data transaksi untuk periode ini.</td></tr>`;
     return;
   }
 
   data.orders.forEach(o => {
     const isOffline = o.type === 'offline' || o.id.startsWith('POS-');
+    const itemsText = o.items && o.items.length > 0
+      ? o.items.map(i => `${i.name || i.productName || 'Produk'} (${i.quantity}x)`).join(', ')
+      : '-';
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><strong>#${o.id}</strong></td>
       <td>${o.date}</td>
       <td>${o.customerName}</td>
+      <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${itemsText}">
+        <strong style="color: var(--text-dark);">${itemsText}</strong>
+      </td>
       <td><span class="status-badge ${isOffline ? 'kirim' : 'proses'}">${isOffline ? 'Kasir Offline' : 'Online Website'}</span></td>
       <td>${o.paymentMethod || 'Tunai'}</td>
       <td><strong>${formatRupiah(o.total)}</strong></td>
