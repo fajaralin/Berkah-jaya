@@ -427,11 +427,50 @@ async function openProductCrudModal(productId = null) {
   modal.classList.add('active');
 }
 
-function closeProductCrudModal() {
-  const modal = document.getElementById('product-form-modal');
-  if (modal) {
-    modal.classList.remove('active');
+function closeProductCrudModal(force = false) {
+  if (force !== true) {
+    const name = document.getElementById('form-product-name')?.value.trim() || '';
+    const price = document.getElementById('form-product-price')?.value || '';
+    const desc = document.getElementById('form-product-desc')?.value.trim() || '';
+    const stock = document.getElementById('form-product-stock')?.value || '';
+
+    // If user entered any product data, show in-page warning popup!
+    if (name !== '' || price !== '' || desc !== '' || stock !== '') {
+      showUnsavedWarningPopup(() => {
+        document.getElementById('product-form-modal')?.classList.remove('active');
+      });
+      return;
+    }
   }
+  document.getElementById('product-form-modal')?.classList.remove('active');
+}
+
+function showUnsavedWarningPopup(onDiscard) {
+  const popup = document.getElementById('confirm-unsaved-modal');
+  if (!popup) {
+    onDiscard();
+    return;
+  }
+
+  popup.style.display = 'flex';
+
+  const discardBtn = document.getElementById('confirm-discard-btn');
+  const cancelBtn = document.getElementById('cancel-discard-btn');
+
+  const closePopup = () => {
+    popup.style.display = 'none';
+    discardBtn.onclick = null;
+    cancelBtn.onclick = null;
+  };
+
+  discardBtn.onclick = () => {
+    closePopup();
+    onDiscard();
+  };
+
+  cancelBtn.onclick = () => {
+    closePopup();
+  };
 }
 
 // Submit Product CRUD Form API Call
