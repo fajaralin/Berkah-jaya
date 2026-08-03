@@ -727,9 +727,15 @@ function openImageEditorModal() {
   modal.classList.add('active');
 
   const currentVal = document.getElementById('form-product-image').value.trim();
-  const defaultImg = currentVal || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80';
-  
-  loadBaseImageToStudio(defaultImg);
+  if (currentVal) {
+    loadBaseImageToStudio(currentVal);
+  } else {
+    // Clear layers & display upload placeholder canvas
+    studioState.layers = [];
+    studioState.selectedLayerId = null;
+    renderStudioCanvas();
+    updateStudioLayersList();
+  }
 }
 
 function closeImageEditorModal() {
@@ -1111,6 +1117,37 @@ function renderStudioCanvas(drawSelection = true) {
 
   // Apply Filter string
   ctx.filter = `brightness(${filters.brightness}%) contrast(${filters.contrast}%) saturate(${filters.saturation}%)`;
+
+  // Draw Upload Placeholder if no base layer is loaded
+  const hasBaseLayer = layers.some(l => l.type === 'base');
+  if (!hasBaseLayer && drawSelection) {
+    ctx.save();
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([12, 8]);
+    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#ff6b00';
+    ctx.font = '900 64px "Font Awesome 6 Free", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('\uf093', canvas.width / 2, canvas.height / 2 - 40);
+
+    ctx.fillStyle = '#1e293b';
+    ctx.font = 'bold 28px "Outfit", "Inter", sans-serif';
+    ctx.fillText('Belum Ada Foto Produk', canvas.width / 2, canvas.height / 2 + 35);
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = 'normal 20px "Outfit", "Inter", sans-serif';
+    ctx.fillText('Unggah file foto dari laptop/HP Anda', canvas.width / 2, canvas.height / 2 + 80);
+    ctx.fillText('atau tempel URL gambar di menu sebelah kanan', canvas.width / 2, canvas.height / 2 + 110);
+
+    ctx.restore();
+  }
 
   // Draw layers bottom to top
   layers.forEach(layer => {
