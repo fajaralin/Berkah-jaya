@@ -38,10 +38,10 @@ echo [OK] Node.js sudah terinstall.
 
 echo.
 echo [2/4] Menginstall dependensi aplikasi...
-if not exist node_modules\express (
+if not exist node_modules\mongodb (
     call npm install --no-fund --no-audit
 )
-if not exist node_modules\express (
+if not exist node_modules\mongodb (
     echo.
     echo [!] Gagal install dependensi. Periksa koneksi internet Anda.
     pause

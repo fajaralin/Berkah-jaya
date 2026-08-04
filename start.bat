@@ -6,7 +6,7 @@ echo ========================================================
 echo.
 cd /d "%~dp0"
 
-if not exist node_modules (
+if not exist node_modules\mongodb (
     echo Memeriksa dependensi... Installing node modules...
     call npm install
 )

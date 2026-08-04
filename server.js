@@ -5,6 +5,8 @@ const http = require('http');
 const { Server } = require('socket.io');
 
 const app = express();
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 const PORT = process.env.PORT || 3000;
 const DB_PATH = path.join(__dirname, 'data', 'db.json');
 
@@ -24,7 +26,7 @@ io.on('connection', (socket) => {
 // On public online deployment, redirect any buyer/visitor back to customer homepage.
 app.use((req, res, next) => {
   const host = (req.headers.host || '').toLowerCase();
-  const isLocal = host.includes('localhost') || host.includes('127.0.0.1') || host.startsWith('192.168.') || host.startsWith('10.');
+  const isLocal = host.includes('localhost') || host.includes('127.0.0.1') || host.includes('::1') || host.startsWith('192.168.') || host.startsWith('10.') || host.startsWith('172.');
   const isDashboardRoute = req.path.toLowerCase() === '/dashboard.html' || req.path.toLowerCase() === '/dashboard';
   const isModifyingProductApi = ['POST', 'PUT', 'DELETE'].includes(req.method) && req.path.startsWith('/api/products');
 
@@ -269,11 +271,15 @@ async function writeDB(data) {
       try {
         const prodCol = mongoDb.collection('products');
         for (const p of data.products) {
-          await prodCol.updateOne({ id: String(p.id) }, { $set: p }, { upsert: true });
+          const doc = { ...p };
+          delete doc._id;
+          await prodCol.updateOne({ id: String(p.id) }, { $set: doc }, { upsert: true });
         }
         const orderCol = mongoDb.collection('orders');
         for (const o of data.orders) {
-          await orderCol.updateOne({ id: String(o.id) }, { $set: o }, { upsert: true });
+          const doc = { ...o };
+          delete doc._id;
+          await prodCol.updateOne({ id: String(o.id) }, { $set: doc }, { upsert: true });
         }
         if (typeof io !== 'undefined') {
           io.emit('sync:completed', { timestamp: Date.now() });
@@ -332,7 +338,7 @@ app.get('/api/products', async (req, res) => {
 // 2. GET /api/products/:id - Get specific product details
 app.get('/api/products/:id', async (req, res) => {
   const db = await readDB();
-  const product = db.products.find(p => p.id === req.params.id);
+  const product = db.products.find(p => String(p.id) === String(req.params.id));
   if (!product) {
     return res.status(404).json({ error: 'Produk tidak ditemukan' });
   }
@@ -411,7 +417,7 @@ app.post('/api/products', async (req, res) => {
 // 4. PUT /api/products/:id - Update product details (Admin)
 app.put('/api/products/:id', async (req, res) => {
   const db = await readDB();
-  const index = db.products.findIndex(p => p.id === req.params.id);
+  const index = db.products.findIndex(p => String(p.id) === String(req.params.id));
 
   if (index === -1) {
     return res.status(404).json({ error: 'Produk tidak ditemukan.' });
@@ -452,7 +458,7 @@ app.put('/api/products/:id', async (req, res) => {
 app.delete('/api/products/:id', async (req, res) => {
   const db = await readDB();
   const initialLength = db.products.length;
-  db.products = db.products.filter(p => p.id !== req.params.id);
+  db.products = db.products.filter(p => String(p.id) !== String(req.params.id));
 
   if (db.products.length === initialLength) {
     return res.status(404).json({ error: 'Produk tidak ditemukan.' });

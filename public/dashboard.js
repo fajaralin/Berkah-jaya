@@ -554,14 +554,23 @@ async function openProductCrudModal(productId = null) {
       const p = await response.json();
       
       document.getElementById('form-product-id').value = p.id;
-      document.getElementById('form-product-name').value = p.name;
-      document.getElementById('form-product-brand').value = p.brand;
-      document.getElementById('form-product-category').value = p.category;
-      document.getElementById('form-product-image').value = p.image;
+      document.getElementById('form-product-name').value = p.name || '';
+      document.getElementById('form-product-brand').value = p.brand || '';
+      
+      const catSelect = document.getElementById('form-product-category');
+      if (p.category) {
+        const normCat = String(p.category).toLowerCase();
+        if (normCat.includes('bangun')) catSelect.value = 'bangunan';
+        else if (normCat.includes('listrik')) catSelect.value = 'listrik';
+        else if (normCat.includes('tani') || normCat.includes('obat')) catSelect.value = 'pertanian';
+        else catSelect.value = p.category;
+      }
+      
+      document.getElementById('form-product-image').value = p.image || '';
       document.getElementById('form-product-cost-price').value = formatRupiahInput(p.costPrice || '');
       document.getElementById('form-product-price').value = formatRupiahInput(p.price || '');
-      document.getElementById('form-product-stock').value = p.stock;
-      document.getElementById('form-product-desc').value = p.description;
+      document.getElementById('form-product-stock').value = p.stock !== undefined ? p.stock : 0;
+      document.getElementById('form-product-desc').value = p.description || '';
       
       // Load Variants
       const checkbox = document.getElementById('form-has-variants-checkbox');
@@ -649,6 +658,23 @@ async function submitProductCrudForm() {
   const description = document.getElementById('form-product-desc').value.trim();
   const hasVariants = document.getElementById('form-has-variants-checkbox')?.checked || false;
 
+  if (!name) {
+    showToast('Mohon isi Nama Produk terlebih dahulu.', 'error');
+    return;
+  }
+  if (!brand) {
+    showToast('Mohon isi Merek / Brand produk.', 'error');
+    return;
+  }
+  if (!category) {
+    showToast('Mohon pilih Kategori produk.', 'error');
+    return;
+  }
+  if (!description) {
+    showToast('Mohon isi Deskripsi Produk.', 'error');
+    return;
+  }
+
   const payload = { name, brand, category, image, price, costPrice, stock, description, hasVariants };
 
   if (hasVariants) {
@@ -704,7 +730,10 @@ async function submitProductCrudForm() {
       });
     }
 
-    if (!response.ok) throw new Error('Gagal menyimpan produk.');
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error || 'Gagal menyimpan produk.');
+    }
     
     // Broadcast product update signal to index.html/store tabs
     try {
