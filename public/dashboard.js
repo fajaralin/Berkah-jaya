@@ -508,6 +508,31 @@ function applyCategorySpecsTemplate(category) {
   });
 }
 
+let initialFormSnapshot = null;
+
+function getProductFormSnapshot() {
+  const vRows = document.querySelectorAll('#variants-table-body .variant-row-item');
+  const vData = Array.from(vRows).map(row => ({
+    name: row.querySelector('.variant-name')?.value.trim() || '',
+    cost: row.querySelector('.variant-cost-price')?.value || '',
+    price: row.querySelector('.variant-price')?.value || '',
+    stock: row.querySelector('.variant-stock')?.value || ''
+  }));
+
+  return JSON.stringify({
+    name: document.getElementById('form-product-name')?.value.trim() || '',
+    brand: document.getElementById('form-product-brand')?.value.trim() || '',
+    category: document.getElementById('form-product-category')?.value || '',
+    image: document.getElementById('form-product-image')?.value.trim() || '',
+    costPrice: document.getElementById('form-product-cost-price')?.value || '',
+    price: document.getElementById('form-product-price')?.value || '',
+    stock: document.getElementById('form-product-stock')?.value || '',
+    desc: document.getElementById('form-product-desc')?.value.trim() || '',
+    hasVariants: document.getElementById('form-has-variants-checkbox')?.checked || false,
+    variants: vData
+  });
+}
+
 // Open Product Form Crud Modal (Add/Edit)
 async function openProductCrudModal(productId = null) {
   const modal = document.getElementById('product-form-modal');
@@ -548,24 +573,6 @@ async function openProductCrudModal(productId = null) {
         if (checkbox) checkbox.checked = false;
         toggleVariantsMode(false);
       }
-
-      // Load Specs fields if container exists
-      const wrapper = document.getElementById('specs-fields-wrapper');
-      if (wrapper) {
-        const specs = p.specifications || {};
-        Object.keys(specs).forEach(k => {
-          const row = document.createElement('div');
-          row.className = 'spec-field-pair';
-          row.innerHTML = `
-            <input type="text" class="spec-key" value="${k}" placeholder="Nama Spesifikasi">
-            <input type="text" class="spec-value" value="${specs[k]}" placeholder="Nilai">
-            <button type="button" class="btn-remove-spec"><i class="fa-solid fa-trash"></i></button>
-          `;
-          row.querySelector('.btn-remove-spec').addEventListener('click', () => row.remove());
-          wrapper.appendChild(row);
-        });
-      }
-      
     } catch (e) {
       console.error(e);
       showToast('Gagal mengambil detail produk untuk diedit', 'error');
@@ -580,24 +587,23 @@ async function openProductCrudModal(productId = null) {
   
   updateFormImagePreview();
   modal.classList.add('active');
+  initialFormSnapshot = getProductFormSnapshot();
 }
 
 function closeProductCrudModal(force = false) {
-  if (force !== true) {
-    const name = document.getElementById('form-product-name')?.value.trim() || '';
-    const price = document.getElementById('form-product-price')?.value || '';
-    const desc = document.getElementById('form-product-desc')?.value.trim() || '';
-    const stock = document.getElementById('form-product-stock')?.value || '';
-
-    // If user entered any product data, show in-page warning popup!
-    if (name !== '' || price !== '' || desc !== '' || stock !== '') {
+  if (force !== true && initialFormSnapshot !== null) {
+    const currentSnapshot = getProductFormSnapshot();
+    // Only show warning popup if form data was actually edited or added!
+    if (currentSnapshot !== initialFormSnapshot) {
       showUnsavedWarningPopup(() => {
         document.getElementById('product-form-modal')?.classList.remove('active');
+        initialFormSnapshot = null;
       });
       return;
     }
   }
   document.getElementById('product-form-modal')?.classList.remove('active');
+  initialFormSnapshot = null;
 }
 
 function showUnsavedWarningPopup(onDiscard) {

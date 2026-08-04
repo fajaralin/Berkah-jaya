@@ -204,23 +204,6 @@
         "Standar": "SNI"
       },
       "reviews": []
-    },
-    {
-      "id": "1785807966305",
-      "name": "jokowi",
-      "category": "bangunan",
-      "price": 80000,
-      "costPrice": 70000,
-      "stock": 9,
-      "hasVariants": false,
-      "variants": [],
-      "description": "kambing",
-      "brand": "Semen Padang",
-      "rating": 5,
-      "sales": 0,
-      "image": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&auto=format&fit=crop&q=80",
-      "specifications": {},
-      "reviews": []
     }
   ],
   "orders": [
