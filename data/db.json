@@ -74,13 +74,14 @@
       "brand": "Philips",
       "rating": 4.8,
       "sales": 1,
-      "image": "https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=500&auto=format&fit=crop&q=60",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbtLIkCrrLfPfUqrnPBv8TLDWOBaixe0Wq9NduS0DEjw&s=10",
       "specifications": {
         "Daya": "12 Watt (Setara 98W Pijar)",
         "Warna": "Cool Daylight (Putih 6500K)",
         "Lumens": "1360 lm"
       },
-      "reviews": []
+      "reviews": [],
+      "costPrice": 0
     },
     {
       "id": "1785727624518",
