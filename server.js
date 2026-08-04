@@ -340,7 +340,7 @@ app.get('/api/products', async (req, res) => {
     }
   } else {
     // Default sorting: Alphabetical A-Z by product name
-    result.sort((a, b) => a.name.localeCompare(b.name, 'id', { sensitivity: 'base' }));
+    result.sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'id', { sensitivity: 'base' }));
   }
 
   res.json(result);

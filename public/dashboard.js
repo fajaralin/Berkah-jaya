@@ -93,7 +93,7 @@ async function renderAdminProductsTable() {
     const response = await fetch('/api/products');
     let products = await response.json();
     // Sort products alphabetically A-Z by name
-    products.sort((a, b) => a.name.localeCompare(b.name, 'id', { sensitivity: 'base' }));
+    products.sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'id', { sensitivity: 'base' }));
     adminState.products = products; // Save to local state
     
     const tbody = document.getElementById('admin-product-table-body');
