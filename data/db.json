@@ -189,7 +189,6 @@
       "reviews": []
     },
     {
-<<<<<<< HEAD
       "id": "1785804596987",
       "name": "cetok",
       "category": "bangunan",
@@ -204,7 +203,9 @@
       "specifications": {
         "Standar": "SNI"
       },
-=======
+      "reviews": []
+    },
+    {
       "id": "1785810400684",
       "name": "Prevatone",
       "category": "pertanian",
@@ -217,7 +218,6 @@
       "sales": 0,
       "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
       "specifications": {},
->>>>>>> b9c246d (auto: Sync database updates [4/8/2026, 09.26.42])
       "reviews": []
     }
   ],
