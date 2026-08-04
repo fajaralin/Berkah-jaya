@@ -255,6 +255,23 @@
       "stock": 3,
       "hasVariants": false,
       "variants": []
+    },
+    {
+      "id": "1785856019365",
+      "name": "jokowi",
+      "category": "bangunan",
+      "price": 8888888,
+      "costPrice": 60500,
+      "stock": 777,
+      "hasVariants": false,
+      "variants": [],
+      "description": "gjhvcgjfcgj",
+      "brand": "srtgrs",
+      "rating": 5,
+      "sales": 0,
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBOkpkAGHpxfV8k8OPZ07hBsDrv_-0CnGRQXyN6J7axw&s=10",
+      "specifications": {},
+      "reviews": []
     }
   ],
   "orders": [
