@@ -911,13 +911,31 @@
     </div>
   </div>
 
+  <!-- Custom Luxury Delete Confirmation Modal -->
+  <div id="custom-confirm-modal" class="modal" style="z-index: 10050;">
+    <div class="modal-content confirm-modal-card">
+      <div class="confirm-modal-icon">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 id="confirm-modal-title">Konfirmasi Hapus Produk</h3>
+      <p id="confirm-modal-message">Apakah Anda yakin ingin menghapus produk ini dari toko?</p>
+      
+      <div class="confirm-modal-actions">
+        <button type="button" class="btn-secondary" id="confirm-modal-cancel-btn">Batal</button>
+        <button type="button" class="btn-danger-confirm" id="confirm-modal-action-btn">
+          <i class="fa-solid fa-trash-can"></i> Ya, Hapus Produk
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification System -->
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Socket.io Realtime Client -->
   <script src="/socket.io/socket.io.js"></script>
   <!-- Script File -->
-  <script src="dashboard.js?v=17.0"></script>
+  <script src="dashboard.js?v=18.0"></script>
 </body>
 
 </html>

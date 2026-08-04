@@ -751,6 +751,48 @@ function setupAdminEventListeners() {
     filterAdminProducts();
   });
 
+function showCustomConfirmModal({ title, message, confirmText, confirmClass, onConfirm }) {
+  const modal = document.getElementById('custom-confirm-modal');
+  if (!modal) {
+    if (confirm(message)) onConfirm();
+    return;
+  }
+  
+  const titleEl = document.getElementById('confirm-modal-title');
+  const msgEl = document.getElementById('confirm-modal-message');
+  const actionBtn = document.getElementById('confirm-modal-action-btn');
+  const cancelBtn = document.getElementById('confirm-modal-cancel-btn');
+
+  if (titleEl) titleEl.innerText = title || 'Konfirmasi Hapus Produk';
+  if (msgEl) msgEl.innerText = message || 'Apakah Anda yakin ingin menghapus produk ini dari toko?';
+  
+  if (actionBtn) {
+    actionBtn.innerHTML = confirmText || '<i class="fa-solid fa-trash-can"></i> Ya, Hapus Produk';
+    actionBtn.className = confirmClass || 'btn-danger-confirm';
+  }
+
+  const closeModal = () => {
+    modal.classList.remove('active');
+    if (actionBtn) actionBtn.onclick = null;
+    if (cancelBtn) cancelBtn.onclick = null;
+  };
+
+  if (actionBtn) {
+    actionBtn.onclick = () => {
+      closeModal();
+      onConfirm();
+    };
+  }
+
+  if (cancelBtn) {
+    cancelBtn.onclick = () => {
+      closeModal();
+    };
+  }
+
+  modal.classList.add('active');
+}
+
   // Admin Product Delete / Edit delegation
   document.getElementById('admin-product-table-body')?.addEventListener('click', (e) => {
     const row = e.target.closest('tr');
@@ -759,9 +801,14 @@ function setupAdminEventListeners() {
     
     // Delete action
     if (e.target.closest('.admin-delete-prod-btn')) {
-      if (confirm('Apakah Anda yakin ingin menghapus produk ini dari toko?')) {
-        deleteStoreProduct(productId);
-      }
+      showCustomConfirmModal({
+        title: 'Hapus Produk Dari Toko',
+        message: 'Apakah Anda yakin ingin menghapus produk ini dari toko?',
+        confirmText: '<i class="fa-solid fa-trash-can"></i> Ya, Hapus Produk',
+        onConfirm: () => {
+          deleteStoreProduct(productId);
+        }
+      });
     }
     
     // Edit action
