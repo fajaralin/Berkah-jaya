@@ -245,14 +245,16 @@
       "category": "pertanian",
       "costPrice": 44000,
       "description": "pembasmi ulat grayak dll",
-      "image": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTT3rHXZwJ-kBwJwCjnTelkTuQOkQUYQK8kc-hOy8_FtA&s=10",
       "name": "Top Ban 400ML",
       "price": 52000,
       "rating": 5,
       "reviews": [],
       "sales": 0,
       "specifications": {},
-      "stock": 3
+      "stock": 3,
+      "hasVariants": false,
+      "variants": []
     }
   ],
   "orders": [
