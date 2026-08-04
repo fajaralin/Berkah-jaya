@@ -17,6 +17,10 @@ if not exist server.js (
         xcopy /e /y /h temp_code\* . >nul 2>&1
         rmdir /s /q temp_code >nul 2>&1
         echo [OK] Kode aplikasi berhasil didownload!
+    ) else (
+        echo     Mengunduh paket otomatis...
+        powershell -Command "Invoke-WebRequest -Uri 'https://github.com/fajaralin/Berkah-jaya/archive/refs/heads/main.zip' -OutFile 'app.zip'; Expand-Archive -Path 'app.zip' -DestinationPath 'temp_zip' -Force; Copy-Item -Path 'temp_zip\Berkah-jaya-main\*' -Destination '.' -Recurse -Force; Remove-Item 'app.zip','temp_zip' -Recurse -Force" >nul 2>&1
+        echo [OK] Kode aplikasi berhasil didownload!
     )
 )
 
