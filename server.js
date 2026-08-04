@@ -49,6 +49,18 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
+const { MongoClient } = require('mongodb');
+const dns = require('dns');
+try { dns.setDefaultResultOrder('ipv4first'); } catch(e) {}
+try { dns.setServers(['8.8.8.8', '1.1.1.1']); } catch(e) {}
+
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://fajaralinofficial_db_user:eHbKSoh8X0kbxq0y@cluster0.vqgbr8b.mongodb.net/berkah_jaya?retryWrites=true&w=majority";
+
+let mongoClient = null;
+let mongoDb = null;
+let isMongoConnected = false;
+let memoryDB = null;
+
 const { exec } = require('child_process');
 const EXEC_OPTIONS = { maxBuffer: 50 * 1024 * 1024, cwd: __dirname };
 
@@ -88,15 +100,14 @@ async function fixDbJsonConflicts() {
   return false;
 }
 
-// Helper to read database
-async function readDB() {
+// Read local db.json file
+async function readLocalFileDB() {
   try {
     const data = await fs.readFile(DB_PATH, 'utf-8');
     if (data.includes('<<<<<<<')) {
       await fixDbJsonConflicts();
       const fixedData = await fs.readFile(DB_PATH, 'utf-8');
-      const parsed = JSON.parse(fixedData);
-      return parsed;
+      return JSON.parse(fixedData);
     }
     const parsed = JSON.parse(data);
     if (!parsed.products) parsed.products = [];
@@ -111,7 +122,85 @@ async function readDB() {
   }
 }
 
-// Helper to write database with Automatic Background Git Sync
+// Initialize MongoDB Atlas connection & auto-migrate if empty
+async function initMongoDB() {
+  try {
+    mongoClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 5000
+    });
+    await mongoClient.connect();
+    mongoDb = mongoClient.db('berkah_jaya');
+    isMongoConnected = true;
+    console.log('⚡ [MONGODB CLOUD]: Terhubung ke MongoDB Atlas Cloud Berkah Jaya!');
+
+    const prodCol = mongoDb.collection('products');
+    const count = await prodCol.countDocuments();
+    const local = await readLocalFileDB();
+
+    if (count === 0 && local.products && local.products.length > 0) {
+      console.log('📦 Auto-migrating local db.json data to MongoDB Cloud...');
+      for (const p of local.products) {
+        await prodCol.updateOne({ id: String(p.id) }, { $set: p }, { upsert: true });
+      }
+      if (local.orders && local.orders.length > 0) {
+        const orderCol = mongoDb.collection('orders');
+        for (const o of local.orders) {
+          await orderCol.updateOne({ id: String(o.id) }, { $set: o }, { upsert: true });
+        }
+      }
+      if (local.chats && local.chats.length > 0) {
+        const chatCol = mongoDb.collection('chats');
+        for (const c of local.chats) {
+          await chatCol.updateOne({ id: String(c.id || c._id) }, { $set: c }, { upsert: true });
+        }
+      }
+      if (local.users && local.users.length > 0) {
+        const userCol = mongoDb.collection('users');
+        for (const u of local.users) {
+          await userCol.updateOne({ id: String(u.id) }, { $set: u }, { upsert: true });
+        }
+      }
+      console.log('✅ Auto-migration to MongoDB Cloud completed!');
+    }
+
+    await refreshMemoryFromMongo();
+  } catch (err) {
+    console.warn('⚠️ [MONGODB NOTICE]: Menunggu Network Access / IP List di MongoDB Atlas. Menggunakan mode lokal aman:', err.message);
+    isMongoConnected = false;
+  }
+}
+
+async function refreshMemoryFromMongo() {
+  if (!isMongoConnected || !mongoDb) return;
+  try {
+    const products = await mongoDb.collection('products').find({}).toArray();
+    const orders = await mongoDb.collection('orders').find({}).toArray();
+    const chats = await mongoDb.collection('chats').find({}).toArray();
+    const users = await mongoDb.collection('users').find({}).toArray();
+
+    products.forEach(p => delete p._id);
+    orders.forEach(o => delete o._id);
+    chats.forEach(c => delete c._id);
+    users.forEach(u => delete u._id);
+
+    memoryDB = { products, orders, chats, users };
+    await fs.writeFile(DB_PATH, JSON.stringify(memoryDB, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('Error refreshing memory from Mongo:', e.message);
+  }
+}
+
+// Main readDB helper
+async function readDB() {
+  if (isMongoConnected) {
+    if (!memoryDB) await refreshMemoryFromMongo();
+    if (memoryDB) return memoryDB;
+  }
+  return await readLocalFileDB();
+}
+
+// Helper to write database with Automatic Cloud & Background Git Sync
 let syncDebounceTimer = null;
 
 async function performGitSync(customMsg) {
@@ -123,7 +212,6 @@ async function performGitSync(customMsg) {
   await runCmd('git add .');
   await runCmd(`git commit -m "${msg}"`);
 
-  // First pull --rebase to get any updates from other laptop
   const pullRes = await runCmd('git pull origin main --rebase');
   if (pullRes.err) {
     console.warn('⚠️ Pull rebase notice/conflict encountered, resolving...');
@@ -136,7 +224,6 @@ async function performGitSync(customMsg) {
     }
   }
 
-  // Push to origin main
   const pushRes = await runCmd('git push origin main');
   if (pushRes.err) {
     console.warn('⚠️ Initial push failed, retrying with pull rebase...');
@@ -167,11 +254,36 @@ async function writeDB(data) {
     console.error('SAFETY GUARD: Cancelled writeDB because data object was invalid or in error state.');
     return;
   }
+  memoryDB = data;
+
+  // 1. Write local db.json
   try {
     await fs.writeFile(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error writing local DB:', err);
+  }
+
+  // 2. Async Sync to MongoDB Cloud if connected
+  if (isMongoConnected && mongoDb) {
+    setImmediate(async () => {
+      try {
+        const prodCol = mongoDb.collection('products');
+        for (const p of data.products) {
+          await prodCol.updateOne({ id: String(p.id) }, { $set: p }, { upsert: true });
+        }
+        const orderCol = mongoDb.collection('orders');
+        for (const o of data.orders) {
+          await orderCol.updateOne({ id: String(o.id) }, { $set: o }, { upsert: true });
+        }
+        if (typeof io !== 'undefined') {
+          io.emit('sync:completed', { timestamp: Date.now() });
+        }
+      } catch (err) {
+        console.error('MongoDB async write error:', err.message);
+      }
+    });
+  } else {
     triggerAutoGitSync();
-  } catch (error) {
-    console.error('Error writing database:', error);
   }
 }
 
@@ -763,7 +875,7 @@ app.post('/api/git-sync', async (req, res) => {
 
 server.listen(PORT, () => {
   console.log(`⚡ Server Berkah Jaya + Reverb Realtime Engine berjalan di http://localhost:${PORT}`);
-  // Perform background sync 3 seconds after server is ready
+  initMongoDB().catch(err => console.warn('Init MongoDB notice:', err.message));
   setTimeout(() => {
     performGitSync('auto: Startup sync data toko').catch(() => {});
   }, 3000);
