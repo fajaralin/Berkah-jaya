@@ -364,78 +364,7 @@
       </div>
     </div>
 
-    <!-- Product Form Modal (Add / Edit) -->
-    <div id="product-form-modal" class="modal">
-      <div class="modal-content product-form-card">
-        <button class="close-modal-btn" id="close-form-modal-btn">&times;</button>
-        <h3 id="product-form-title">Tambah Produk Baru</h3>
-        <form id="product-crud-form">
-          <input type="hidden" id="form-product-id">
 
-          <div class="form-row-grid">
-            <div class="form-group-crud">
-              <label for="form-product-name">Nama Produk *</label>
-              <input type="text" id="form-product-name" required placeholder="Contoh: Semen Gresik 50kg">
-            </div>
-            <div class="form-group-crud">
-              <label for="form-product-brand">Merek *</label>
-              <input type="text" id="form-product-brand" required placeholder="Contoh: Gresik">
-            </div>
-          </div>
-
-          <div class="form-row-grid">
-            <div class="form-group-crud">
-              <label for="form-product-category">Kategori *</label>
-              <select id="form-product-category" required>
-                <option value="bangunan">Alat Bangunan</option>
-                <option value="listrik">Alat Listrik</option>
-                <option value="pertanian">Obat Pertanian</option>
-              </select>
-            </div>
-            <div class="form-group-crud">
-              <label for="form-product-stock">Stok Awal *</label>
-              <input type="number" id="form-product-stock" required min="0" placeholder="Contoh: 100">
-            </div>
-          </div>
-
-          <div class="form-row-grid">
-            <div class="form-group-crud">
-              <label for="form-product-cost-price">Harga Beli (Rp)</label>
-              <input type="number" id="form-product-cost-price" min="0" placeholder="Contoh: 60000">
-            </div>
-            <div class="form-group-crud">
-              <label for="form-product-price">Harga Jual (Rp) * <small
-                  style="color:var(--text-muted);font-weight:400;">(ditampilkan ke pelanggan)</small></label>
-              <input type="number" id="form-product-price" required min="100" placeholder="Contoh: 75000">
-            </div>
-          </div>
-
-          <div class="form-group-crud">
-            <label for="form-product-image">Gambar Produk</label>
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <img id="form-product-image-preview" src="" alt=""
-                style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--border-color);display:none;flex-shrink:0;">
-              <input type="text" id="form-product-image" placeholder="URL Gambar / Data Base64" style="flex: 1;">
-              <button type="button" class="btn-secondary" id="btn-open-image-editor" style="white-space: nowrap;">
-                <i class="fa-solid fa-wand-magic-sparkles text-orange"></i> Edit Studio
-              </button>
-            </div>
-          </div>
-
-          <div class="form-group-crud">
-            <label for="form-product-desc">Deskripsi Produk *</label>
-            <textarea id="form-product-desc" required rows="4"
-              placeholder="Tuliskan spesifikasi produk, keunggulan, kegunaan..."></textarea>
-          </div>
-
-
-          <div class="form-actions-crud">
-            <button type="button" class="btn-secondary" id="btn-cancel-crud">Batal</button>
-            <button type="submit" class="btn-primary" id="btn-submit-crud">Simpan Produk</button>
-          </div>
-        </form>
-      </div>
-    </div>
 
     <!-- Order Detail Modal -->
     <div id="admin-order-detail-modal" class="modal">
@@ -651,36 +580,56 @@
     <div id="product-form-modal" class="modal">
       <div class="modal-content crud-modal-card">
         <button class="close-modal-btn" id="close-form-modal-btn">&times;</button>
-        <h3 id="product-form-title">Tambah Produk Baru</h3>
+        
+        <div class="crud-modal-header">
+          <div class="crud-modal-header-icon">
+            <i class="fa-solid fa-box-open"></i>
+          </div>
+          <div class="crud-modal-header-text">
+            <h3 id="product-form-title">Tambah Produk Baru</h3>
+            <p>Kelola rincian produk toko, harga jual, stok, dan pilihan varian</p>
+          </div>
+        </div>
 
         <form id="product-crud-form">
           <input type="hidden" id="form-product-id">
 
           <div class="form-row-2">
             <div class="form-group-crud">
-              <label for="form-product-name">Nama Produk *</label>
+              <label for="form-product-name"><i class="fa-solid fa-tag text-orange"></i> Nama Produk *</label>
               <input type="text" id="form-product-name" required placeholder="Contoh: Semen Gresik 50kg">
             </div>
             <div class="form-group-crud">
-              <label for="form-product-brand">Merek / Brand *</label>
+              <label for="form-product-brand"><i class="fa-solid fa-copyright text-blue"></i> Merek / Brand *</label>
               <input type="text" id="form-product-brand" required placeholder="Contoh: Semen Indonesia">
             </div>
           </div>
 
-          <div class="form-group-crud" style="margin-bottom: 16px;">
-            <label for="form-product-category">Kategori *</label>
-            <select id="form-product-category" required>
-              <option value="bangunan">Alat Bangunan</option>
-              <option value="listrik">Alat Listrik</option>
-              <option value="pertanian">Obat Pertanian</option>
-            </select>
+          <div class="form-row-2">
+            <div class="form-group-crud">
+              <label for="form-product-category"><i class="fa-solid fa-list text-green"></i> Kategori *</label>
+              <select id="form-product-category" required>
+                <option value="bangunan">Alat Bangunan</option>
+                <option value="listrik">Alat Listrik</option>
+                <option value="pertanian">Obat Pertanian</option>
+              </select>
+            </div>
+            <div class="form-group-crud">
+              <label for="form-product-image"><i class="fa-solid fa-image text-purple"></i> Gambar Produk <small style="color: #64748b; font-weight: 400;">(Boleh dikosongkan)</small></label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="form-product-image" placeholder="URL Foto / Tempel Gambar (Kosongkan jika belum ada gambar)" style="flex: 1;">
+                <button type="button" class="btn-secondary" id="btn-open-image-editor" title="Buka Product Image Studio" style="white-space: nowrap;">
+                  <i class="fa-solid fa-wand-magic-sparkles text-orange"></i> Studio
+                </button>
+              </div>
+            </div>
           </div>
 
-          <!-- Has Variants Checkbox -->
-          <div class="form-group-crud" style="background: #f8fafc; padding: 12px 16px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600; color: #1e293b; margin: 0;">
-              <input type="checkbox" id="form-has-variants-checkbox" style="width: 18px; height: 18px; accent-color: var(--primary-color, #2563eb); cursor: pointer;">
-              <span><i class="fa-solid fa-layer-group text-orange"></i> Produk ini memiliki Varian (misal: 8W, 10W, 12W / Ukuran / Warna)</span>
+          <!-- Has Variants Toggle Card -->
+          <div class="variant-toggle-card">
+            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-weight: 700; color: #0f172a; margin: 0;">
+              <input type="checkbox" id="form-has-variants-checkbox" style="width: 20px; height: 20px; accent-color: #ea580c; cursor: pointer;">
+              <span><i class="fa-solid fa-layer-group text-orange" style="font-size: 16px;"></i> Produk ini memiliki Varian (misal: 8W, 10W, 12W / Ukuran / Warna)</span>
             </label>
           </div>
 
@@ -691,8 +640,7 @@
               <input type="number" id="form-product-cost-price" min="0" placeholder="60000">
             </div>
             <div class="form-group-crud">
-              <label for="form-product-price">Harga Jual (Rp) * <small
-                  style="color:var(--text-muted);font-weight:400;">(ditampilkan ke pelanggan)</small></label>
+              <label for="form-product-price">Harga Jual (Rp) *</label>
               <input type="number" id="form-product-price" min="0" placeholder="75000">
             </div>
             <div class="form-group-crud">
@@ -701,23 +649,25 @@
             </div>
           </div>
 
-          <!-- Product Variants Table Wrapper -->
-          <div id="form-variants-container" class="form-group-crud" style="display: none; background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-              <label style="font-weight: 700; color: #0f172a; margin: 0;"><i class="fa-solid fa-boxes-stacked text-blue"></i> Daftar Varian Produk</label>
-              <button type="button" class="btn-secondary btn-small" id="btn-add-variant-row">
-                <i class="fa-solid fa-plus text-green"></i> Tambah Baris Varian
+          <!-- Product Variants Table Wrapper Card -->
+          <div id="form-variants-container" class="variants-card-wrapper" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <label style="font-weight: 800; color: #1e40af; margin: 0; font-size: 0.95rem;">
+                <i class="fa-solid fa-boxes-stacked text-blue"></i> Daftar Varian Produk
+              </label>
+              <button type="button" class="btn-secondary btn-small" id="btn-add-variant-row" style="background: #ffffff; border: 1px solid #93c5fd; color: #1d4ed8; font-weight: 700;">
+                <i class="fa-solid fa-plus text-green"></i> Tambah Varian
               </button>
             </div>
-            <div class="table-responsive">
-              <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+            <div class="table-responsive" style="border-radius: 12px; border: 1px solid #bfdbfe; background: #ffffff;">
+              <table class="variants-table">
                 <thead>
-                  <tr style="background: #f1f5f9; text-align: left; font-weight: 600; color: #475569;">
-                    <th style="padding: 8px 10px; border-radius: 6px 0 0 6px;">Nama Varian (Watt/Ukuran) *</th>
-                    <th style="padding: 8px 10px;">Harga Beli (Rp)</th>
-                    <th style="padding: 8px 10px;">Harga Jual (Rp) *</th>
-                    <th style="padding: 8px 10px;">Stok *</th>
-                    <th style="padding: 8px 10px; text-align: center; border-radius: 0 6px 6px 0;">Hapus</th>
+                  <tr>
+                    <th style="border-radius: 10px 0 0 10px;">Nama Varian (Watt/Ukuran) *</th>
+                    <th>Harga Beli (Rp)</th>
+                    <th>Harga Jual (Rp) *</th>
+                    <th>Stok *</th>
+                    <th style="text-align: center; border-radius: 0 10px 10px 0;">Hapus</th>
                   </tr>
                 </thead>
                 <tbody id="variants-table-body">
@@ -725,44 +675,21 @@
                 </tbody>
               </table>
             </div>
-            <p style="font-size: 12px; color: #64748b; margin-top: 8px; margin-bottom: 0;">
-              <i class="fa-solid fa-circle-info text-blue"></i> Total stok produk akan dihitung otomatis dari akumulasi stok seluruh varian.
+            <p style="font-size: 12px; color: #3b82f6; margin-top: 10px; margin-bottom: 0; font-weight: 600;">
+              <i class="fa-solid fa-circle-info"></i> Total stok produk akan dihitung otomatis dari akumulasi stok seluruh varian.
             </p>
           </div>
 
           <div class="form-group-crud">
-            <label for="form-product-image">URL Gambar Produk *</label>
-            <div style="display: flex; gap: 8px;">
-              <input type="url" id="form-product-image" required placeholder="https://..." style="flex: 1;">
-              <button type="button" class="btn-secondary" id="btn-open-image-editor" title="Buka Product Image Studio">
-                <i class="fa-solid fa-wand-magic-sparkles text-orange"></i> Edit Foto Studio
-              </button>
-            </div>
-            <div class="image-preview-container" id="form-image-preview-wrapper" style="margin-top: 8px;">
-              <img id="form-image-preview" src="" alt="Preview"
-                style="max-height: 80px; display: none; border-radius: 4px;">
-            </div>
-          </div>
-
-          <div class="form-group-crud">
-            <label for="form-product-desc">Deskripsi Produk *</label>
+            <label for="form-product-desc"><i class="fa-solid fa-align-left text-blue"></i> Deskripsi Produk *</label>
             <textarea id="form-product-desc" rows="3" required placeholder="Deskripsi lengkap produk..."></textarea>
           </div>
 
-          <!-- Dynamic Specifications -->
-          <div class="form-group-crud">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <label>Spesifikasi Produk</label>
-              <button type="button" class="btn-secondary btn-small" id="btn-add-spec-field">
-                <i class="fa-solid fa-plus"></i> Tambah Spesifikasi
-              </button>
-            </div>
-            <div id="specs-fields-wrapper" class="specs-wrapper"></div>
-          </div>
-
-          <div class="modal-footer-actions">
+          <div class="modal-footer-actions" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px;">
             <button type="button" class="btn-secondary" id="btn-cancel-crud">Batal</button>
-            <button type="submit" class="btn-primary">Simpan Produk</button>
+            <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, #ff6b00, #ff8c00); border: none; box-shadow: 0 8px 20px rgba(255,107,0,0.3);">
+              <i class="fa-solid fa-circle-check"></i> Simpan Produk
+            </button>
           </div>
         </form>
       </div>
@@ -990,7 +917,7 @@
   <!-- Socket.io Realtime Client -->
   <script src="/socket.io/socket.io.js"></script>
   <!-- Script File -->
-  <script src="dashboard.js?v=11.0"></script>
+  <script src="dashboard.js?v=16.0"></script>
 </body>
 
 </html>

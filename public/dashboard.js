@@ -385,8 +385,8 @@ function toggleVariantsMode(hasVariants) {
   const stockInput = document.getElementById('form-product-stock');
 
   if (hasVariants) {
-    if (singleRow) singleRow.style.display = 'none';
-    if (variantsContainer) variantsContainer.style.display = 'block';
+    if (singleRow) singleRow.style.setProperty('display', 'none', 'important');
+    if (variantsContainer) variantsContainer.style.setProperty('display', 'block', 'important');
     if (priceInput) priceInput.removeAttribute('required');
     if (stockInput) stockInput.removeAttribute('required');
     const tbody = document.getElementById('variants-table-body');
@@ -395,8 +395,8 @@ function toggleVariantsMode(hasVariants) {
       addVariantRow();
     }
   } else {
-    if (singleRow) singleRow.style.display = 'grid';
-    if (variantsContainer) variantsContainer.style.display = 'none';
+    if (singleRow) singleRow.style.setProperty('display', 'grid', 'important');
+    if (variantsContainer) variantsContainer.style.setProperty('display', 'none', 'important');
     if (priceInput) priceInput.setAttribute('required', 'true');
     if (stockInput) stockInput.setAttribute('required', 'true');
   }
@@ -484,7 +484,8 @@ async function openProductCrudModal(productId = null) {
   // reset form
   form.reset();
   document.getElementById('form-product-id').value = '';
-  document.getElementById('specs-fields-wrapper').innerHTML = '';
+  const specWrapper = document.getElementById('specs-fields-wrapper');
+  if (specWrapper) specWrapper.innerHTML = '';
   const tbody = document.getElementById('variants-table-body');
   if (tbody) tbody.innerHTML = '';
 
@@ -515,20 +516,22 @@ async function openProductCrudModal(productId = null) {
         toggleVariantsMode(false);
       }
 
-      // Load Specs fields
+      // Load Specs fields if container exists
       const wrapper = document.getElementById('specs-fields-wrapper');
-      const specs = p.specifications || {};
-      Object.keys(specs).forEach(k => {
-        const row = document.createElement('div');
-        row.className = 'spec-field-pair';
-        row.innerHTML = `
-          <input type="text" class="spec-key" value="${k}" placeholder="Nama Spesifikasi">
-          <input type="text" class="spec-value" value="${specs[k]}" placeholder="Nilai">
-          <button type="button" class="btn-remove-spec"><i class="fa-solid fa-trash"></i></button>
-        `;
-        row.querySelector('.btn-remove-spec').addEventListener('click', () => row.remove());
-        wrapper.appendChild(row);
-      });
+      if (wrapper) {
+        const specs = p.specifications || {};
+        Object.keys(specs).forEach(k => {
+          const row = document.createElement('div');
+          row.className = 'spec-field-pair';
+          row.innerHTML = `
+            <input type="text" class="spec-key" value="${k}" placeholder="Nama Spesifikasi">
+            <input type="text" class="spec-value" value="${specs[k]}" placeholder="Nilai">
+            <button type="button" class="btn-remove-spec"><i class="fa-solid fa-trash"></i></button>
+          `;
+          row.querySelector('.btn-remove-spec').addEventListener('click', () => row.remove());
+          wrapper.appendChild(row);
+        });
+      }
       
     } catch (e) {
       console.error(e);
@@ -540,8 +543,6 @@ async function openProductCrudModal(productId = null) {
     const checkbox = document.getElementById('form-has-variants-checkbox');
     if (checkbox) checkbox.checked = false;
     toggleVariantsMode(false);
-    // Auto populate template for new product (default category 'bangunan')
-    applyCategorySpecsTemplate('bangunan');
   }
   
   updateFormImagePreview();
@@ -600,7 +601,9 @@ async function submitProductCrudForm() {
   const name = document.getElementById('form-product-name').value.trim();
   const brand = document.getElementById('form-product-brand').value.trim();
   const category = document.getElementById('form-product-category').value;
-  const image = document.getElementById('form-product-image').value.trim();
+  const imageVal = document.getElementById('form-product-image').value.trim();
+  const defaultPlaceholder = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&auto=format&fit=crop&q=80';
+  const image = imageVal !== '' ? imageVal : defaultPlaceholder;
   const price = Number(document.getElementById('form-product-price').value) || 0;
   const costPrice = Number(document.getElementById('form-product-cost-price').value) || 0;
   const stock = Number(document.getElementById('form-product-stock').value) || 0;
