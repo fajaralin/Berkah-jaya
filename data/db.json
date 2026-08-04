@@ -187,6 +187,23 @@
       "image": "https://tse3.mm.bing.net/th/id/OIP.ixmUu5fU2GD6vRJ4V0KBuAHaHa?r=0&pid=Api&P=0&h=180",
       "specifications": {},
       "reviews": []
+    },
+    {
+      "id": "1785804596987",
+      "name": "cetok",
+      "category": "bangunan",
+      "price": 20000,
+      "costPrice": 0,
+      "stock": 20,
+      "description": "cetok bangunan",
+      "brand": "-",
+      "rating": 5,
+      "sales": 0,
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSafpaIKfV2Q1e2xKIPQzUbSwAruR43mm9QFpHXHeqSgA&s=10",
+      "specifications": {
+        "Standar": "SNI"
+      },
+      "reviews": []
     }
   ],
   "orders": [
