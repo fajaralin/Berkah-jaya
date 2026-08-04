@@ -2,6 +2,18 @@
 <html lang="id">
 
 <head>
+  <script>
+    // Security Guard: Restrict dashboard access to local laptop only.
+    // If accessed on public online domain (e.g. Render / Vercel), redirect public visitors to customer storefront index.html
+    (function() {
+      var host = window.location.hostname;
+      var isLocal = host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.') || host.startsWith('10.');
+      var allowPublic = new URLSearchParams(window.location.search).get('allowAdmin') === 'true';
+      if (!isLocal && !allowPublic) {
+        window.location.replace('/index.html');
+      }
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Penjual - BERKAH JAYA</title>

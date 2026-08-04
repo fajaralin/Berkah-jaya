@@ -20,8 +20,20 @@ io.on('connection', (socket) => {
   console.log(`⚡ Client terhubung ke Realtime WebSocket (Reverb Engine): ${socket.id}`);
 });
 
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+// Security Middleware: Restrict /dashboard.html to local laptop admin only
+// On public online deployment, redirect any buyer/visitor back to customer homepage.
+app.use((req, res, next) => {
+  const host = (req.headers.host || '').toLowerCase();
+  const isLocal = host.includes('localhost') || host.includes('127.0.0.1') || host.startsWith('192.168.') || host.startsWith('10.');
+  const isDashboardRoute = req.path.toLowerCase() === '/dashboard.html' || req.path.toLowerCase() === '/dashboard';
+
+  if (isDashboardRoute && !isLocal && process.env.ALLOW_PUBLIC_DASHBOARD !== 'true') {
+    console.log(`🔒 [SECURITY BLOCKED] Public visitor from host "${host}" tried to open dashboard. Redirecting to store homepage.`);
+    return res.redirect('/index.html');
+  }
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Disable caching for API responses
