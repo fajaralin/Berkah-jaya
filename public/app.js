@@ -98,11 +98,12 @@ async function fetchProducts() {
     if (appState.searchQuery) params.push(`q=${encodeURIComponent(appState.searchQuery)}`);
     if (appState.activeSort !== 'default') params.push(`sort=${appState.activeSort}`);
     
+    params.push(`_t=${Date.now()}`);
     if (params.length > 0) {
       url += '?' + params.join('&');
     }
     
-    const response = await fetch(url, { cache: 'no-cache' });
+    const response = await fetch(url, { cache: 'no-store' });
     if (!response.ok) throw new Error('Gagal mengambil data produk');
     appState.products = await response.json();
   } catch (error) {

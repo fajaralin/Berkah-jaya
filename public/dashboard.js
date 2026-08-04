@@ -1838,7 +1838,7 @@ let posState = {
 
 async function initPosModule() {
   try {
-    const res = await fetch('/api/products?sort=default', { cache: 'no-cache' });
+    const res = await fetch(`/api/products?sort=default&_t=${Date.now()}`, { cache: 'no-store' });
     posState.products = await res.json();
   } catch (e) {
     console.error('Failed to load POS catalog:', e);
