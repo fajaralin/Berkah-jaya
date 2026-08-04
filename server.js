@@ -58,16 +58,19 @@ function performGitSync(customMsg) {
 
     exec('git add .', (err1) => {
       if (err1) console.warn('Git Add Warning:', err1.message);
-      exec(`git commit -m "${msg}"`, (err2, stdout2, stderr2) => {
-        // Even if err2 occurs (e.g., nothing to commit), still proceed to push
-        exec('git push origin main', (err3, stdout3, stderr3) => {
-          if (err3) {
-            console.error('❌ [GIT PUSH ERROR]:', err3.message || stderr3);
-            return reject(new Error(err3.message || stderr3 || 'Gagal push ke GitHub remote'));
-          }
-          console.log('🚀 [GIT PUSH SUCCESS]: Data ter-sync ke GitHub & website online!');
-          io.emit('sync:completed', { timestamp: Date.now() });
-          resolve({ success: true, message: 'Data sudah versi terbaru & berhasil di-sync!' });
+      exec(`git commit -m "${msg}"`, (err2) => {
+        // Tarik (pull) perubahan data terbaru dari online dulu agar tidak bentrok / tertinggal
+        exec('git pull --rebase origin main', (errPull) => {
+          if (errPull) console.warn('Git Pull Warning:', errPull.message);
+          exec('git push origin main', (err3, stdout3, stderr3) => {
+            if (err3) {
+              console.error('❌ [GIT PUSH ERROR]:', err3.message || stderr3);
+              return reject(new Error(err3.message || stderr3 || 'Gagal push ke GitHub remote'));
+            }
+            console.log('🚀 [GIT PUSH SUCCESS]: Data ter-sync ke GitHub & website online!');
+            if (typeof io !== 'undefined') io.emit('sync:completed', { timestamp: Date.now() });
+            resolve({ success: true, message: 'Data sudah versi terbaru & berhasil di-sync!' });
+          });
         });
       });
     });
