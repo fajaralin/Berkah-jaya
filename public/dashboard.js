@@ -377,6 +377,29 @@ const categorySpecTemplates = {
   }
 };
 
+// Rupiah Formatting Helpers for Live Inputs
+function formatRupiahInput(val) {
+  if (val === null || val === undefined || val === '') return '';
+  const clean = val.toString().replace(/[^0-9]/g, '');
+  if (!clean) return '';
+  return new Intl.NumberFormat('id-ID').format(clean);
+}
+
+function parseRupiahInput(val) {
+  if (!val) return 0;
+  const clean = val.toString().replace(/[^0-9]/g, '');
+  return Number(clean) || 0;
+}
+
+function attachPriceAutoFormatter(inputEl) {
+  if (!inputEl) return;
+  inputEl.addEventListener('input', (e) => {
+    const raw = e.target.value;
+    const formatted = formatRupiahInput(raw);
+    e.target.value = formatted;
+  });
+}
+
 // Variant UI Helpers
 function toggleVariantsMode(hasVariants) {
   const singleRow = document.getElementById('single-price-stock-row');
@@ -408,15 +431,19 @@ function addVariantRow(v = {}) {
   const tr = document.createElement('tr');
   tr.className = 'variant-row-item';
   if (v.id) tr.setAttribute('data-id', v.id);
+
+  const costVal = v.costPrice !== undefined && v.costPrice !== null ? formatRupiahInput(v.costPrice) : '';
+  const priceVal = v.price !== undefined && v.price !== null ? formatRupiahInput(v.price) : '';
+
   tr.innerHTML = `
     <td style="padding: 6px 8px;">
       <input type="text" class="variant-name" value="${v.name || ''}" placeholder="misal: 8 Watt" required style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px;">
     </td>
     <td style="padding: 6px 8px;">
-      <input type="number" class="variant-cost-price" value="${v.costPrice !== undefined ? v.costPrice : ''}" min="0" placeholder="11000" style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px;">
+      <input type="text" inputmode="numeric" class="variant-cost-price" value="${costVal}" placeholder="11.000" style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px;">
     </td>
     <td style="padding: 6px 8px;">
-      <input type="number" class="variant-price" value="${v.price !== undefined ? v.price : ''}" min="0" placeholder="15000" required style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px;">
+      <input type="text" inputmode="numeric" class="variant-price" value="${priceVal}" placeholder="15.000" required style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px;">
     </td>
     <td style="padding: 6px 8px;">
       <input type="number" class="variant-stock" value="${v.stock !== undefined ? v.stock : ''}" min="0" placeholder="10" required style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px;">
@@ -437,6 +464,9 @@ function addVariantRow(v = {}) {
     }
   };
 
+  attachPriceAutoFormatter(tr.querySelector('.variant-cost-price'));
+  attachPriceAutoFormatter(tr.querySelector('.variant-price'));
+
   tbody.appendChild(tr);
 }
 
@@ -454,12 +484,15 @@ function initVariantEventListeners() {
   document.getElementById('close-pos-variant-modal')?.addEventListener('click', () => {
     closePosVariantModal();
   });
+
+  attachPriceAutoFormatter(document.getElementById('form-product-cost-price'));
+  attachPriceAutoFormatter(document.getElementById('form-product-price'));
 }
 
 // Function to populate specs based on category
 function applyCategorySpecsTemplate(category) {
   const wrapper = document.getElementById('specs-fields-wrapper');
-  wrapper.innerHTML = ''; // clear existing
+  if (wrapper) wrapper.innerHTML = ''; 
   
   const specs = categorySpecTemplates[category] || {};
   Object.keys(specs).forEach(k => {
@@ -500,8 +533,8 @@ async function openProductCrudModal(productId = null) {
       document.getElementById('form-product-brand').value = p.brand;
       document.getElementById('form-product-category').value = p.category;
       document.getElementById('form-product-image').value = p.image;
-      document.getElementById('form-product-cost-price').value = p.costPrice || '';
-      document.getElementById('form-product-price').value = p.price;
+      document.getElementById('form-product-cost-price').value = formatRupiahInput(p.costPrice || '');
+      document.getElementById('form-product-price').value = formatRupiahInput(p.price || '');
       document.getElementById('form-product-stock').value = p.stock;
       document.getElementById('form-product-desc').value = p.description;
       
@@ -604,8 +637,8 @@ async function submitProductCrudForm() {
   const imageVal = document.getElementById('form-product-image').value.trim();
   const defaultPlaceholder = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&auto=format&fit=crop&q=80';
   const image = imageVal !== '' ? imageVal : defaultPlaceholder;
-  const price = Number(document.getElementById('form-product-price').value) || 0;
-  const costPrice = Number(document.getElementById('form-product-cost-price').value) || 0;
+  const price = parseRupiahInput(document.getElementById('form-product-price').value);
+  const costPrice = parseRupiahInput(document.getElementById('form-product-cost-price').value);
   const stock = Number(document.getElementById('form-product-stock').value) || 0;
   const description = document.getElementById('form-product-desc').value.trim();
   const hasVariants = document.getElementById('form-has-variants-checkbox')?.checked || false;
@@ -618,8 +651,8 @@ async function submitProductCrudForm() {
     variantRows.forEach(row => {
       const vId = row.getAttribute('data-id');
       const vName = row.querySelector('.variant-name').value.trim();
-      const vCost = Number(row.querySelector('.variant-cost-price').value) || 0;
-      const vPrice = Number(row.querySelector('.variant-price').value) || 0;
+      const vCost = parseRupiahInput(row.querySelector('.variant-cost-price').value);
+      const vPrice = parseRupiahInput(row.querySelector('.variant-price').value);
       const vStock = Number(row.querySelector('.variant-stock').value) || 0;
       if (vName) {
         variants.push({ id: vId || undefined, name: vName, costPrice: vCost, price: vPrice, stock: vStock });

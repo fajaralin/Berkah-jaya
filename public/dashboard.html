@@ -637,11 +637,11 @@
           <div class="form-row-3" id="single-price-stock-row">
             <div class="form-group-crud">
               <label for="form-product-cost-price">Harga Beli (Rp)</label>
-              <input type="number" id="form-product-cost-price" min="0" placeholder="60000">
+              <input type="text" inputmode="numeric" id="form-product-cost-price" placeholder="Contoh: 60.000">
             </div>
             <div class="form-group-crud">
               <label for="form-product-price">Harga Jual (Rp) *</label>
-              <input type="number" id="form-product-price" min="0" placeholder="75000">
+              <input type="text" inputmode="numeric" id="form-product-price" placeholder="Contoh: 75.000">
             </div>
             <div class="form-group-crud">
               <label for="form-product-stock">Stok *</label>
@@ -917,7 +917,7 @@
   <!-- Socket.io Realtime Client -->
   <script src="/socket.io/socket.io.js"></script>
   <!-- Script File -->
-  <script src="dashboard.js?v=16.0"></script>
+  <script src="dashboard.js?v=17.0"></script>
 </body>
 
 </html>
