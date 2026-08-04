@@ -20,16 +20,21 @@ io.on('connection', (socket) => {
   console.log(`⚡ Client terhubung ke Realtime WebSocket (Reverb Engine): ${socket.id}`);
 });
 
-// Security Middleware: Restrict /dashboard.html to local laptop admin only
+// Security Middleware: Restrict /dashboard.html & Admin Data Editing to local laptop admin only
 // On public online deployment, redirect any buyer/visitor back to customer homepage.
 app.use((req, res, next) => {
   const host = (req.headers.host || '').toLowerCase();
   const isLocal = host.includes('localhost') || host.includes('127.0.0.1') || host.startsWith('192.168.') || host.startsWith('10.');
   const isDashboardRoute = req.path.toLowerCase() === '/dashboard.html' || req.path.toLowerCase() === '/dashboard';
+  const isModifyingProductApi = ['POST', 'PUT', 'DELETE'].includes(req.method) && req.path.startsWith('/api/products');
 
-  if (isDashboardRoute && !isLocal && process.env.ALLOW_PUBLIC_DASHBOARD !== 'true') {
-    console.log(`🔒 [SECURITY BLOCKED] Public visitor from host "${host}" tried to open dashboard. Redirecting to store homepage.`);
-    return res.redirect('/index.html');
+  if ((isDashboardRoute || isModifyingProductApi) && !isLocal && process.env.ALLOW_PUBLIC_DASHBOARD !== 'true') {
+    if (isDashboardRoute) {
+      console.log(`🔒 [SECURITY BLOCKED] Public visitor from host "${host}" tried to open dashboard. Redirecting to store homepage.`);
+      return res.redirect('/index.html');
+    } else {
+      return res.status(403).json({ error: 'Aksi modifikasi data hanya dapat dilakukan dari laptop admin lokal.' });
+    }
   }
   next();
 });
