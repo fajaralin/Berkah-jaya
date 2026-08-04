@@ -195,12 +195,22 @@ async function refreshMemoryFromMongo() {
 
 // Main readDB helper
 async function readDB() {
-  if (isMongoConnected) {
+  if (isMongoConnected && memoryDB) {
+    return memoryDB;
+  }
+  if (isMongoConnected && !memoryDB) {
     await refreshMemoryFromMongo();
     if (memoryDB) return memoryDB;
   }
   return await readLocalFileDB();
 }
+
+// Background refresh memory from Mongo every 15s to keep online Render synced without blocking GET APIs
+setInterval(() => {
+  if (isMongoConnected) {
+    refreshMemoryFromMongo().catch(err => console.error('Background Mongo refresh error:', err.message));
+  }
+}, 15000);
 
 // Helper to write database with Automatic Cloud & Background Git Sync
 let syncDebounceTimer = null;
