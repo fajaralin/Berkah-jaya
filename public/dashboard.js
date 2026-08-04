@@ -104,18 +104,42 @@ async function renderAdminProductsTable() {
       row.setAttribute('data-id', p.id);
       row.setAttribute('data-brand', p.brand);
       row.setAttribute('data-category', p.category);
+
+      let priceDisplay = formatRupiah(p.price);
+      let costDisplay = p.costPrice ? formatRupiah(p.costPrice) : '—';
+      let variantBadge = '';
+      let totalStock = p.stock;
+
+      if (p.hasVariants && Array.isArray(p.variants) && p.variants.length > 0) {
+        const prices = p.variants.map(v => Number(v.price));
+        const minP = Math.min(...prices);
+        const maxP = Math.max(...prices);
+        priceDisplay = minP === maxP ? formatRupiah(minP) : `${formatRupiah(minP)} – ${formatRupiah(maxP)}`;
+
+        const costPrices = p.variants.map(v => Number(v.costPrice || 0)).filter(c => c > 0);
+        if (costPrices.length > 0) {
+          const minC = Math.min(...costPrices);
+          const maxC = Math.max(...costPrices);
+          costDisplay = minC === maxC ? formatRupiah(minC) : `${formatRupiah(minC)} – ${formatRupiah(maxC)}`;
+        }
+
+        totalStock = p.variants.reduce((sum, v) => sum + Number(v.stock), 0);
+        variantBadge = `<span class="badge" style="background:#eff6ff;color:#1d4ed8;font-size:11px;padding:2px 7px;border-radius:6px;font-weight:600;margin-left:6px;border:1px solid #bfdbfe;"><i class="fa-solid fa-layer-group"></i> ${p.variants.length} Varian</span>`;
+      }
       
       row.innerHTML = `
         <td>
           <div class="product-row-info">
             <img src="${p.image}" class="product-row-img" alt="${p.name}">
-            <span>${p.name}</span>
+            <div>
+              <strong style="color:#0f172a;">${p.name}</strong>${variantBadge}
+            </div>
           </div>
         </td>
         <td><span class="product-tag ${p.category}">${p.category}</span></td>
-        <td style="color:var(--text-muted);">${p.costPrice ? formatRupiah(p.costPrice) : '—'}</td>
-        <td><strong>${formatRupiah(p.price)}</strong></td>
-        <td>${p.stock} pcs</td>
+        <td style="color:var(--text-muted);">${costDisplay}</td>
+        <td><strong class="text-orange">${priceDisplay}</strong></td>
+        <td><strong>${totalStock}</strong> <small style="color:var(--text-muted);">pcs</small></td>
         <td>${p.sales} unit</td>
         <td>
           <div class="action-links">
@@ -353,6 +377,85 @@ const categorySpecTemplates = {
   }
 };
 
+// Variant UI Helpers
+function toggleVariantsMode(hasVariants) {
+  const singleRow = document.getElementById('single-price-stock-row');
+  const variantsContainer = document.getElementById('form-variants-container');
+  const priceInput = document.getElementById('form-product-price');
+  const stockInput = document.getElementById('form-product-stock');
+
+  if (hasVariants) {
+    if (singleRow) singleRow.style.display = 'none';
+    if (variantsContainer) variantsContainer.style.display = 'block';
+    if (priceInput) priceInput.removeAttribute('required');
+    if (stockInput) stockInput.removeAttribute('required');
+    const tbody = document.getElementById('variants-table-body');
+    if (tbody && tbody.children.length === 0) {
+      addVariantRow();
+      addVariantRow();
+    }
+  } else {
+    if (singleRow) singleRow.style.display = 'grid';
+    if (variantsContainer) variantsContainer.style.display = 'none';
+    if (priceInput) priceInput.setAttribute('required', 'true');
+    if (stockInput) stockInput.setAttribute('required', 'true');
+  }
+}
+
+function addVariantRow(v = {}) {
+  const tbody = document.getElementById('variants-table-body');
+  if (!tbody) return;
+  const tr = document.createElement('tr');
+  tr.className = 'variant-row-item';
+  if (v.id) tr.setAttribute('data-id', v.id);
+  tr.innerHTML = `
+    <td style="padding: 6px 8px;">
+      <input type="text" class="variant-name" value="${v.name || ''}" placeholder="misal: 8 Watt" required style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px;">
+    </td>
+    <td style="padding: 6px 8px;">
+      <input type="number" class="variant-cost-price" value="${v.costPrice !== undefined ? v.costPrice : ''}" min="0" placeholder="11000" style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px;">
+    </td>
+    <td style="padding: 6px 8px;">
+      <input type="number" class="variant-price" value="${v.price !== undefined ? v.price : ''}" min="0" placeholder="15000" required style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px;">
+    </td>
+    <td style="padding: 6px 8px;">
+      <input type="number" class="variant-stock" value="${v.stock !== undefined ? v.stock : ''}" min="0" placeholder="10" required style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px;">
+    </td>
+    <td style="padding: 6px 8px; text-align: center;">
+      <button type="button" class="btn-remove-variant-row" style="background: #fef2f2; color: #ef4444; border: 1px solid #fca5a5; padding: 6px 10px; border-radius: 6px; cursor: pointer;">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
+    </td>
+  `;
+
+  tr.querySelector('.btn-remove-variant-row').onclick = () => {
+    tr.remove();
+    if (tbody.children.length === 0) {
+      const checkbox = document.getElementById('form-has-variants-checkbox');
+      if (checkbox) checkbox.checked = false;
+      toggleVariantsMode(false);
+    }
+  };
+
+  tbody.appendChild(tr);
+}
+
+function initVariantEventListeners() {
+  const checkbox = document.getElementById('form-has-variants-checkbox');
+  checkbox?.addEventListener('change', (e) => {
+    toggleVariantsMode(e.target.checked);
+  });
+
+  const addBtn = document.getElementById('btn-add-variant-row');
+  addBtn?.addEventListener('click', () => {
+    addVariantRow();
+  });
+
+  document.getElementById('close-pos-variant-modal')?.addEventListener('click', () => {
+    closePosVariantModal();
+  });
+}
+
 // Function to populate specs based on category
 function applyCategorySpecsTemplate(category) {
   const wrapper = document.getElementById('specs-fields-wrapper');
@@ -382,6 +485,8 @@ async function openProductCrudModal(productId = null) {
   form.reset();
   document.getElementById('form-product-id').value = '';
   document.getElementById('specs-fields-wrapper').innerHTML = '';
+  const tbody = document.getElementById('variants-table-body');
+  if (tbody) tbody.innerHTML = '';
 
   if (productId) {
     title.innerText = 'Edit Detail Produk';
@@ -399,6 +504,17 @@ async function openProductCrudModal(productId = null) {
       document.getElementById('form-product-stock').value = p.stock;
       document.getElementById('form-product-desc').value = p.description;
       
+      // Load Variants
+      const checkbox = document.getElementById('form-has-variants-checkbox');
+      if (p.hasVariants && Array.isArray(p.variants) && p.variants.length > 0) {
+        if (checkbox) checkbox.checked = true;
+        toggleVariantsMode(true);
+        p.variants.forEach(v => addVariantRow(v));
+      } else {
+        if (checkbox) checkbox.checked = false;
+        toggleVariantsMode(false);
+      }
+
       // Load Specs fields
       const wrapper = document.getElementById('specs-fields-wrapper');
       const specs = p.specifications || {};
@@ -421,6 +537,9 @@ async function openProductCrudModal(productId = null) {
     }
   } else {
     title.innerText = 'Tambah Produk Baru';
+    const checkbox = document.getElementById('form-has-variants-checkbox');
+    if (checkbox) checkbox.checked = false;
+    toggleVariantsMode(false);
     // Auto populate template for new product (default category 'bangunan')
     applyCategorySpecsTemplate('bangunan');
   }
@@ -482,10 +601,36 @@ async function submitProductCrudForm() {
   const brand = document.getElementById('form-product-brand').value.trim();
   const category = document.getElementById('form-product-category').value;
   const image = document.getElementById('form-product-image').value.trim();
-  const price = Number(document.getElementById('form-product-price').value);
+  const price = Number(document.getElementById('form-product-price').value) || 0;
   const costPrice = Number(document.getElementById('form-product-cost-price').value) || 0;
-  const stock = Number(document.getElementById('form-product-stock').value);
+  const stock = Number(document.getElementById('form-product-stock').value) || 0;
   const description = document.getElementById('form-product-desc').value.trim();
+  const hasVariants = document.getElementById('form-has-variants-checkbox')?.checked || false;
+
+  const payload = { name, brand, category, image, price, costPrice, stock, description, hasVariants };
+
+  if (hasVariants) {
+    const variantRows = document.querySelectorAll('#variants-table-body .variant-row-item');
+    const variants = [];
+    variantRows.forEach(row => {
+      const vId = row.getAttribute('data-id');
+      const vName = row.querySelector('.variant-name').value.trim();
+      const vCost = Number(row.querySelector('.variant-cost-price').value) || 0;
+      const vPrice = Number(row.querySelector('.variant-price').value) || 0;
+      const vStock = Number(row.querySelector('.variant-stock').value) || 0;
+      if (vName) {
+        variants.push({ id: vId || undefined, name: vName, costPrice: vCost, price: vPrice, stock: vStock });
+      }
+    });
+
+    if (variants.length === 0) {
+      showToast('Mohon tambahkan minimal 1 varian produk.', 'error');
+      return;
+    }
+    payload.variants = variants;
+  } else {
+    payload.variants = [];
+  }
 
   // Gather Specifications object
   const specsObj = {};
@@ -497,8 +642,7 @@ async function submitProductCrudForm() {
       specsObj[key] = val;
     }
   });
-
-  const payload = { name, brand, category, image, price, costPrice, stock, description, specifications: specsObj };
+  payload.specifications = specsObj;
 
   try {
     let response;
@@ -539,6 +683,7 @@ async function submitProductCrudForm() {
 
 // Setup Event Listeners
 function setupAdminEventListeners() {
+  initVariantEventListeners();
   // Admin dashboard tabs controls
   const adminTabs = document.querySelectorAll('.admin-tab-bar .admin-tab-btn');
   adminTabs.forEach(tb => {
@@ -1680,15 +1825,26 @@ function renderPosCatalog() {
     item.className = 'pos-product-item';
     const isOutOfStock = p.stock <= 0;
     
+    let priceDisplay = formatRupiah(p.price);
+    let badgeText = '';
+
+    if (p.hasVariants && Array.isArray(p.variants) && p.variants.length > 0) {
+      const prices = p.variants.map(v => Number(v.price));
+      const minP = Math.min(...prices);
+      const maxP = Math.max(...prices);
+      priceDisplay = minP === maxP ? formatRupiah(minP) : `${formatRupiah(minP)}–${formatRupiah(maxP)}`;
+      badgeText = `<span style="font-size:10px;background:#eff6ff;color:#1d4ed8;padding:1px 5px;border-radius:4px;font-weight:600;display:inline-block;margin-top:2px;">${p.variants.length} Varian</span>`;
+    }
+
     item.innerHTML = `
       <img src="${p.image}" class="pos-product-thumb" alt="${p.name}">
-      <h5 class="pos-product-name">${p.name}</h5>
+      <h5 class="pos-product-name">${p.name} ${badgeText}</h5>
       <div class="pos-product-meta">
         <span>Stok: <strong>${p.stock}</strong></span>
-        <span class="pos-product-price">${formatRupiah(p.price)}</span>
+        <span class="pos-product-price" style="font-size:12px;">${priceDisplay}</span>
       </div>
       <button type="button" class="${isOutOfStock ? 'btn-secondary' : 'btn-primary'} btn-small" ${isOutOfStock ? 'disabled' : ''} style="width: 100%; margin-top: 4px;">
-        <i class="fa-solid fa-plus"></i> ${isOutOfStock ? 'Stok Habis' : 'Tambah'}
+        <i class="fa-solid ${p.hasVariants ? 'fa-list-check' : 'fa-plus'}"></i> ${isOutOfStock ? 'Stok Habis' : (p.hasVariants ? 'Pilih Varian' : 'Tambah')}
       </button>
     `;
 
@@ -1700,7 +1856,12 @@ function renderPosCatalog() {
 }
 
 function addPosItemToCart(p) {
-  const existing = posState.cart.find(i => i.productId === p.id);
+  if (p.hasVariants && Array.isArray(p.variants) && p.variants.length > 0) {
+    openPosVariantModal(p);
+    return;
+  }
+
+  const existing = posState.cart.find(i => i.productId === p.id && !i.variantId);
   if (existing) {
     if (existing.quantity >= p.stock) {
       showToast(`Stok ${p.name} hanya tersisa ${p.stock}`, 'error');
@@ -1717,6 +1878,71 @@ function addPosItemToCart(p) {
     });
   }
   renderPosCart();
+}
+
+function openPosVariantModal(p) {
+  const modal = document.getElementById('pos-variant-modal');
+  if (!modal) return;
+  document.getElementById('pos-variant-title').innerText = `Pilih Varian: ${p.name}`;
+  const list = document.getElementById('pos-variant-options-list');
+  list.innerHTML = '';
+
+  p.variants.forEach(v => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    const isOut = v.stock <= 0;
+    btn.style.cssText = `
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; border-radius: 10px; border: 1.5px solid ${isOut ? '#cbd5e1' : '#2563eb'};
+      background: ${isOut ? '#f8fafc' : '#eff6ff'}; cursor: ${isOut ? 'not-allowed' : 'pointer'};
+      font-weight: 600; font-size: 14px; color: ${isOut ? '#94a3b8' : '#1e40af'}; transition: all 0.2s;
+    `;
+    btn.disabled = isOut;
+    btn.innerHTML = `
+      <div style="text-align: left;">
+        <span style="display: block; font-weight: 700; color: #0f172a;">${v.name}</span>
+        <small style="font-weight: 400; font-size: 12px; color: ${isOut ? '#ef4444' : '#64748b'};">
+          ${isOut ? 'Stok Habis' : `Stok: ${v.stock} pcs`}
+        </small>
+      </div>
+      <strong style="color: #ea580c; font-size: 15px;">${formatRupiah(v.price)}</strong>
+    `;
+
+    if (!isOut) {
+      btn.onclick = () => {
+        const itemKey = `${p.id}_${v.id}`;
+        const existing = posState.cart.find(i => i.variantId === v.id || i.key === itemKey);
+        if (existing) {
+          if (existing.quantity >= v.stock) {
+            showToast(`Stok ${p.name} (${v.name}) hanya tersisa ${v.stock}`, 'error');
+            return;
+          }
+          existing.quantity++;
+        } else {
+          posState.cart.push({
+            key: itemKey,
+            productId: p.id,
+            variantId: v.id,
+            variantName: v.name,
+            name: `${p.name} (${v.name})`,
+            price: v.price,
+            quantity: 1,
+            stock: v.stock
+          });
+        }
+        closePosVariantModal();
+        renderPosCart();
+      };
+    }
+
+    list.appendChild(btn);
+  });
+
+  modal.classList.add('active');
+}
+
+function closePosVariantModal() {
+  document.getElementById('pos-variant-modal')?.classList.remove('active');
 }
 
 function renderPosCart() {

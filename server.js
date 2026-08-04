@@ -148,22 +148,60 @@ app.get('/api/products/:id', async (req, res) => {
   res.json(product);
 });
 
+// Helper to process variant data
+function processVariantData(hasVariants, variants, defaultPrice, defaultCostPrice, defaultStock) {
+  const isVariantActive = Boolean(hasVariants) && Array.isArray(variants) && variants.length > 0;
+  if (!isVariantActive) {
+    return {
+      hasVariants: false,
+      variants: [],
+      price: Number(defaultPrice) || 0,
+      costPrice: Number(defaultCostPrice) || 0,
+      stock: Number(defaultStock) || 0
+    };
+  }
+
+  const formattedVariants = variants.map((v, idx) => ({
+    id: v.id ? String(v.id) : `v-${Date.now()}-${idx}`,
+    name: String(v.name || `Varian ${idx + 1}`),
+    price: Number(v.price) || 0,
+    costPrice: Number(v.costPrice) || 0,
+    stock: Number(v.stock) || 0
+  }));
+
+  const totalStock = formattedVariants.reduce((sum, v) => sum + v.stock, 0);
+  const minPrice = Math.min(...formattedVariants.map(v => v.price));
+  const minCostPrice = Math.min(...formattedVariants.map(v => v.costPrice));
+
+  return {
+    hasVariants: true,
+    variants: formattedVariants,
+    price: isFinite(minPrice) ? minPrice : (Number(defaultPrice) || 0),
+    costPrice: isFinite(minCostPrice) ? minCostPrice : (Number(defaultCostPrice) || 0),
+    stock: totalStock
+  };
+}
+
 // 3. POST /api/products - Add a new product (Admin)
 app.post('/api/products', async (req, res) => {
   const db = await readDB();
-  const { name, category, price, costPrice, stock, description, brand, image, specifications } = req.body;
+  const { name, category, price, costPrice, stock, description, brand, image, specifications, hasVariants, variants } = req.body;
 
-  if (!name || !category || !price || stock === undefined || !description || !brand) {
+  if (!name || !category || !description || !brand) {
     return res.status(400).json({ error: 'Mohon lengkapi semua field wajib produk.' });
   }
+
+  const variantResult = processVariantData(hasVariants, variants, price, costPrice, stock);
 
   const newProduct = {
     id: String(Date.now()),
     name,
     category,
-    price: Number(price),
-    costPrice: costPrice ? Number(costPrice) : 0,
-    stock: Number(stock),
+    price: variantResult.price,
+    costPrice: variantResult.costPrice,
+    stock: variantResult.stock,
+    hasVariants: variantResult.hasVariants,
+    variants: variantResult.variants,
     description,
     brand,
     rating: 5.0,
@@ -189,15 +227,25 @@ app.put('/api/products/:id', async (req, res) => {
   }
 
   const existingProduct = db.products[index];
-  const { name, category, price, costPrice, stock, description, brand, image, specifications } = req.body;
+  const { name, category, price, costPrice, stock, description, brand, image, specifications, hasVariants, variants } = req.body;
+
+  const targetHasVariants = hasVariants !== undefined ? hasVariants : existingProduct.hasVariants;
+  const targetVariants = variants !== undefined ? variants : existingProduct.variants;
+  const targetPrice = price !== undefined ? price : existingProduct.price;
+  const targetCostPrice = costPrice !== undefined ? costPrice : existingProduct.costPrice;
+  const targetStock = stock !== undefined ? stock : existingProduct.stock;
+
+  const variantResult = processVariantData(targetHasVariants, targetVariants, targetPrice, targetCostPrice, targetStock);
 
   db.products[index] = {
     ...existingProduct,
     name: name !== undefined ? name : existingProduct.name,
     category: category !== undefined ? category : existingProduct.category,
-    price: price !== undefined ? Number(price) : existingProduct.price,
-    costPrice: costPrice !== undefined ? Number(costPrice) : (existingProduct.costPrice || 0),
-    stock: stock !== undefined ? Number(stock) : existingProduct.stock,
+    price: variantResult.price,
+    costPrice: variantResult.costPrice,
+    stock: variantResult.stock,
+    hasVariants: variantResult.hasVariants,
+    variants: variantResult.variants,
     description: description !== undefined ? description : existingProduct.description,
     brand: brand !== undefined ? brand : existingProduct.brand,
     image: image !== undefined ? image : existingProduct.image,
@@ -239,7 +287,12 @@ app.post('/api/orders', async (req, res) => {
     if (!product) {
       return res.status(404).json({ error: `Produk dengan ID ${item.productId} tidak ditemukan.` });
     }
-    if (product.stock < item.quantity) {
+    if (item.variantId && product.hasVariants && Array.isArray(product.variants)) {
+      const v = product.variants.find(varItem => String(varItem.id) === String(item.variantId));
+      if (v && v.stock < item.quantity) {
+        return res.status(400).json({ error: `Stok varian "${product.name} - ${v.name}" tidak mencukupi (Tersisa: ${v.stock}).` });
+      }
+    } else if (product.stock < item.quantity) {
       return res.status(400).json({ error: `Stok produk "${product.name}" tidak mencukupi (Tersisa: ${product.stock}).` });
     }
   }
@@ -248,9 +301,23 @@ app.post('/api/orders', async (req, res) => {
   let subtotal = 0;
   for (const item of items) {
     const product = db.products.find(p => p.id === item.productId);
-    product.stock -= item.quantity;
+    const itemPrice = Number(item.price) || product.price;
+
+    if (item.variantId && product.hasVariants && Array.isArray(product.variants)) {
+      const v = product.variants.find(varItem => String(varItem.id) === String(item.variantId));
+      if (v) {
+        v.stock -= item.quantity;
+        if (v.stock < 0) v.stock = 0;
+        product.stock = product.variants.reduce((sum, varItem) => sum + Number(varItem.stock), 0);
+      } else {
+        product.stock -= item.quantity;
+      }
+    } else {
+      product.stock -= item.quantity;
+    }
+    if (product.stock < 0) product.stock = 0;
     product.sales += item.quantity;
-    subtotal += product.price * item.quantity;
+    subtotal += itemPrice * item.quantity;
   }
 
   const shipping = Number(shippingCost) || 0;
@@ -293,7 +360,12 @@ app.post('/api/pos/checkout', async (req, res) => {
     if (!product) {
       return res.status(404).json({ error: `Produk dengan ID ${item.productId} tidak ditemukan.` });
     }
-    if (product.stock < item.quantity) {
+    if (item.variantId && product.hasVariants && Array.isArray(product.variants)) {
+      const v = product.variants.find(varItem => String(varItem.id) === String(item.variantId));
+      if (v && v.stock < item.quantity) {
+        return res.status(400).json({ error: `Stok varian "${product.name} - ${v.name}" tidak mencukupi (Tersisa: ${v.stock}).` });
+      }
+    } else if (product.stock < item.quantity) {
       return res.status(400).json({ error: `Stok produk "${product.name}" tidak mencukupi (Tersisa: ${product.stock}).` });
     }
   }
@@ -302,9 +374,23 @@ app.post('/api/pos/checkout', async (req, res) => {
   let subtotal = 0;
   for (const item of items) {
     const product = db.products.find(p => p.id === item.productId);
-    product.stock -= item.quantity;
+    const itemPrice = Number(item.price) || product.price;
+
+    if (item.variantId && product.hasVariants && Array.isArray(product.variants)) {
+      const v = product.variants.find(varItem => String(varItem.id) === String(item.variantId));
+      if (v) {
+        v.stock -= item.quantity;
+        if (v.stock < 0) v.stock = 0;
+        product.stock = product.variants.reduce((sum, varItem) => sum + Number(varItem.stock), 0);
+      } else {
+        product.stock -= item.quantity;
+      }
+    } else {
+      product.stock -= item.quantity;
+    }
+    if (product.stock < 0) product.stock = 0;
     product.sales += item.quantity;
-    subtotal += product.price * item.quantity;
+    subtotal += itemPrice * item.quantity;
   }
 
   const disc = Number(discount) || 0;

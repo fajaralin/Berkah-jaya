@@ -221,6 +221,16 @@ function renderProducts() {
     card.className = 'product-card';
     card.setAttribute('data-id', product.id);
     
+    let priceDisplay = formatRupiah(product.price);
+    let variantTag = '';
+    if (product.hasVariants && Array.isArray(product.variants) && product.variants.length > 0) {
+      const prices = product.variants.map(v => Number(v.price));
+      const minP = Math.min(...prices);
+      const maxP = Math.max(...prices);
+      priceDisplay = minP === maxP ? formatRupiah(minP) : `${formatRupiah(minP)} – ${formatRupiah(maxP)}`;
+      variantTag = `<span style="font-size: 10px; background: #eff6ff; color: #1d4ed8; padding: 2px 6px; border-radius: 4px; font-weight: 600; margin-left: 4px; display: inline-block;">${product.variants.length} Varian</span>`;
+    }
+
     card.innerHTML = `
       <div class="product-card-image">
         <img src="${product.image}" alt="${product.name}" loading="lazy">
@@ -231,16 +241,16 @@ function renderProducts() {
       </div>
       <div class="product-card-info">
         <span class="product-brand">${product.brand}</span>
-        <a href="#" class="product-name" data-id="${product.id}">${product.name}</a>
+        <a href="#" class="product-name" data-id="${product.id}">${product.name} ${variantTag}</a>
         <div class="product-rating-sales">
           <span class="text-gold"><i class="fa-solid fa-star"></i> ${product.rating}</span>
           <span class="text-light">|</span>
           <span class="text-muted">${product.sales >= 1000 ? (product.sales/1000).toFixed(1) + 'rb' : product.sales} Terjual</span>
         </div>
         <div class="product-price-row">
-          <span class="product-price">${formatRupiah(product.price)}</span>
+          <span class="product-price" style="font-size: ${product.hasVariants ? '13px' : '15px'};">${priceDisplay}</span>
           <button class="add-cart-btn-small" data-id="${product.id}" title="Tambah ke keranjang">
-            <i class="fa-solid fa-cart-plus"></i>
+            <i class="fa-solid ${product.hasVariants ? 'fa-list' : 'fa-cart-plus'}"></i>
           </button>
         </div>
       </div>
@@ -940,11 +950,18 @@ async function triggerSearch(qVal) {
 }
 
 // Add to Cart Logic & Fly Animation
-function addToCart(productId, qty = 1, imgSourceElement = null) {
+function addToCart(productId, qty = 1, imgSourceElement = null, selectedVariant = null) {
   const product = appState.products.find(p => p.id === productId);
   if (!product) return;
+
+  // If product has variants and no variant selected yet, open detail modal
+  if (product.hasVariants && Array.isArray(product.variants) && product.variants.length > 0 && !selectedVariant) {
+    openProductDetails(productId);
+    return;
+  }
   
-  if (product.stock === 0) {
+  const targetStock = selectedVariant ? selectedVariant.stock : product.stock;
+  if (targetStock === 0) {
     showToast('Maaf, stok produk saat ini habis!', 'error');
     return;
   }
@@ -987,15 +1004,22 @@ function addToCart(productId, qty = 1, imgSourceElement = null) {
   }
   
   function executeAddToCart() {
-    const existing = appState.cart.find(item => item.productId === productId);
+    let existing;
+    if (selectedVariant) {
+      existing = appState.cart.find(item => item.productId === product.id && item.variantId === selectedVariant.id);
+    } else {
+      existing = appState.cart.find(item => item.productId === product.id && !item.variantId);
+    }
     
     if (existing) {
       existing.quantity += qty;
     } else {
       appState.cart.push({
         productId: product.id,
-        name: product.name,
-        price: product.price,
+        variantId: selectedVariant ? selectedVariant.id : undefined,
+        variantName: selectedVariant ? selectedVariant.name : undefined,
+        name: selectedVariant ? `${product.name} (${selectedVariant.name})` : product.name,
+        price: selectedVariant ? selectedVariant.price : product.price,
         quantity: qty,
         image: product.image
       });
@@ -1099,14 +1123,68 @@ async function openProductDetails(productId) {
     document.getElementById('detail-brand-text').innerText = product.brand;
     document.getElementById('detail-rating-text').innerText = product.rating;
     document.getElementById('detail-sales-text').innerText = product.sales;
-    document.getElementById('detail-price').innerText = formatRupiah(product.price);
     document.getElementById('detail-desc-text').innerText = product.description;
-    document.getElementById('detail-stock-text').innerText = product.stock;
-    
+
     // Set quantity picker back to 1
     const qtyInput = document.getElementById('qty-input');
     qtyInput.value = 1;
-    qtyInput.max = product.stock;
+    
+    // Render variants options if product has variants
+    let selectedVariant = null;
+    const variantsBox = document.getElementById('detail-variants-box');
+    const variantsList = document.getElementById('detail-variants-list');
+
+    if (product.hasVariants && Array.isArray(product.variants) && product.variants.length > 0) {
+      selectedVariant = product.variants.find(v => v.stock > 0) || product.variants[0];
+      if (variantsBox) variantsBox.style.display = 'block';
+      if (variantsList) {
+        variantsList.innerHTML = '';
+        product.variants.forEach(v => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          const isSelected = selectedVariant && v.id === selectedVariant.id;
+          const isOut = v.stock <= 0;
+          btn.style.cssText = `
+            padding: 6px 14px; border-radius: 8px; border: 1.5px solid ${isSelected ? '#ea580c' : '#cbd5e1'};
+            background: ${isSelected ? '#fff7ed' : isOut ? '#f8fafc' : '#ffffff'};
+            color: ${isSelected ? '#ea580c' : isOut ? '#94a3b8' : '#1e293b'};
+            font-weight: ${isSelected ? '700' : '500'}; font-size: 13px; cursor: ${isOut ? 'not-allowed' : 'pointer'};
+            transition: all 0.2s; opacity: ${isOut ? '0.6' : '1'};
+          `;
+          btn.innerText = `${v.name} ${isOut ? '(Habis)' : ''}`;
+          btn.disabled = isOut;
+          
+          btn.onclick = () => {
+            selectedVariant = v;
+            Array.from(variantsList.children).forEach(b => {
+              b.style.borderColor = '#cbd5e1';
+              b.style.background = '#ffffff';
+              b.style.color = '#1e293b';
+              b.style.fontWeight = '500';
+            });
+            btn.style.borderColor = '#ea580c';
+            btn.style.background = '#fff7ed';
+            btn.style.color = '#ea580c';
+            btn.style.fontWeight = '700';
+
+            document.getElementById('detail-price').innerText = formatRupiah(v.price);
+            document.getElementById('detail-stock-text').innerText = v.stock;
+            qtyInput.max = v.stock;
+          };
+
+          variantsList.appendChild(btn);
+        });
+      }
+
+      document.getElementById('detail-price').innerText = formatRupiah(selectedVariant.price);
+      document.getElementById('detail-stock-text').innerText = selectedVariant.stock;
+      qtyInput.max = selectedVariant.stock;
+    } else {
+      if (variantsBox) variantsBox.style.display = 'none';
+      document.getElementById('detail-price').innerText = formatRupiah(product.price);
+      document.getElementById('detail-stock-text').innerText = product.stock;
+      qtyInput.max = product.stock;
+    }
     
     // Specs Table
     const specsTable = document.getElementById('detail-specs-table');
@@ -1134,7 +1212,9 @@ async function openProductDetails(productId) {
     addBtn.parentNode.replaceChild(newAddBtn, addBtn);
     buyBtn.parentNode.replaceChild(newBuyBtn, buyBtn);
     
-    if (product.stock === 0) {
+    const activeStock = selectedVariant ? selectedVariant.stock : product.stock;
+
+    if (activeStock === 0) {
       newAddBtn.disabled = true;
       newAddBtn.innerText = 'Stok Habis';
       newBuyBtn.disabled = true;
@@ -1144,7 +1224,7 @@ async function openProductDetails(productId) {
       newAddBtn.innerHTML = `<i class="fa-solid fa-cart-plus"></i> Masukkan Keranjang`;
       newAddBtn.addEventListener('click', () => {
         const amt = parseInt(qtyInput.value);
-        addToCart(product.id, amt, document.getElementById('detail-image'));
+        addToCart(product.id, amt, document.getElementById('detail-image'), selectedVariant);
         closeProductDetails();
       });
       
@@ -1152,7 +1232,7 @@ async function openProductDetails(productId) {
       newBuyBtn.innerText = 'Beli Sekarang';
       newBuyBtn.addEventListener('click', () => {
         const amt = parseInt(qtyInput.value);
-        addToCart(product.id, amt, null);
+        addToCart(product.id, amt, null, selectedVariant);
         closeProductDetails();
         if (!appState.currentUser) {
           appState.redirectAfterLogin = 'checkout';

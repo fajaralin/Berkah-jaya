@@ -667,15 +667,25 @@
             </div>
           </div>
 
-          <div class="form-row-3">
-            <div class="form-group-crud">
-              <label for="form-product-category">Kategori *</label>
-              <select id="form-product-category" required>
-                <option value="bangunan">Alat Bangunan</option>
-                <option value="listrik">Alat Listrik</option>
-                <option value="pertanian">Obat Pertanian</option>
-              </select>
-            </div>
+          <div class="form-group-crud" style="margin-bottom: 16px;">
+            <label for="form-product-category">Kategori *</label>
+            <select id="form-product-category" required>
+              <option value="bangunan">Alat Bangunan</option>
+              <option value="listrik">Alat Listrik</option>
+              <option value="pertanian">Obat Pertanian</option>
+            </select>
+          </div>
+
+          <!-- Has Variants Checkbox -->
+          <div class="form-group-crud" style="background: #f8fafc; padding: 12px 16px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600; color: #1e293b; margin: 0;">
+              <input type="checkbox" id="form-has-variants-checkbox" style="width: 18px; height: 18px; accent-color: var(--primary-color, #2563eb); cursor: pointer;">
+              <span><i class="fa-solid fa-layer-group text-orange"></i> Produk ini memiliki Varian (misal: 8W, 10W, 12W / Ukuran / Warna)</span>
+            </label>
+          </div>
+
+          <!-- Single Price/Stock Row -->
+          <div class="form-row-3" id="single-price-stock-row">
             <div class="form-group-crud">
               <label for="form-product-cost-price">Harga Beli (Rp)</label>
               <input type="number" id="form-product-cost-price" min="0" placeholder="60000">
@@ -683,12 +693,41 @@
             <div class="form-group-crud">
               <label for="form-product-price">Harga Jual (Rp) * <small
                   style="color:var(--text-muted);font-weight:400;">(ditampilkan ke pelanggan)</small></label>
-              <input type="number" id="form-product-price" required min="0" placeholder="75000">
+              <input type="number" id="form-product-price" min="0" placeholder="75000">
             </div>
             <div class="form-group-crud">
               <label for="form-product-stock">Stok *</label>
-              <input type="number" id="form-product-stock" required min="0" placeholder="100">
+              <input type="number" id="form-product-stock" min="0" placeholder="100">
             </div>
+          </div>
+
+          <!-- Product Variants Table Wrapper -->
+          <div id="form-variants-container" class="form-group-crud" style="display: none; background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <label style="font-weight: 700; color: #0f172a; margin: 0;"><i class="fa-solid fa-boxes-stacked text-blue"></i> Daftar Varian Produk</label>
+              <button type="button" class="btn-secondary btn-small" id="btn-add-variant-row">
+                <i class="fa-solid fa-plus text-green"></i> Tambah Baris Varian
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                <thead>
+                  <tr style="background: #f1f5f9; text-align: left; font-weight: 600; color: #475569;">
+                    <th style="padding: 8px 10px; border-radius: 6px 0 0 6px;">Nama Varian (Watt/Ukuran) *</th>
+                    <th style="padding: 8px 10px;">Harga Beli (Rp)</th>
+                    <th style="padding: 8px 10px;">Harga Jual (Rp) *</th>
+                    <th style="padding: 8px 10px;">Stok *</th>
+                    <th style="padding: 8px 10px; text-align: center; border-radius: 0 6px 6px 0;">Hapus</th>
+                  </tr>
+                </thead>
+                <tbody id="variants-table-body">
+                  <!-- Dynamic variant rows -->
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size: 12px; color: #64748b; margin-top: 8px; margin-bottom: 0;">
+              <i class="fa-solid fa-circle-info text-blue"></i> Total stok produk akan dihitung otomatis dari akumulasi stok seluruh varian.
+            </p>
           </div>
 
           <div class="form-group-crud">
@@ -726,6 +765,18 @@
             <button type="submit" class="btn-primary">Simpan Produk</button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- POS Cashier Variant Selection Modal -->
+    <div id="pos-variant-modal" class="modal" style="z-index: 10000;">
+      <div class="modal-content" style="max-width: 440px; padding: 24px; border-radius: 16px;">
+        <button class="close-modal-btn" id="close-pos-variant-modal">&times;</button>
+        <h3 id="pos-variant-title" style="font-size: 18px; font-weight: 700; margin-bottom: 4px; color: #0f172a;">Pilih Varian Produk</h3>
+        <p id="pos-variant-subtitle" style="font-size: 13px; color: #64748b; margin-bottom: 16px;">Silakan pilih varian item yang dibeli oleh pelanggan</p>
+        <div id="pos-variant-options-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 320px; overflow-y: auto; padding-right: 4px;">
+          <!-- Dynamic variant buttons -->
+        </div>
       </div>
     </div>
 
@@ -939,7 +990,7 @@
   <!-- Socket.io Realtime Client -->
   <script src="/socket.io/socket.io.js"></script>
   <!-- Script File -->
-  <script src="dashboard.js?v=10.5"></script>
+  <script src="dashboard.js?v=11.0"></script>
 </body>
 
 </html>
