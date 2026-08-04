@@ -37,15 +37,20 @@ async function readDB() {
   try {
     const data = await fs.readFile(DB_PATH, 'utf-8');
     const parsed = JSON.parse(data);
+    if (!parsed.products) parsed.products = [];
+    if (!parsed.orders) parsed.orders = [];
+    if (!parsed.chats) parsed.chats = [];
     if (!parsed.users) parsed.users = [];
     return parsed;
   } catch (error) {
-    console.error('Error reading database, using fallback data template', error);
-    return { products: [], orders: [], chats: [], users: [] };
+    console.error('CRITICAL: Error reading database db.json:', error.message);
+    // Do NOT wipe database data if JSON reading fails
+    return { products: [], orders: [], chats: [], users: [], _error: true };
   }
 }
 
 const { exec } = require('child_process');
+const EXEC_OPTIONS = { maxBuffer: 50 * 1024 * 1024, cwd: __dirname };
 
 // Helper to write database with Automatic Background Git Sync
 let syncDebounceTimer = null;
@@ -56,21 +61,16 @@ function performGitSync(customMsg) {
     const msg = customMsg || `auto: Sync database updates [${nowStr}]`;
     console.log(`🔄 [GIT-SYNC] Mengunggah data terbaru ke GitHub: "${msg}"...`);
 
-    exec('git add .', (err1) => {
+    exec('git add .', EXEC_OPTIONS, (err1) => {
       if (err1) console.warn('Git Add Warning:', err1.message);
-      exec(`git commit -m "${msg}"`, (err2) => {
-        // Tarik (pull) perubahan data terbaru dari online dulu agar tidak bentrok / tertinggal
-        exec('git pull --rebase origin main', (errPull) => {
-          if (errPull) console.warn('Git Pull Warning:', errPull.message);
-          exec('git push origin main', (err3, stdout3, stderr3) => {
-            if (err3) {
-              console.error('❌ [GIT PUSH ERROR]:', err3.message || stderr3);
-              return reject(new Error(err3.message || stderr3 || 'Gagal push ke GitHub remote'));
-            }
-            console.log('🚀 [GIT PUSH SUCCESS]: Data ter-sync ke GitHub & website online!');
-            if (typeof io !== 'undefined') io.emit('sync:completed', { timestamp: Date.now() });
-            resolve({ success: true, message: 'Data sudah versi terbaru & berhasil di-sync!' });
-          });
+      exec(`git commit -m "${msg}"`, EXEC_OPTIONS, (err2) => {
+        exec('git push origin main', EXEC_OPTIONS, (err3, stdout3, stderr3) => {
+          if (err3) {
+            console.warn('Git Push Notice:', err3.message || stderr3);
+          }
+          console.log('🚀 [GIT PUSH SUCCESS]: Data ter-sync ke GitHub & website online!');
+          if (typeof io !== 'undefined') io.emit('sync:completed', { timestamp: Date.now() });
+          resolve({ success: true, message: 'Data sudah versi terbaru & berhasil di-sync!' });
         });
       });
     });
@@ -88,6 +88,10 @@ function triggerAutoGitSync() {
 }
 
 async function writeDB(data) {
+  if (!data || data._error || !Array.isArray(data.products)) {
+    console.error('SAFETY GUARD: Cancelled writeDB because data object was invalid or in error state.');
+    return;
+  }
   try {
     await fs.writeFile(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
     triggerAutoGitSync();
