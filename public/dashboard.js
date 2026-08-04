@@ -1923,15 +1923,20 @@ function renderPosCatalog() {
   if (!container) return;
   container.innerHTML = '';
 
-  let filtered = [...posState.products];
-  if (posState.category !== 'all') {
-    filtered = filtered.filter(p => p.category.toLowerCase() === posState.category);
+  let filtered = [...(posState.products || [])];
+  if (posState.category && posState.category !== 'all') {
+    const catTarget = String(posState.category).toLowerCase();
+    filtered = filtered.filter(p => p.category && String(p.category).toLowerCase().includes(catTarget));
   }
   if (posState.search) {
-    filtered = filtered.filter(p => p.name.toLowerCase().includes(posState.search) || p.brand.toLowerCase().includes(posState.search));
+    const q = String(posState.search).toLowerCase();
+    filtered = filtered.filter(p => 
+      (p.name && String(p.name).toLowerCase().includes(q)) || 
+      (p.brand && String(p.brand).toLowerCase().includes(q))
+    );
   }
-  // Sort products alphabetically A-Z by name
-  filtered.sort((a, b) => a.name.localeCompare(b.name, 'id', { sensitivity: 'base' }));
+  // Sort products safely
+  filtered.sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'id', { sensitivity: 'base' }));
 
   if (filtered.length === 0) {
     container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">Produk tidak ditemukan.</div>`;
@@ -1941,13 +1946,13 @@ function renderPosCatalog() {
   filtered.forEach(p => {
     const item = document.createElement('div');
     item.className = 'pos-product-item';
-    const isOutOfStock = p.stock <= 0;
+    const isOutOfStock = Number(p.stock) <= 0;
     
-    let priceDisplay = formatRupiah(p.price);
+    let priceDisplay = formatRupiah(p.price || 0);
     let badgeText = '';
 
     if (p.hasVariants && Array.isArray(p.variants) && p.variants.length > 0) {
-      const prices = p.variants.map(v => Number(v.price));
+      const prices = p.variants.map(v => Number(v.price || 0));
       const minP = Math.min(...prices);
       const maxP = Math.max(...prices);
       priceDisplay = minP === maxP ? formatRupiah(minP) : `${formatRupiah(minP)}–${formatRupiah(maxP)}`;
@@ -1955,10 +1960,10 @@ function renderPosCatalog() {
     }
 
     item.innerHTML = `
-      <img src="${p.image}" class="pos-product-thumb" alt="${p.name}">
-      <h5 class="pos-product-name">${p.name} ${badgeText}</h5>
+      <img src="${p.image || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500'}" class="pos-product-thumb" alt="${p.name || 'Produk'}">
+      <h5 class="pos-product-name">${p.name || 'Tanpa Nama'} ${badgeText}</h5>
       <div class="pos-product-meta">
-        <span>Stok: <strong>${p.stock}</strong></span>
+        <span>Stok: <strong>${p.stock !== undefined ? p.stock : 0}</strong></span>
         <span class="pos-product-price" style="font-size:12px;">${priceDisplay}</span>
       </div>
       <button type="button" class="${isOutOfStock ? 'btn-secondary' : 'btn-primary'} btn-small" ${isOutOfStock ? 'disabled' : ''} style="width: 100%; margin-top: 4px;">
