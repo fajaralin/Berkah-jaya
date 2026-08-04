@@ -272,7 +272,7 @@ async function writeDB(data) {
   try {
     await fs.writeFile(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
   } catch (err) {
-    console.error('Error writing local DB:', err);
+    console.error('Error writing local DB:', err.message);
   }
 
   // 2. Async Sync to MongoDB Cloud if connected
@@ -280,17 +280,29 @@ async function writeDB(data) {
     setImmediate(async () => {
       try {
         const prodCol = mongoDb.collection('products');
+        const currentProdIds = data.products.map(p => String(p.id));
+        if (currentProdIds.length > 0) {
+          await prodCol.deleteMany({ id: { $nin: currentProdIds } });
+        }
+
         for (const p of data.products) {
           const doc = { ...p };
           delete doc._id;
           await prodCol.updateOne({ id: String(p.id) }, { $set: doc }, { upsert: true });
         }
+
         const orderCol = mongoDb.collection('orders');
+        const currentOrderIds = data.orders.map(o => String(o.id));
+        if (currentOrderIds.length > 0) {
+          await orderCol.deleteMany({ id: { $nin: currentOrderIds } });
+        }
+
         for (const o of data.orders) {
           const doc = { ...o };
           delete doc._id;
-          await prodCol.updateOne({ id: String(o.id) }, { $set: doc }, { upsert: true });
+          await orderCol.updateOne({ id: String(o.id) }, { $set: doc }, { upsert: true });
         }
+
         if (typeof io !== 'undefined') {
           io.emit('sync:completed', { timestamp: Date.now() });
         }
@@ -314,29 +326,29 @@ app.get('/api/products', async (req, res) => {
 
   // Filter by category
   if (category && category !== 'semua') {
-    result = result.filter(p => p.category.toLowerCase() === category.toLowerCase());
+    result = result.filter(p => p.category && p.category.toLowerCase() === category.toLowerCase());
   }
 
   // Filter by search query
   if (q) {
     const query = q.toLowerCase().trim();
     result = result.filter(p => 
-      p.name.toLowerCase().includes(query) || 
-      p.description.toLowerCase().includes(query) ||
-      p.brand.toLowerCase().includes(query)
+      (p.name && p.name.toLowerCase().includes(query)) || 
+      (p.description && p.description.toLowerCase().includes(query)) ||
+      (p.brand && p.brand.toLowerCase().includes(query))
     );
   }
 
   // Sort
   if (sort) {
     if (sort === 'terlaris') {
-      result.sort((a, b) => b.sales - a.sales);
+      result.sort((a, b) => (b.sales || 0) - (a.sales || 0));
     } else if (sort === 'harga-rendah') {
-      result.sort((a, b) => a.price - b.price);
+      result.sort((a, b) => (a.price || 0) - (b.price || 0));
     } else if (sort === 'harga-tinggi') {
-      result.sort((a, b) => b.price - a.price);
+      result.sort((a, b) => (b.price || 0) - (a.price || 0));
     } else if (sort === 'rating') {
-      result.sort((a, b) => b.rating - a.rating);
+      result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     }
   } else {
     // Default sorting: Alphabetical A-Z by product name
@@ -469,14 +481,23 @@ app.put('/api/products/:id', async (req, res) => {
 app.delete('/api/products/:id', async (req, res) => {
   const db = await readDB();
   const initialLength = db.products.length;
-  db.products = db.products.filter(p => String(p.id) !== String(req.params.id));
+  const targetId = String(req.params.id);
+  db.products = db.products.filter(p => String(p.id) !== targetId);
 
   if (db.products.length === initialLength) {
     return res.status(404).json({ error: 'Produk tidak ditemukan.' });
   }
 
+  if (isMongoConnected && mongoDb) {
+    try {
+      await mongoDb.collection('products').deleteOne({ id: targetId });
+    } catch (e) {
+      console.error('Error deleting product from MongoDB:', e.message);
+    }
+  }
+
   await writeDB(db);
-  io.emit('products:changed', { action: 'delete', id: req.params.id, timestamp: Date.now() });
+  io.emit('products:changed', { action: 'delete', id: targetId, timestamp: Date.now() });
   res.json({ message: 'Produk berhasil dihapus.' });
 });
 

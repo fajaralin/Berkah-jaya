@@ -255,6 +255,32 @@
       "stock": 3,
       "hasVariants": false,
       "variants": []
+    },
+    {
+      "id": "POS-95248",
+      "address": "Pembelian Langsung di Toko Fisik CV Berkah Jaya",
+      "cashReceived": 50000,
+      "change": 8000,
+      "customerName": "Pembeli Offline / Kasir",
+      "date": "2026-08-03",
+      "discount": 0,
+      "items": [
+        {
+          "productId": "8",
+          "name": "Lampu Bohlam LED Philips MyCare 12W",
+          "price": 42000,
+          "quantity": 1,
+          "stock": 300
+        }
+      ],
+      "paymentMethod": "Tunai (Cash)",
+      "phone": "-",
+      "shippingCost": 0,
+      "status": "Selesai",
+      "subtotal": 42000,
+      "time": "10.34",
+      "total": 42000,
+      "type": "offline"
     }
   ],
   "orders": [
