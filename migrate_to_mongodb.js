@@ -5,7 +5,7 @@ const dns = require('dns');
 try { dns.setDefaultResultOrder('ipv4first'); } catch(e) {}
 try { dns.setServers(['8.8.8.8', '1.1.1.1']); } catch(e) {}
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://fajaralinofficial_db_user:eHbKSoh8X0kbxq0y@cluster0.vqgbr8b.mongodb.net/berkah_jaya?retryWrites=true&w=majority";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://fajaralinofficial_db_user:digimonr123@cluster0.vqgbr8b.mongodb.net/berkah_jaya?retryWrites=true&w=majority";
 const DB_PATH = path.join(__dirname, 'data', 'db.json');
 
 async function migrate() {
