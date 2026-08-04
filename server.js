@@ -196,7 +196,7 @@ async function refreshMemoryFromMongo() {
 // Main readDB helper
 async function readDB() {
   if (isMongoConnected) {
-    if (!memoryDB) await refreshMemoryFromMongo();
+    await refreshMemoryFromMongo();
     if (memoryDB) return memoryDB;
   }
   return await readLocalFileDB();
@@ -288,9 +288,10 @@ async function writeDB(data) {
         console.error('MongoDB async write error:', err.message);
       }
     });
-  } else {
-    triggerAutoGitSync();
   }
+
+  // 3. Always trigger Auto Git Sync so changes are automatically pushed to GitHub & Render online!
+  triggerAutoGitSync();
 }
 
 // REST API Endpoints
