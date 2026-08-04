@@ -49,10 +49,55 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
+const { exec } = require('child_process');
+const EXEC_OPTIONS = { maxBuffer: 50 * 1024 * 1024, cwd: __dirname };
+
+function runCmd(cmd) {
+  return new Promise((resolve) => {
+    exec(cmd, EXEC_OPTIONS, (err, stdout, stderr) => {
+      resolve({ err, stdout, stderr });
+    });
+  });
+}
+
+// Smart JSON conflict auto-resolver
+async function fixDbJsonConflicts() {
+  try {
+    const raw = await fs.readFile(DB_PATH, 'utf-8');
+    if (raw.includes('<<<<<<<') || raw.includes('>>>>>>>')) {
+      console.warn('⚠️ [SMART-SYNC] Conflict marker terdeteksi di db.json! Memperbaiki otomatis...');
+      const cleanLines = raw.split('\n').filter(line => 
+        !line.startsWith('<<<<<<<') && 
+        !line.startsWith('=======') && 
+        !line.startsWith('>>>>>>>')
+      );
+      let fixedContent = cleanLines.join('\n');
+      try {
+        JSON.parse(fixedContent);
+        await fs.writeFile(DB_PATH, fixedContent, 'utf-8');
+        console.log('✅ [SMART-SYNC] db.json berhasil diperbaiki otomatis!');
+        return true;
+      } catch (e) {
+        console.warn('⚠️ Standard clean failed, restoring latest valid commit');
+        await runCmd('git checkout HEAD -- data/db.json');
+      }
+    }
+  } catch (err) {
+    console.error('Error checking conflict markers:', err.message);
+  }
+  return false;
+}
+
 // Helper to read database
 async function readDB() {
   try {
     const data = await fs.readFile(DB_PATH, 'utf-8');
+    if (data.includes('<<<<<<<')) {
+      await fixDbJsonConflicts();
+      const fixedData = await fs.readFile(DB_PATH, 'utf-8');
+      const parsed = JSON.parse(fixedData);
+      return parsed;
+    }
     const parsed = JSON.parse(data);
     if (!parsed.products) parsed.products = [];
     if (!parsed.orders) parsed.orders = [];
@@ -61,37 +106,50 @@ async function readDB() {
     return parsed;
   } catch (error) {
     console.error('CRITICAL: Error reading database db.json:', error.message);
-    // Do NOT wipe database data if JSON reading fails
+    await fixDbJsonConflicts();
     return { products: [], orders: [], chats: [], users: [], _error: true };
   }
 }
 
-const { exec } = require('child_process');
-const EXEC_OPTIONS = { maxBuffer: 50 * 1024 * 1024, cwd: __dirname };
-
 // Helper to write database with Automatic Background Git Sync
 let syncDebounceTimer = null;
 
-function performGitSync(customMsg) {
-  return new Promise((resolve, reject) => {
-    const nowStr = new Date().toLocaleString('id-ID');
-    const msg = customMsg || `auto: Sync database updates [${nowStr}]`;
-    console.log(`🔄 [GIT-SYNC] Mengunggah data terbaru ke GitHub: "${msg}"...`);
+async function performGitSync(customMsg) {
+  const nowStr = new Date().toLocaleString('id-ID');
+  const msg = customMsg || `auto: Sync database updates [${nowStr}]`;
+  console.log(`🔄 [GIT-SYNC] Mengunggah & menyinkronkan data dengan GitHub: "${msg}"...`);
 
-    exec('git add .', EXEC_OPTIONS, (err1) => {
-      if (err1) console.warn('Git Add Warning:', err1.message);
-      exec(`git commit -m "${msg}"`, EXEC_OPTIONS, (err2) => {
-        exec('git push origin main', EXEC_OPTIONS, (err3, stdout3, stderr3) => {
-          if (err3) {
-            console.warn('Git Push Notice:', err3.message || stderr3);
-          }
-          console.log('🚀 [GIT PUSH SUCCESS]: Data ter-sync ke GitHub & website online!');
-          if (typeof io !== 'undefined') io.emit('sync:completed', { timestamp: Date.now() });
-          resolve({ success: true, message: 'Data sudah versi terbaru & berhasil di-sync!' });
-        });
-      });
-    });
-  });
+  await fixDbJsonConflicts();
+  await runCmd('git add .');
+  await runCmd(`git commit -m "${msg}"`);
+
+  // First pull --rebase to get any updates from other laptop
+  const pullRes = await runCmd('git pull origin main --rebase');
+  if (pullRes.err) {
+    console.warn('⚠️ Pull rebase notice/conflict encountered, resolving...');
+    const fixed = await fixDbJsonConflicts();
+    if (fixed) {
+      await runCmd('git add data/db.json');
+      await runCmd('git -c core.editor=true rebase --continue');
+    } else {
+      await runCmd('git rebase --abort');
+    }
+  }
+
+  // Push to origin main
+  const pushRes = await runCmd('git push origin main');
+  if (pushRes.err) {
+    console.warn('⚠️ Initial push failed, retrying with pull rebase...');
+    await runCmd('git pull origin main --rebase');
+    await fixDbJsonConflicts();
+    await runCmd('git add .');
+    await runCmd('git -c core.editor=true rebase --continue');
+    await runCmd('git push origin main');
+  }
+
+  console.log('🚀 [GIT PUSH SUCCESS]: Data ter-sync ke GitHub & website online!');
+  if (typeof io !== 'undefined') io.emit('sync:completed', { timestamp: Date.now() });
+  return { success: true, message: 'Data sudah versi terbaru & berhasil di-sync!' };
 }
 
 function triggerAutoGitSync() {
