@@ -55,13 +55,14 @@
       "brand": "Supreme",
       "rating": 5,
       "sales": 0,
-      "image": "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=500&auto=format&fit=crop&q=60",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHc3E03UUSa0F0Jkwgqpv7qVfpqE0CRflbtObAR2GXoA&s=10",
       "specifications": {
         "Tipe": "NYM (Kawat Tembaga Ganda)",
         "Ukuran Core": "2 x 1.5 mm",
         "Panjang": "50 Meter Roll"
       },
-      "reviews": []
+      "reviews": [],
+      "costPrice": 0
     },
     {
       "id": "8",
