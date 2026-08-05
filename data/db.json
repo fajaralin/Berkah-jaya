@@ -255,6 +255,23 @@
       "stock": 3,
       "hasVariants": false,
       "variants": []
+    },
+    {
+      "id": "1785923901568",
+      "name": "posatbj",
+      "category": "bangunan",
+      "price": 85000,
+      "costPrice": 65000,
+      "stock": 8,
+      "hasVariants": false,
+      "variants": [],
+      "description": "hgfchchg",
+      "brand": "Pembasmi ulat",
+      "rating": 5,
+      "sales": 0,
+      "image": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&auto=format&fit=crop&q=80",
+      "specifications": {},
+      "reviews": []
     }
   ],
   "orders": [
