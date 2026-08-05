@@ -309,20 +309,35 @@
     },
     {
       "id": "1785931748619",
-      "name": "Sidametrin 400ml",
-      "category": "pertanian",
-      "price": 40000,
-      "costPrice": 35000,
-      "stock": 5,
-      "hasVariants": false,
-      "variants": [],
-      "description": "pembasmi segala ulat,tembakau padi dll",
       "brand": "Insekitisida",
-      "rating": 5,
-      "sales": 0,
+      "category": "pertanian",
+      "costPrice": 12000,
+      "description": "pembasmi segala ulat,tembakau padi dll",
+      "hasVariants": true,
       "image": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&auto=format&fit=crop&q=80",
+      "name": "Sidametrin",
+      "price": 20000,
+      "rating": 5,
+      "reviews": [],
+      "sales": 0,
       "specifications": {},
-      "reviews": []
+      "stock": 10,
+      "variants": [
+        {
+          "id": "v-1785931939514-0",
+          "name": "100ml",
+          "price": 20000,
+          "costPrice": 12000,
+          "stock": 5
+        },
+        {
+          "id": "v-1785931939514-1",
+          "name": "400ml",
+          "price": 40000,
+          "costPrice": 35000,
+          "stock": 5
+        }
+      ]
     }
   ],
   "orders": [
