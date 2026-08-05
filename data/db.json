@@ -255,6 +255,23 @@
       "stock": 3,
       "hasVariants": false,
       "variants": []
+    },
+    {
+      "id": "1785930607252",
+      "name": "sumo",
+      "category": "pertanian",
+      "price": 25000,
+      "costPrice": 20500,
+      "stock": 1,
+      "hasVariants": false,
+      "variants": [],
+      "description": "pembasmi orong orong dll",
+      "brand": "pembasmi orong2",
+      "rating": 5,
+      "sales": 0,
+      "image": "https://tse2.mm.bing.net/th/id/OIP.G6zS941OQNp6ssBVz-sqSwHaHa?r=0&pid=Api&P=0&h=180",
+      "specifications": {},
+      "reviews": []
     }
   ],
   "orders": [
