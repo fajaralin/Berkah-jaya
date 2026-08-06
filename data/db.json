@@ -360,12 +360,12 @@
       "id": "1785932632403",
       "brand": "insektisida",
       "category": "pertanian",
-      "costPrice": 0,
+      "costPrice": 15500,
       "description": "pembasmi  ulatpadi ,tembakau dll",
       "hasVariants": true,
       "image": "https://tse4.mm.bing.net/th/id/OIP.K4VmNLfZPH7bj93hRZMwiAHaHa?r=0&pid=Api&P=0&h=180",
       "name": "Matarin",
-      "price": 50000,
+      "price": 22000,
       "rating": 5,
       "reviews": [],
       "sales": 0,
@@ -375,8 +375,8 @@
         {
           "id": "v-1786014960821-0",
           "name": "80 ml",
-          "price": 111111,
-          "costPrice": 0,
+          "price": 22000,
+          "costPrice": 15500,
           "stock": 1
         },
         {
