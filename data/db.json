@@ -370,6 +370,23 @@
           "stock": 1
         }
       ]
+    },
+    {
+      "id": "1786165251281",
+      "brand": "pembasmi orong2",
+      "category": "bangunan",
+      "costPrice": 0,
+      "description": "hujhgbkujbh",
+      "hasVariants": false,
+      "image": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&auto=format&fit=crop&q=80",
+      "name": "ulooooooooooooooo",
+      "price": 40000,
+      "rating": 5,
+      "reviews": [],
+      "sales": 0,
+      "specifications": {},
+      "stock": 9,
+      "variants": []
     }
   ],
   "orders": [
